@@ -1,0 +1,3 @@
+Record=TopLevelDocument|FileName=top.SchDoc
+Record=SheetSymbol|Record=SheetSymbol|SourceDocument=top.SchDoc|Designator=Designator|SchDesignator=Designator|FileName=mosfet.SchDoc|SymbolType=Normal|RawFileName=mosfet.SchDoc|DesignItemId= |SourceLibraryName= |ObjectKind=Sheet Symbol|RevisionGUID= |ItemGUID= |VaultGUID= 
+Record=SheetSymbol|Record=SheetSymbol|SourceDocument=top.SchDoc|Designator=Designator|SchDesignator=Designator|FileName=general OpAmp.SchDoc|SymbolType=Normal|RawFileName=general OpAmp.SchDoc|DesignItemId= |SourceLibraryName= |ObjectKind=Sheet Symbol|RevisionGUID= |ItemGUID= |VaultGUID= 

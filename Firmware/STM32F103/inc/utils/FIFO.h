@@ -7,8 +7,8 @@
 template<typename Type, int length>
 class FIFO_t {
 private:
-	Type values[length]; // [TODO]: volatile declaration
-	uint8_t cnt_a, cnt_b;
+	volatile Type values[length]; // [TODO]: volatile declaration
+	volatile uint8_t cnt_a, cnt_b;
 
 public:
 	FIFO_t() {
@@ -26,7 +26,7 @@ public:
 		}
 		__enable_irq();
 	}
-	Type peek() const {
+	Type & peek() const {
 		Type tmp;
 		tmp = this->values[this->cnt_a];
 		return tmp;

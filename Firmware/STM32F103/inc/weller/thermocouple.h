@@ -3,8 +3,8 @@ class Thermocouple {
 	float intercept;
 public:
 	Thermocouple() {
-		intercept = 0;
-		gain = 0.165095;
+		intercept = 27.93104;
+		gain = 0.1096;
 	}
 	float getTemp(uint16_t adc_reading) {
 		float res = intercept + gain * adc_reading;

@@ -39,9 +39,9 @@ void PC_sendTemp(float temp) {
 	PCConn.sendCommand("temp", &temp, 1);
 }
 
-void PC_sendTick(float temp, float filtered, float power) {
-	float tab[] = {temp, filtered, power};
-	PCConn.sendCommand("tick", tab, 3);
+void PC_sendTick(float temp, float filtered, float power, float powerAVG) {
+	float tab[] = {temp, filtered, power, powerAVG};
+	PCConn.sendCommand("tick", tab, 4);
 }
 
 void PC_sendAdc(float adc, float filtered) {

@@ -11,9 +11,9 @@ class PID {
 
  public:
     PID() {
-        Kp = 0;
-        Ki = 0;
-        Kd = 0;
+        Kp = 10;
+        Ki = 0.03;
+        Kd = 300;
         mid = 25;
         prev_error = 0;
         integral = 0;
@@ -33,33 +33,28 @@ class PID {
         return pwr;
     }
     float feed_error(float error) {
-        float Ipart = Ki*integral;
-        if( Ki != 0 ) {
-            if( fabs(error) > 50 ) {  // big error, supress integral part
-                integral = 0;
-            } else {
-                integral += error;
-            }
-            
-    #define INTEGRAL_CUT 1000
-            // limit integral part - when trying to reach low temperatures 
-            // it can become really big
-            if( Ipart > INTEGRAL_CUT ) { 
-                Ipart = INTEGRAL_CUT;
-                integral = INTEGRAL_CUT/Ki;
-            } else if( integral < -INTEGRAL_CUT ) {
-                integral = -INTEGRAL_CUT;
-                integral = -INTEGRAL_CUT/Ki;
-            }
+    	if( fabs(error) > 25 ) {
+    		integral = 0;
+    	} else {
+    		integral += error;
+    	}
 
-            if( integral > 0 ) {
-            	integral = 0;
-            }
-        }            
-                
+    	if( error > 20 ) {
+    		return 100;
+    	}
+    	if( error < -20 ) {
+			return 0;
+		}
+
+        float Ipart = Ki*integral;
+
         float diff = error - prev_error;
         prev_error = error;
         return (Kp*error +  Ipart + Kd*diff);
+    }
+    void reset() {
+    	this->integral = 0;
+    	this->prev_error = 0;
     }
     void set_params(float Kp_, float Ki_, float Kd_) {
         this->Kp = Kp_;

@@ -7,18 +7,18 @@ private:
 	uint16_t pins;
 	volatile bool state;
 public:
-	GPIO_t(GPIO_TypeDef * GPIOx, uint16_t pins) : GPIOx(GPIOx), pins(pins) {
+	GPIO_t(GPIO_TypeDef * GPIOx, uint16_t pins, GPIOMode_TypeDef mode = GPIO_Mode_Out_PP) : GPIOx(GPIOx), pins(pins) {
 		RCC_APB2PeriphClockCmd(RCC_APB2Periph_GPIOA | RCC_APB2Periph_GPIOB
 				             | RCC_APB2Periph_GPIOC | RCC_APB2Periph_GPIOD
 				             | RCC_APB2Periph_GPIOE | RCC_APB2Periph_GPIOF
 				             | RCC_APB2Periph_GPIOG, ENABLE);
 		GPIO_InitTypeDef GPIO_InitStruct;
-		GPIO_InitStruct.GPIO_Mode = GPIO_Mode_Out_OD;
+		GPIO_InitStruct.GPIO_Mode = mode;
 		GPIO_InitStruct.GPIO_Pin = pins;
 		GPIO_InitStruct.GPIO_Speed = GPIO_Speed_50MHz;
 		GPIO_Init(GPIOx, &GPIO_InitStruct);
 
-		off();
+		//off();
 	}
 	void on() {
 		state = true;
@@ -39,5 +39,8 @@ public:
 			on();
 		else
 			off();
+	}
+	bool read() {
+		return GPIO_ReadInputDataBit(GPIOx, pins);
 	}
 };

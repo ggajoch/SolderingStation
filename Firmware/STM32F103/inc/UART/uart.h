@@ -92,8 +92,11 @@ bool possible_char(char x) {
 	return false;
 }
 
+GPIO_t UARTLED(GPIOB, GPIO_Pin_15);
+
 extern "C" {
 void USART3_IRQHandler(void){
+	UARTLED.on();
 	if(USART_GetITStatus(USARTx, USART_IT_RXNE)) {
 		//receive interrupt
 		static char buf[100];
@@ -118,6 +121,7 @@ void USART3_IRQHandler(void){
 		}
 		USART_ClearITPendingBit(USARTx, USART_IT_TXE);
 	}
+	UARTLED.off();
 }
 }
 

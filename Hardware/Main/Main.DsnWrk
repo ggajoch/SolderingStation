@@ -1,0 +1,10 @@
+[ProjectGroup]
+Version=1.0
+[Project1]
+ProjectPath=main.PrjPcb
+[Project2]
+ProjectPath=C:\altium-libs\SchLib\microcircuits\_Microcircuits.LibPkg
+[Project3]
+ProjectPath=C:\altium-libs\SchLib\RLC\_RLC.LibPkg
+[Project4]
+ProjectPath=C:\altium-libs\SchLib\connectors\_Connectors.LibPkg

@@ -1,8 +1,0 @@
-[ProjectGroup]
-Version=1.0
-[Project1]
-ProjectPath=MCP6N16\inst.PrjPcb
-[Project2]
-ProjectPath=MCP1416\Mini.PrjPcb
-[Project3]
-ProjectPath=Main\main.PrjPcb

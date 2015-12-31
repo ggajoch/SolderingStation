@@ -183,7 +183,7 @@ int main(void) {
 		float val = 100/(setpoint - 50) * solderingIron.filtered_temp + 5000/(50-setpoint);
 		LCDBacklightPWM.fill(val);
 
-		SolderPWM.fill(0);
+		SolderPWM.fill(100);
 		_delay_ms(15);
 		LED.toogle();
 		for(uint8_t i = 0; i < 20; ++i) {
@@ -194,11 +194,11 @@ int main(void) {
 		solderingIron.tick(avg.get());
 
 
-		//PC_sendTick(solderingIron.last_temp, solderingIron.filtered_temp,
-		//solderingIron.power, solderingIron.filtered_power);
+		PC_sendTick(solderingIron.last_temp, solderingIron.filtered_temp,
+		solderingIron.power, solderingIron.filtered_power);
 
 
-		SolderPWM.fill(solderingIron.filtered_power);
+		SolderPWM.fill(100.0-solderingIron.filtered_power);
 		tester = GPIO_t(GPIOC, GPIO_Pin_10, GPIO_Mode_IPU);
 		_delay_ms(45);
 		onStand = !tester.read();

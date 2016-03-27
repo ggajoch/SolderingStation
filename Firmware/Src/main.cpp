@@ -26,6 +26,12 @@ void contr(float * x, uint8_t len) {
 void adc(float * x, uint8_t len) {
 	printf("thermocouple: %d\r\n", hal->getThermocoupleReading());
 }
+
+void heat(float * x, uint8_t len) {
+	printf("heating: %f\r\n", x[0]);
+	hal->setHeating(x[0]);
+}
+
 void write(const char * buf) {
     printf("%s", buf);
 }
@@ -41,7 +47,8 @@ int main(void) {
     Command cmd_y = {"back", back};
     Command cmd_contr = {"contr", contr};
     Command cmd_adc = {"adc", adc};
-    Command arr[] = {cmd_x, cmd_y, cmd_contr, cmd_adc};
+    Command cmd_heat = {"heat", heat};
+    Command arr[] = {cmd_x, cmd_y, cmd_contr, cmd_adc, cmd_heat};
     CLI cliInst(sizeof(arr)/sizeof(Command), arr, write);
     cli = & cliInst;
 

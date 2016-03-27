@@ -20,11 +20,15 @@ public:
     }
 
     void setBacklight(float percent) {
-        TIM3->CCR4 = static_cast<uint16_t>(10 * percent);
+        TIM3->CCR4 = static_cast<uint16_t>(10.0 * percent);
     }
 
     void setContrast(float percent) {
-        TIM4->CCR4 = static_cast<uint16_t>(100 * percent);
+        TIM4->CCR4 = static_cast<uint16_t>(100.0 * percent);
+    }
+
+    void setHeating(float percent) {
+        TIM1->CCR1 = static_cast<uint16_t>(20.0 * percent);
     }
 
     void putch(uint8_t ch) {
@@ -118,7 +122,7 @@ private:
         htim1.Instance = TIM1;
         htim1.Init.Prescaler = 0;
         htim1.Init.CounterMode = TIM_COUNTERMODE_UP;
-        htim1.Init.Period = 0;
+        htim1.Init.Period = 2000;
         htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
         htim1.Init.RepetitionCounter = 0;
         HAL_TIM_Base_Init(&htim1);
@@ -150,6 +154,7 @@ private:
         sConfigOC.OCNIdleState = TIM_OCNIDLESTATE_RESET;
         HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_1);
 
+        HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
     }
 
     void TIM3_Init() {

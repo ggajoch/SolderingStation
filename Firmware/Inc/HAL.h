@@ -32,6 +32,12 @@ public:
         __HAL_UART_ENABLE_IT(&huart1, UART_IT_TXE);
     }
 
+    uint16_t getThermocoupleReading() {
+        HAL_ADC_Start(&hadc1);
+        HAL_ADC_PollForConversion(&hadc1, 1000);
+        return HAL_ADC_GetValue(&hadc1);
+    }
+
     static ADC_HandleTypeDef hadc1;
     static I2C_HandleTypeDef hi2c1;
     static TIM_HandleTypeDef htim1;

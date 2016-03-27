@@ -1,15 +1,13 @@
 #ifndef BUFFER_H
 #define BUFFER_H
 
-#include <array>
-
 template<typename Type, size_t maxLength>
 class Buffer {
 public:
     Buffer() : index(0) {
     }
 
-    void push(Type element) {
+    void push(const Type & element) {
         array[index++] = element;
     }
 

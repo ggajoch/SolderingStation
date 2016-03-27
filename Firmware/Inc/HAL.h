@@ -175,6 +175,10 @@ private:
         HAL_TIM_PWM_ConfigChannel(&htim3, &sConfigOC, TIM_CHANNEL_4);
 
         HAL_TIM_PWM_Start(&htim3, TIM_CHANNEL_4);
+
+        __HAL_TIM_ENABLE_IT(&htim3, TIM_IT_UPDATE);
+        HAL_NVIC_EnableIRQ(TIM3_IRQn);
+        HAL_NVIC_SetPriority(TIM3_IRQn, 0, 0);
     }
 
     void TIM4_Init() {
@@ -274,6 +278,10 @@ public:
             huart1.Instance->DR = uart_tx_buf.get();
         }
     }
+
+    static void __TIM3_IRQ_UPDATE() {
+        HD44780::TimeTick();
+    }
 };
 
 ADC_HandleTypeDef WellerHAL::hadc1;
@@ -340,5 +348,9 @@ void USART1_IRQHandler(void) {
         __HAL_UART_CLEAR_FLAG(&WellerHAL::huart1, UART_FLAG_TXE);
         WellerHAL::__UART1_IRQ_TXE();
     }
+}
+void TIM3_IRQHandler(void) {
+    __HAL_TIM_CLEAR_FLAG(&WellerHAL::htim3, TIM_FLAG_UPDATE);
+    WellerHAL::__TIM3_IRQ_UPDATE();
 }
 }

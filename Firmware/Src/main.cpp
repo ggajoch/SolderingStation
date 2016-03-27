@@ -48,18 +48,11 @@ int main(void) {
     HAL_Delay(1000);
 
     HD44780::PutText(0, 1, "defxyz");
-    for(int i = 0; i < 100; ++i)
-        HD44780::TimeTick();
     HAL_Delay(1000);
     HD44780::Clear();
-    for(int i = 0; i < 100; ++i)
-        HD44780::TimeTick();
     HAL_Delay(1000);
     HD44780::PutText(1, 1, "poiuytrewq");
 
-    while(1) {
-        HD44780::TimeTick();
-    }
     while (1) {
 		val += 1;
 		if( val >= 100 ) {

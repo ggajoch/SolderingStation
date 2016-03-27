@@ -14,5 +14,5 @@ include_directories(Inc
         Drivers/STM32F1xx_HAL_Driver/Inc Drivers/STM32F1xx_HAL_Driver/Inc/Legacy
         Libs/LCD/inc)
 
-set(SOURCE_FILES ${CubeHAL} ${Sources} Inc/USART.h Libs/LCD/inc/LCDTransaction.h)
+set(SOURCE_FILES ${CubeHAL} ${Sources} Inc/USART.h Libs/LCD/inc/LCDTransaction.h Inc/ArrayHolder.h)
 add_executable(solder ${SOURCE_FILES})

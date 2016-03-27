@@ -1,124 +1,130 @@
-/*
- * ----------------------------------------------------------------------------
- * "THE BEER-WARE LICENSE" (Revision 42):
- * <joerg@FreeBSD.ORG> wrote this file.  As long as you retain this notice you
- * can do whatever you want with this stuff. If we meet some day, and you think
- * this stuff is worth it, you can buy me a beer in return.        Joerg Wunsch
- * ----------------------------------------------------------------------------
- *
- * HD44780 LCD display driver
- *
- * $Id: hd44780.h,v 1.1.4.1 2009/06/25 20:21:16 joerg_wunsch Exp $
- */
-#ifndef HD44780_H
-#define HD44780_H
+#ifndef HD44780_H_
+#define HD44780_H_
 
-#include <stdbool.h> 
-#include <stdint.h>
+#include "stm32f1xx_hal.h"
+#include "defines.h"
 
-void hd44780_outnibble(uint8_t n, uint8_t rs);
+namespace HD44780 {
 
-/*
- * Wysy�a tetrad� do kontrolera nie generuj�c strobu enable
- * Sygna� Enable jest po funkcji ustawiony
- */
+#define HD44780_CLEAR                   0x01
 
-void hd44780_outnibble_nowait(uint8_t n, uint8_t rs);
+#define HD44780_HOME                    0x02
 
-/*
- * Send byte b to the LCD.  rs is the RS signal (register select), 0
- * selects instruction register, 1 selects the data register.
- */
-void	hd44780_outbyte(uint8_t b, uint8_t rs);
+#define HD44780_ENTRY_MODE              0x04
+    #define HD44780_EM_SHIFT_CURSOR        0
+    #define HD44780_EM_SHIFT_DISPLAY       1
+    #define HD44780_EM_DECREMENT           0
+    #define HD44780_EM_INCREMENT           2
 
-/*
- * Read one byte from the LCD controller.  rs is the RS signal, 0
- * selects busy flag (bit 7) and address counter, 1 selects the data
- * register.
- */
-uint8_t	hd44780_inbyte(uint8_t rs);
+#define HD44780_DISPLAY_ONOFF           0x08
+    #define HD44780_DISPLAY_OFF            0
+    #define HD44780_DISPLAY_ON             4
+    #define HD44780_CURSOR_OFF             0
+    #define HD44780_CURSOR_ON              2
+    #define HD44780_CURSOR_NOBLINK         0
+    #define HD44780_CURSOR_BLINK           1
 
-/*
- * Wait for the busy flag to clear.
- */
-void	hd44780_wait_ready(bool islong);
+#define HD44780_DISPLAY_CURSOR_SHIFT    0x10
+    #define HD44780_SHIFT_CURSOR           0
+    #define HD44780_SHIFT_DISPLAY          8
+    #define HD44780_SHIFT_LEFT             0
+    #define HD44780_SHIFT_RIGHT            4
 
-/*
- * Initialize the LCD controller hardware.
- */
-void	hd44780_init(void);
+#define HD44780_FUNCTION_SET            0x20
+    #define HD44780_FONT5x7                0
+    #define HD44780_FONT5x10               4
+    #define HD44780_ONE_LINE               0
+    #define HD44780_TWO_LINE               8
+    #define HD44780_4_BIT                  0
+    #define HD44780_8_BIT                 16
 
-/*
- * Prepare the LCD controller pins for powerdown.
- */
-void	hd44780_powerdown(void);
-/*
- * Define own chr
- */
-void hd44780_def_chr(uint8_t location, const uint8_t *ptr);
+#define HD44780_CGRAM_SET                0x40
+
+#define HD44780_DDRAM_SET                0x80
 
 
-/* Send a command to the LCD controller. */
-#define hd44780_outcmd(n)	hd44780_outbyte((n), 0)
+    void _LCD_SetRS(bool state) {
+        HAL_GPIO_WritePin(LCD_GPIO, LCD_RS, (GPIO_PinState) state);
+    }
 
-/* Send a data byte to the LCD controller. */
-#define hd44780_outdata(n)	hd44780_outbyte((n), 1)
+    void _LCD_SetEN(bool state) {
+        HAL_GPIO_WritePin(LCD_GPIO, LCD_EN, (GPIO_PinState) state);
+    }
 
-/* Read the address counter and busy flag from the LCD. */
-#define hd44780_incmd()		hd44780_inbyte(0)
+    void _LCD_Write_NOBLOCK(uint8_t data) {
+        HAL_GPIO_WritePin(LCD_GPIO, LCD_D0, (GPIO_PinState) ((data & (1 << 0)) != 0));
+        HAL_GPIO_WritePin(LCD_GPIO, LCD_D1, (GPIO_PinState) ((data & (1 << 1)) != 0));
+        HAL_GPIO_WritePin(LCD_GPIO, LCD_D2, (GPIO_PinState) ((data & (1 << 2)) != 0));
+        HAL_GPIO_WritePin(LCD_GPIO, LCD_D3, (GPIO_PinState) ((data & (1 << 3)) != 0));
+        HAL_GPIO_WritePin(LCD_GPIO, LCD_D4, (GPIO_PinState) ((data & (1 << 4)) != 0));
+        HAL_GPIO_WritePin(LCD_GPIO, LCD_D5, (GPIO_PinState) ((data & (1 << 5)) != 0));
+        HAL_GPIO_WritePin(LCD_GPIO, LCD_D6, (GPIO_PinState) ((data & (1 << 6)) != 0));
+        HAL_GPIO_WritePin(LCD_GPIO, LCD_D7, (GPIO_PinState) ((data & (1 << 7)) != 0));
+    }
 
-/* Read the current data byte from the LCD. */
-#define hd44780_indata()	hd44780_inbyte(1)
+    void _LCD_Write(uint8_t data) {
+        HAL_Delay(1);
+        _LCD_SetEN(true);
+        HAL_Delay(1);
+        _LCD_Write_NOBLOCK(data);
+        HAL_Delay(1);
+        _LCD_SetEN(false);
+        HAL_Delay(1);
+    }
 
 
-/* Clear LCD display command. */
-#define HD44780_CLR \
-	0x01
+    void LCD_WriteCommand(unsigned char commandToWrite) {
+        _LCD_SetRS(false);
+        HAL_Delay(1);
+        _LCD_Write(commandToWrite);
+    }
 
-/* Home cursor command. */
-#define HD44780_HOME \
-	0x02
+    void LCD_WriteData(unsigned char dataToWrite) {
+        _LCD_SetRS(true);
+        HAL_Delay(1);
+        _LCD_Write(dataToWrite);
+    }
 
-/*
- * Select the entry mode.  inc determines whether the address counter
- * auto-increments, shift selects an automatic display shift.
- */
-#define HD44780_ENTMODE(inc, shift) \
-	(0x04 | ((inc)? 0x02: 0) | ((shift)? 1: 0))
+    void LCD_WriteText(char *text) {
+        while (*text)
+            LCD_WriteData(*text++);
+    }
 
-/*
- * Selects disp[lay] on/off, cursor on/off, cursor blink[ing]
- * on/off.
- */
-#define HD44780_DISPCTL(disp, cursor, blink) \
-	(0x08 | ((disp)? 0x04: 0) | ((cursor)? 0x02: 0) | ((blink)? 1: 0))
+    void LCD_GoTo(unsigned char x, unsigned char y) {
+        LCD_WriteCommand(HD44780_DDRAM_SET | (x + (0x40 * y)));
+    }
 
-/*
- * With shift = 1, shift display right or left.
- * With shift = 0, move cursor right or left.
- */
-#define HD44780_SHIFT(shift, right) \
-	(0x10 | ((shift)? 0x08: 0) | ((right)? 0x04: 0))
+    void LCD_Clear(void) {
+        LCD_WriteCommand(HD44780_CLEAR);
+        HAL_Delay(2);
+    }
 
-/*
- * Function set.  if8bit selects an 8-bit data path, twoline arranges
- * for a two-line display, font5x10 selects the 5x10 dot font (5x8
- * dots if clear).
- */
-#define HD44780_FNSET(if8bit, twoline, font5x10) \
-	(0x20 | ((if8bit)? 0x10: 0) | ((twoline)? 0x08: 0) | \
-		((font5x10)? 0x04: 0))
+    void LCD_Home(void) {
+        LCD_WriteCommand(HD44780_HOME);
+        HAL_Delay(2);
+    }
 
-/*
- * Set the next character generator address to addr.
- */
-#define HD44780_CGADDR(addr) \
-	(0x40 | ((addr) & 0x3f))
+    void LCD_Initalize(void) {
+        HAL_Delay(50);
 
-/*
- * Set the next display address to addr.
- */
-#define HD44780_DDADDR(addr) \
-	(0x80 | ((addr) & 0x7f))
+        _LCD_SetRS(false);
+        _LCD_SetEN(false);
 
-#endif
+        for (uint8_t i = 0; i < 3; i++) {
+            _LCD_Write(0x3F);
+            HAL_Delay(5);
+        }
+
+        LCD_WriteCommand(HD44780_FUNCTION_SET | HD44780_FONT5x7 | HD44780_TWO_LINE |
+                         HD44780_8_BIT);
+        LCD_WriteCommand(HD44780_DISPLAY_ONOFF | HD44780_DISPLAY_OFF);
+        LCD_WriteCommand(HD44780_CLEAR);
+        HAL_Delay(2);
+        LCD_WriteCommand(HD44780_ENTRY_MODE | HD44780_EM_SHIFT_CURSOR |
+                         HD44780_EM_INCREMENT);
+        LCD_WriteCommand(HD44780_DISPLAY_ONOFF | HD44780_DISPLAY_ON | HD44780_CURSOR_OFF |
+                         HD44780_CURSOR_NOBLINK);
+    }
+}
+
+#endif // HD44780_H_

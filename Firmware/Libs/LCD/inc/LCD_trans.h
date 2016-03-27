@@ -1,30 +1,76 @@
-#ifndef LCD_trans_h__
-#define LCD_trans_h__
+#ifndef LCD_TRANS_H_
+#define LCD_TRANS_H_
 
-#include <stdbool.h>
-#include <stdint.h>
+#include "LCD_trans.h"
+#include <string.h>
+#include <LCDTransaction.h>
+#include <cmsis_gcc.h>
+#include "HD44780.h"
+#include "cyclicBuffer.h"
 
-#define LCD_MAXTRANS 8           //Maksymalna liczba pami�tanych transakcji
-#define LCD_MAX_DATA 17
+namespace HD44780 {
+    volatile uint8_t tick_enabled;
+    LCDTransaction actual_data, *actual;
+    CyclicBuffer_data<LCDTransaction, 10> buffer;
 
-extern volatile uint8_t CbHead;
-extern volatile uint8_t CbTail;
+    void TimeTick(void) {
+        if (!tick_enabled)
+            return;
 
-extern volatile uint8_t lcd_timeproc_enabled;
+        if (actual != nullptr) {
+            _LCD_SetRS(!actual->isCommand());
+            _LCD_SetEN(true);
+            _LCD_Write_NOBLOCK(actual->get());
+            if (!actual->advance()) {
+                actual = nullptr;
+            }
+            volatile int i = 100;
+            while (i--) { }
+            _LCD_SetEN(false);
+        } else {
+            if (buffer.isEmpty()) {
+                tick_enabled = 0;
+            } else {
+                actual_data = buffer.get_unsafe();
+                actual = &actual_data;
+            }
+        }
+    }
 
-typedef struct
-{
-	uint8_t		len;					//D�ugo�� polecenia
-	uint8_t		data[LCD_MAX_DATA+2];		//Dane transakcji
-} LCD_trans;
+    void Init() {
+        LCD_Initalize();
+    }
 
 
+    void PutText(uint8_t x, uint8_t y, char *txt) {
+        __disable_irq();
 
-void LCD_init();                                   //Inicjalizacja LCD i transakcji
-bool LCD_PutText(uint8_t x, uint8_t y, char *txt); //Wy�wietl napis na LCD
+        ArrayHolder<uint8_t, 1> cmd;
+        cmd.append(HD44780_DDRAM_SET | (x + (0x40 * y)));
+        LCDTransaction position(true, cmd);
+        buffer.append(position);
 
-void LCD_4us_timeproc(void);
+        ArrayHolder<uint8_t, 16> view((uint8_t *) txt, strlen(txt));
+        LCDTransaction data(false, view);
+        buffer.append(data);
 
-void LCD_def_chr(uint8_t location, const uint8_t *ptr);
+        tick_enabled = 1;
 
-#endif // LCD-trans_h__
+        __enable_irq();
+    }
+
+    void Clear() {
+        __disable_irq();
+
+        ArrayHolder<uint8_t, 1> cmd;
+        cmd.append(HD44780_CLEAR);
+        LCDTransaction command(true, cmd);
+        buffer.append(command);
+
+        tick_enabled = 1;
+
+        __enable_irq();
+    }
+}
+
+#endif // LCD_TRANS_H_

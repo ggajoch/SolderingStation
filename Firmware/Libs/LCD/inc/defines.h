@@ -1,17 +1,5 @@
-/*
- * ----------------------------------------------------------------------------
- * "THE BEER-WARE LICENSE" (Revision 42):
- * <joerg@FreeBSD.ORG> wrote this file.  As long as you retain this notice you
- * can do whatever you want with this stuff. If we meet some day, and you think
- * this stuff is worth it, you can buy me a beer in return.        Joerg Wunsch
- * ----------------------------------------------------------------------------
- *
- * General stdiodemo defines
- *
- * $Id: defines.h,v 1.2.2.1 2009/06/25 20:21:15 joerg_wunsch Exp $
- */
-#ifndef LCD_DEFINES_H
-#define LCD_DEFINES_H
+#ifndef LCD_DEFINES_H_
+#define LCD_DEFINES_H_
 
 #include "mxconstants.h"
 
@@ -33,4 +21,4 @@
 
 #define LCD_GPIO GPIO_LCD_D7_GPIO_Port
 
-#endif
+#endif // LCD_DEFINES_H_

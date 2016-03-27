@@ -227,6 +227,7 @@ private:
     }
 
     void GPIO_Init(void) {
+
         GPIO_InitTypeDef GPIO_InitStruct;
 
                 __GPIOA_CLK_ENABLE();
@@ -249,6 +250,8 @@ private:
         GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
         GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
         HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+
+        DBGMCU->CR &= (~(DBGMCU_CR_TRACE_IOEN)); //disable SWO trace to release PB3 pin
     }
 
     static Buffer<char, 100> uart_rx_buf;

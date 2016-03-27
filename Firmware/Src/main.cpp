@@ -1,8 +1,10 @@
 #include <stdint.h>
 #include <array>
 #include <stm32f103xb.h>
+#include <HD44780.h>
 #include "HAL.h"
 #include "CLI.h"
+#include "LCD_trans.h"
 
 CLI *cli;
 WellerHAL *hal;
@@ -30,6 +32,8 @@ int main(void) {
     hal = &halInst;
     float val = 0;
 
+    hal->setContrast(30);
+
 	Command cmd_x = {"abc", first};
     Command cmd_y = {"back", back};
     Command cmd_contr = {"contr", contr};
@@ -37,16 +41,24 @@ int main(void) {
     CLI cliInst(sizeof(arr)/sizeof(Command), arr, write);
     cli = & cliInst;
 
-//    while(1) {
-//    	printf("abcd\r\n");
-//        HAL_Delay(1);
-//    }
+    HD44780::Init();
+    HD44780::PutText(0, 0, "abcdefg");
 
-    LCD_init();
-    LCD_PutText(0, 0, "abcd");
+
+    HAL_Delay(1000);
+
+    HD44780::PutText(0, 1, "defxyz");
+    for(int i = 0; i < 100; ++i)
+        HD44780::TimeTick();
+    HAL_Delay(1000);
+    HD44780::Clear();
+    for(int i = 0; i < 100; ++i)
+        HD44780::TimeTick();
+    HAL_Delay(1000);
+    HD44780::PutText(1, 1, "poiuytrewq");
+
     while(1) {
-    	LCD_4us_timeproc();
-    	HAL_Delay(1);
+        HD44780::TimeTick();
     }
     while (1) {
 		val += 1;

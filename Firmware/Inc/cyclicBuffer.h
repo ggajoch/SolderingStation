@@ -97,7 +97,6 @@ public:
     		readPos = (++readPos) % size;
     		return dataTab[readPos];
     	}
-    	return 0;
     }
     inline T get_unsafe(void) __attribute__ ((always_inline)) {
     	count--;

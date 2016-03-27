@@ -1,4 +1,6 @@
 #include "stm32f1xx_hal.h"
+#include "Buffer.h"
+#include "CLI.h"
 
 class WellerHAL {
 public:
@@ -200,15 +202,20 @@ private:
 	}
 
 	void USART1_Init() {
-		huart1.Instance = USART1;
-		huart1.Init.BaudRate = 115200;
-		huart1.Init.WordLength = UART_WORDLENGTH_8B;
-		huart1.Init.StopBits = UART_STOPBITS_1;
-		huart1.Init.Parity = UART_PARITY_NONE;
-		huart1.Init.Mode = UART_MODE_TX_RX;
-		huart1.Init.HwFlowCtl = UART_HWCONTROL_NONE;
-		huart1.Init.OverSampling = UART_OVERSAMPLING_16;
-		HAL_UART_Init(&huart1);
+        huart1.Instance = USART1;
+        huart1.Init.BaudRate = 115200;
+        huart1.Init.WordLength = UART_WORDLENGTH_8B;
+        huart1.Init.StopBits = UART_STOPBITS_1;
+        huart1.Init.Parity = UART_PARITY_NONE;
+        huart1.Init.Mode = UART_MODE_TX_RX;
+        huart1.Init.HwFlowCtl = UART_HWCONTROL_NONE;
+        huart1.Init.OverSampling = UART_OVERSAMPLING_16;
+        HAL_UART_Init(&huart1);
+
+        __HAL_UART_ENABLE_IT(&huart1, UART_IT_RXNE);
+
+        HAL_NVIC_EnableIRQ(USART1_IRQn);
+        HAL_NVIC_SetPriority(USART1_IRQn, 0, 0);
 	}
 
 	void GPIO_Init(void) {
@@ -235,6 +242,17 @@ private:
 		GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
 		HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 	}
+
+    static Buffer<char, 100> uart_rx_buf;
+public:
+    static void __UART1_IRQ_RXNE(char ch) {
+        uart_rx_buf.push(ch);
+        if( ch == '\n' ) {
+            extern CLI * cli;
+            cli->parse_line(uart_rx_buf.get());
+            uart_rx_buf.clear();
+        }
+    }
 };
 
 ADC_HandleTypeDef WellerHAL::hadc1;
@@ -243,6 +261,7 @@ TIM_HandleTypeDef WellerHAL::htim1;
 TIM_HandleTypeDef WellerHAL::htim3;
 TIM_HandleTypeDef WellerHAL::htim4;
 UART_HandleTypeDef WellerHAL::huart1;
+Buffer<char, 100> WellerHAL::uart_rx_buf;
 
 
 
@@ -250,5 +269,12 @@ extern "C" {
 void __io_putchar(char ch) {
 	HAL_UART_Transmit(&WellerHAL::huart1, (uint8_t *)&ch, 1, 1000);
 }
+void USART1_IRQHandler(void) {
+    uint32_t tmp_flag = __HAL_UART_GET_FLAG(&WellerHAL::huart1, UART_FLAG_RXNE);
+    uint32_t tmp_it_source = __HAL_UART_GET_IT_SOURCE(&WellerHAL::huart1, UART_IT_RXNE);
+    /* UART in mode Receiver ---------------------------------------------------*/
+    if ((tmp_flag != RESET) && (tmp_it_source != RESET)) {
+        WellerHAL::__UART1_IRQ_RXNE(USART1->DR);
+    }
 }
-
+}

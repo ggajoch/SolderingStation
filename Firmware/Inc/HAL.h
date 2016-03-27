@@ -23,12 +23,12 @@ public:
         TIM4->CCR4 = static_cast<uint16_t>(100*percent);
     }
 
-	ADC_HandleTypeDef hadc1;
-	I2C_HandleTypeDef hi2c1;
-	TIM_HandleTypeDef htim1;
-	TIM_HandleTypeDef htim3;
-	TIM_HandleTypeDef htim4;
-	UART_HandleTypeDef huart1;
+    static ADC_HandleTypeDef hadc1;
+    static I2C_HandleTypeDef hi2c1;
+    static TIM_HandleTypeDef htim1;
+    static TIM_HandleTypeDef htim3;
+    static TIM_HandleTypeDef htim4;
+    static UART_HandleTypeDef huart1;
 
 private:
 	void SystemClock_Config(void) {
@@ -236,3 +236,19 @@ private:
 		HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 	}
 };
+
+ADC_HandleTypeDef WellerHAL::hadc1;
+I2C_HandleTypeDef WellerHAL::hi2c1;
+TIM_HandleTypeDef WellerHAL::htim1;
+TIM_HandleTypeDef WellerHAL::htim3;
+TIM_HandleTypeDef WellerHAL::htim4;
+UART_HandleTypeDef WellerHAL::huart1;
+
+
+
+extern "C" {
+void __io_putchar(char ch) {
+	HAL_UART_Transmit(&WellerHAL::huart1, (uint8_t *)&ch, 1, 1000);
+}
+}
+

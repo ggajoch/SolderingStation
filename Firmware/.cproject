@@ -35,6 +35,7 @@
 								<option id="gnu.c.compiler.option.debugging.level.60836223" name="Debug Level" superClass="gnu.c.compiler.option.debugging.level" useByScannerDiscovery="false" value="gnu.c.debugging.level.max" valueType="enumerated"/>
 								<option id="gnu.c.compiler.option.include.paths.2145191561" name="Include paths (-I)" superClass="gnu.c.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="${workspace_loc:/${ProjName}/Inc}"/>
+									<listOptionValue builtIn="false" value="${workspace_loc:/${ProjName}/Libs/LCD/inc}"/>
 									<listOptionValue builtIn="false" value="${workspace_loc:/${ProjName}/Drivers/STM32F1xx_HAL_Driver/Inc}"/>
 									<listOptionValue builtIn="false" value="${workspace_loc:/${ProjName}/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy}"/>
 									<listOptionValue builtIn="false" value="${workspace_loc:/${ProjName}/Drivers/CMSIS/Include}"/>
@@ -58,6 +59,7 @@
 								<option id="gnu.cpp.compiler.option.debugging.level.793481252" name="Debug Level" superClass="gnu.cpp.compiler.option.debugging.level" useByScannerDiscovery="false" value="gnu.cpp.compiler.debugging.level.max" valueType="enumerated"/>
 								<option id="gnu.cpp.compiler.option.include.paths.1854464439" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" useByScannerDiscovery="false" valueType="includePath">
 									<listOptionValue builtIn="false" value="${workspace_loc:/${ProjName}/Inc}"/>
+									<listOptionValue builtIn="false" value="${workspace_loc:/${ProjName}/Libs/LCD/inc}"/>
 									<listOptionValue builtIn="false" value="${workspace_loc:/${ProjName}/Drivers/STM32F1xx_HAL_Driver/Inc}"/>
 									<listOptionValue builtIn="false" value="${workspace_loc:/${ProjName}/Drivers/STM32F1xx_HAL_Driver/Inc/Legacy}"/>
 									<listOptionValue builtIn="false" value="${workspace_loc:/${ProjName}/Drivers/CMSIS/Include}"/>

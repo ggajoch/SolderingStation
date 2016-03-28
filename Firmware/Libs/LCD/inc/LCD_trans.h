@@ -11,7 +11,7 @@
 namespace HD44780 {
     volatile uint8_t tick_enabled;
     LCDTransaction actual_data, *actual;
-    CyclicBuffer_data<LCDTransaction, 10> buffer;
+    CyclicBuffer_data<LCDTransaction, 50> buffer;
 
     void TimeTick(void) {
         if (!tick_enabled)
@@ -24,7 +24,7 @@ namespace HD44780 {
             if (!actual->advance()) {
                 actual = nullptr;
             }
-            volatile int i = 100;
+            volatile uint8_t i = 100;
             while (i--) { }
             _LCD_SetEN(false);
         } else {

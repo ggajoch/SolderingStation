@@ -58,6 +58,8 @@ public:
     }
 } Heating_Inst;
 
+volatile bool TIM_TICK;
+
 int main(void) {
     WellerHAL halInst;
     hal = &halInst;
@@ -78,10 +80,13 @@ int main(void) {
     HD44780::PutText(1, 1, "poiuytrewq");
 
     while (1) {
-		val += 1;
-		if( val >= 100 ) {
-			val = 0;
+		if( TIM_TICK ) {
+			TIM_TICK = false;
+			uint16_t x = hal->getThermocoupleReading();
+			char buf[16] = {' '};
+			sprintf(buf, "adc: %d    ", x);
+			HD44780::PutText(0, 0, buf);
+			printf("tick\r\n");
 		}
-		HAL_Delay(10);
     }
 }

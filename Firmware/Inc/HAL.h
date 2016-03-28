@@ -194,7 +194,7 @@ private:
         TIM_OC_InitTypeDef sConfigOC;
 
         htim3.Instance = TIM3;
-        htim3.Init.Prescaler = 1;
+        htim3.Init.Prescaler = 10;
         htim3.Init.CounterMode = TIM_COUNTERMODE_UP;
         htim3.Init.Period = 1000;
         htim3.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
@@ -323,7 +323,8 @@ public:
         HD44780::TimeTick();
     }
     static void __TIM2_IRQ_UPDATE() {
-        printf("tick\r\n");
+        extern bool TIM_TICK;
+        TIM_TICK = true;
     }
 };
 

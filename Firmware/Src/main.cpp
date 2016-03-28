@@ -5,6 +5,7 @@
 #include "HAL.h"
 #include "CLI.h"
 #include "LCD_trans.h"
+#include "Weller.h"
 
 class ABC : public CLI::Command {
 public:
@@ -77,11 +78,7 @@ int main(void) {
     while (1) {
 		if( HAL::TIM_TICK ) {
 			HAL::TIM_TICK = false;
-			uint16_t x = HAL::getThermocoupleReading();
-			char buf[16] = {' '};
-			sprintf(buf, "adc: %d    ", x);
-			HD44780::PutText(0, 0, buf);
-			printf("tick\r\n");
+            WellerController.tick();
 		}
     }
 }

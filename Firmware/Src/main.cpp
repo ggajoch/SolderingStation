@@ -6,8 +6,6 @@
 #include "CLI.h"
 #include "LCD_trans.h"
 
-WellerHAL *hal;
-
 class ABC : public CLI::Command {
 public:
     ABC() : Command("abc") {
@@ -23,7 +21,7 @@ public:
     }
     void callback(const arv::array_view<float> & parameters) {
         printf("back: %f\r\n", parameters[0]);
-        hal->setBacklight(parameters[0]);
+        HAL::setBacklight(parameters[0]);
     }
 } BacklightCmd_Inst;
 
@@ -34,7 +32,7 @@ public:
     }
     virtual void callback(const arv::array_view<float> & parameters) {
         printf("contr: %f\r\n", parameters[0]);
-        hal->setContrast(parameters[0]);
+        HAL::setContrast(parameters[0]);
     }
 } ContrastCmd_Inst;
 
@@ -44,7 +42,7 @@ public:
     ADCCmd() : Command("adc") {
     }
     virtual void callback(const arv::array_view<float> & parameters) {
-        printf("thermocouple: %d\r\n", hal->getThermocoupleReading());
+        printf("thermocouple: %d\r\n", HAL::getThermocoupleReading());
     }
 } ADCCmd_Inst;
 
@@ -54,18 +52,15 @@ public:
     }
     virtual void callback(const arv::array_view<float> & parameters) {
         printf("heating: %f\r\n", parameters[0]);
-        hal->setHeating(parameters[0]);
+        HAL::setHeating(parameters[0]);
     }
 } Heating_Inst;
 
-volatile bool TIM_TICK;
-
 int main(void) {
-    WellerHAL halInst;
-    hal = &halInst;
+	HAL::Init();
     float val = 0;
 
-    hal->setContrast(30);
+    HAL::setContrast(30);
 
     HD44780::Init();
     HD44780::PutText(0, 0, "abcdefg");
@@ -80,9 +75,9 @@ int main(void) {
     HD44780::PutText(1, 1, "poiuytrewq");
 
     while (1) {
-		if( TIM_TICK ) {
-			TIM_TICK = false;
-			uint16_t x = hal->getThermocoupleReading();
+		if( HAL::TIM_TICK ) {
+			HAL::TIM_TICK = false;
+			uint16_t x = HAL::getThermocoupleReading();
 			char buf[16] = {' '};
 			sprintf(buf, "adc: %d    ", x);
 			HD44780::PutText(0, 0, buf);

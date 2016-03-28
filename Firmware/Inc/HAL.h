@@ -14,6 +14,7 @@ public:
         ADC1_Init();
         I2C1_Init();
         TIM1_Init();
+        TIM2_Init();
         TIM3_Init();
         TIM4_Init();
         USART1_Init();
@@ -33,7 +34,8 @@ public:
 
     void putch(uint8_t ch) {
         uart_tx_buf.append(ch);
-        __HAL_UART_ENABLE_IT(&huart1, UART_IT_TXE);
+        USART1->CR1 |= USART_CR1_TXEIE;
+//        __HAL_UART_ENABLE_IT(&huart1, UART_IT_TXE); //causing HardFault, for some reason
     }
 
     uint16_t getThermocoupleReading() {
@@ -45,6 +47,7 @@ public:
     static ADC_HandleTypeDef hadc1;
     static I2C_HandleTypeDef hi2c1;
     static TIM_HandleTypeDef htim1;
+    static TIM_HandleTypeDef htim2;
     static TIM_HandleTypeDef htim3;
     static TIM_HandleTypeDef htim4;
     static UART_HandleTypeDef huart1;
@@ -155,6 +158,33 @@ private:
         HAL_TIM_PWM_ConfigChannel(&htim1, &sConfigOC, TIM_CHANNEL_1);
 
         HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
+    }
+
+    void TIM2_Init() {
+
+        TIM_ClockConfigTypeDef sClockSourceConfig;
+        TIM_MasterConfigTypeDef sMasterConfig;
+        TIM_OC_InitTypeDef sConfigOC;
+
+        htim2.Instance = TIM2;
+        htim2.Init.Prescaler = 64000;
+        htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
+        htim2.Init.Period = 100-1;
+        htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
+        HAL_TIM_Base_Init(&htim2);
+
+        sClockSourceConfig.ClockSource = TIM_CLOCKSOURCE_INTERNAL;
+        HAL_TIM_ConfigClockSource(&htim2, &sClockSourceConfig);
+
+        sMasterConfig.MasterOutputTrigger = TIM_TRGO_RESET;
+        sMasterConfig.MasterSlaveMode = TIM_MASTERSLAVEMODE_DISABLE;
+        HAL_TIMEx_MasterConfigSynchronization(&htim2, &sMasterConfig);
+
+        HAL_TIM_Base_Start(&htim2);
+
+        __HAL_TIM_ENABLE_IT(&htim2, TIM_IT_UPDATE);
+        HAL_NVIC_EnableIRQ(TIM2_IRQn);
+        HAL_NVIC_SetPriority(TIM2_IRQn, 0, 0);
     }
 
     void TIM3_Init() {
@@ -293,11 +323,15 @@ public:
     static void __TIM3_IRQ_UPDATE() {
         HD44780::TimeTick();
     }
+    static void __TIM2_IRQ_UPDATE() {
+        printf("tick\r\n");
+    }
 };
 
 ADC_HandleTypeDef WellerHAL::hadc1;
 I2C_HandleTypeDef WellerHAL::hi2c1;
 TIM_HandleTypeDef WellerHAL::htim1;
+TIM_HandleTypeDef WellerHAL::htim2;
 TIM_HandleTypeDef WellerHAL::htim3;
 TIM_HandleTypeDef WellerHAL::htim4;
 UART_HandleTypeDef WellerHAL::huart1;
@@ -359,6 +393,10 @@ void USART1_IRQHandler(void) {
         __HAL_UART_CLEAR_FLAG(&WellerHAL::huart1, UART_FLAG_TXE);
         WellerHAL::__UART1_IRQ_TXE();
     }
+}
+void TIM2_IRQHandler(void) {
+    __HAL_TIM_CLEAR_FLAG(&WellerHAL::htim2, TIM_FLAG_UPDATE);
+    WellerHAL::__TIM2_IRQ_UPDATE();
 }
 void TIM3_IRQHandler(void) {
     __HAL_TIM_CLEAR_FLAG(&WellerHAL::htim3, TIM_FLAG_UPDATE);

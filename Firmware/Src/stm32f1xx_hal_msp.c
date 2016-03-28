@@ -72,6 +72,8 @@ void HAL_TIM_Base_MspInit(TIM_HandleTypeDef *htim_base) {
         GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
         GPIO_InitStruct.Speed = GPIO_SPEED_LOW;
         HAL_GPIO_Init(PWM_MOS_OUT_GPIO_Port, &GPIO_InitStruct);
+    } else if (htim_base->Instance == TIM2) {
+        __TIM2_CLK_ENABLE();
     } else if (htim_base->Instance == TIM3) {
         __TIM3_CLK_ENABLE();
         /**TIM3 GPIO Configuration

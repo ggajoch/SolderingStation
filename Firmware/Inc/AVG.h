@@ -1,32 +1,32 @@
 #ifndef AVG_H_
 #define AVG_H_
 
-template<typename Type, int elements>
-class AVG {
+template<typename Type, size_t elements>
+class Average {
 private:
-	Type history[elements];
-	int current_index;
+    std::array<Type, elements> history;
+    int insertion_index;
+
 public:
+    Average() : insertion_index(0) {
+        for(auto &elem : history)
+            elem = 0;
+    }
 
-	AVG() : current_index(0) {
-		for (int i = 0; i < elements; ++i)
-			history[i] = 0.0;
-	}
+    void put(const Type &value) {
+        history[insertion_index++] = value;
+        if (insertion_index == elements)
+            insertion_index = 0;
+    }
 
-	void put(Type value) {
-		history[current_index++] = value;
-		if (current_index == elements)
-			current_index = 0;
-	}
-
-	Type get() {
-		Type output = 0.0;
-		for (int i = 0; i < elements; ++i) {
-			output += history[i];
-		}
-		output /= static_cast<float>(elements);
-		return output;
-	}
+    Type get() {
+        Type output = 0.0;
+        for (int i = 0; i < elements; ++i) {
+            output += history[i];
+        }
+        output /= static_cast<Type>(elements);
+        return output;
+    }
 };
 
 #endif // AVG_H_

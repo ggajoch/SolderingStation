@@ -15,6 +15,31 @@ namespace Encoder {
                 getState(getState), callbackPlus(callbackPlus), callbackMinus(callbackMinus) {
 
         }
+
+        void Tick() {
+            State now = getState();
+
+            LineA.tick(now.p);
+            LineB.tick(now.n);
+
+            if( LineA.getState() == LineDebounce::TRANSITION &&
+                LineB.getState() == LineDebounce::STABLE ) {
+                if( LineA.getValue() == LineB.getValue() ) {
+                    callbackPlus();
+                } else {
+                    callbackMinus();
+                }
+            } else if( LineA.getState() == LineDebounce::STABLE &&
+                LineB.getState() == LineDebounce::TRANSITION ) {
+                if( LineA.getValue() == LineB.getValue() ) {
+                    callbackMinus();
+                } else {
+                    callbackPlus();
+                }
+            }
+        }
+
+    private:
         class LineDebounce {
         public:
             LineDebounce() {
@@ -72,36 +97,9 @@ namespace Encoder {
                 }
             }
         };
-
-        LineDebounce LineA, LineB;
-        void Tick() {
-            State now = getState();
-
-            LineA.tick(now.p);
-            LineB.tick(now.n);
-
-            if( LineA.getState() == LineDebounce::TRANSITION &&
-                LineB.getState() == LineDebounce::STABLE ) {
-                if( LineA.getValue() == LineB.getValue() ) {
-                    callbackPlus();
-                } else {
-                    callbackMinus();
-                }
-            } else if( LineA.getState() == LineDebounce::STABLE &&
-                LineB.getState() == LineDebounce::TRANSITION ) {
-                if( LineA.getValue() == LineB.getValue() ) {
-                    callbackMinus();
-                } else {
-                    callbackPlus();
-                }
-            }
-        }
-
-    private:
         const std::function<State()> getState;
         const std::function<void()> callbackPlus, callbackMinus;
+        LineDebounce LineA, LineB;
     };
-
-
 }
 #endif //ENCODER_H_

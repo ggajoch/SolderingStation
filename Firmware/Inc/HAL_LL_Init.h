@@ -121,7 +121,6 @@ namespace HAL {
 
         TIM_ClockConfigTypeDef sClockSourceConfig;
         TIM_MasterConfigTypeDef sMasterConfig;
-        TIM_OC_InitTypeDef sConfigOC;
 
         htim2.Instance = TIM2;
         htim2.Init.Prescaler = 64000;

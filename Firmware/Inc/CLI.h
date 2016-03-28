@@ -5,33 +5,35 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
+#include "ArrayView.h"
 
-struct Command {
-    char *name;
+namespace CLI {
+    class Command;
 
-    void (*callback)(float *params, uint8_t nrOfParams);
+    size_t nrOfCommands = 0;
+    std::array<Command *, 50> commands;
 
-    bool operator==(const Command &rhs) const {
-        if (strcmp(this->name, rhs.name) == 0) {
-            return true;
-        } else {
-            return false;
+    class Command {
+    public:
+        Command(const char *name) : name(name) {
+            commands[nrOfCommands++] = this;
         }
-    }
-};
 
-class CLI {
-    size_t nrOfCommands;
-public:
-    CLI(size_t nrOfCommands, const Command *commands, void (*writer)(const char *)) : nrOfCommands(nrOfCommands),
-                                                                                      commands(commands),
-                                                                                      writer(writer) {
+        virtual void callback(const arv::array_view<float> & parameters) {}
 
-    }
+        const char *name;
 
-    const Command *commands;
+    private:
 
-    void (*writer)(const char *);
+        bool operator==(const Command &rhs) const {
+            if (strcmp(this->name, rhs.name) == 0) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    };
+
 
     void parse_line(const char *line) {
         size_t len = strlen(line);
@@ -39,8 +41,8 @@ public:
         float params[10];
         while (line[iter] != ' ' && line[iter] != 0) ++iter;
 
-        for (uint8_t cmd_nr = 0; cmd_nr < this->nrOfCommands; ++cmd_nr) {
-            if (strncmp(this->commands[cmd_nr].name, line, iter - 1) == 0) {
+        for( auto &cmd : commands ) {
+            if (strncmp(cmd->name, line, iter - 1) == 0) {
                 // found command
                 uint8_t param_nr = 0;
                 while (iter < len) {
@@ -50,25 +52,23 @@ public:
                     params[param_nr++] = val;
                     iter = stop - line;
                 }
-                commands[cmd_nr].callback(params, param_nr);
+                arv::array_view<float> view(params, param_nr);
+                cmd->callback(view);
             }
         }
     }
 
-    void sendCommand(Command command, float *params, uint8_t params_nr) {
-        char buf[100];
+    void sendCommand(const Command & command, const arv::array_view<float> & params) {
+        static char buf[100];
         uint8_t iter = 0;
         strcpy(buf, command.name);
         iter += strlen(command.name);
-        while (params_nr--) {
+        for(auto &param : params) {
             buf[iter++] = ' ';
-            iter += sprintf(buf + iter, "%f", *params);
-            params++;
+            iter += sprintf(buf + iter, "%f", param);
         }
-        buf[iter++] = 0;
-        this->writer(buf);
+        buf[iter] = 0;
+        printf("%s\r\n", buf);
     }
-};
-
-
+}
 #endif // CLI_H_

@@ -306,8 +306,7 @@ public:
     static void __UART1_IRQ_RXNE(char ch) {
         uart_rx_buf.push(ch);
         if (ch == '\n') {
-            extern CLI *cli;
-            cli->parse_line(uart_rx_buf.get());
+            CLI::parse_line(uart_rx_buf.get());
             uart_rx_buf.clear();
         }
     }

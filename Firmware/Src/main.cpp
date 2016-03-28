@@ -6,35 +6,57 @@
 #include "CLI.h"
 #include "LCD_trans.h"
 
-CLI *cli;
 WellerHAL *hal;
 
-void first(float * x, uint8_t len) {
-	printf("Got abc: %f\r\n", x[0]);
-}
+class ABC : public CLI::Command {
+public:
+    ABC() : Command("abc") {
+    }
+    virtual void callback(const arv::array_view<float> & parameters) {
+        printf("Got abc: %f\r\n", parameters[0]);
+    }
+} ABC_Inst;
 
-void back(float * x, uint8_t len) {
-    printf("back: %f\r\n", x[0]);
-    hal->setBacklight(x[0]);
-}
+class BacklightCmd : public CLI::Command {
+public:
+    BacklightCmd() : Command("back") {
+    }
+    void callback(const arv::array_view<float> & parameters) {
+        printf("back: %f\r\n", parameters[0]);
+        hal->setBacklight(parameters[0]);
+    }
+} BacklightCmd_Inst;
 
-void contr(float * x, uint8_t len) {
-    printf("contr: %f\r\n", x[0]);
-    hal->setContrast(x[0]);
-}
 
-void adc(float * x, uint8_t len) {
-	printf("thermocouple: %d\r\n", hal->getThermocoupleReading());
-}
+class ContrastCmd : public CLI::Command {
+public:
+    ContrastCmd() : Command("contrast") {
+    }
+    virtual void callback(const arv::array_view<float> & parameters) {
+        printf("contr: %f\r\n", parameters[0]);
+        hal->setContrast(parameters[0]);
+    }
+} ContrastCmd_Inst;
 
-void heat(float * x, uint8_t len) {
-	printf("heating: %f\r\n", x[0]);
-	hal->setHeating(x[0]);
-}
 
-void write(const char * buf) {
-    printf("%s", buf);
-}
+class ADCCmd : public CLI::Command {
+public:
+    ADCCmd() : Command("adc") {
+    }
+    virtual void callback(const arv::array_view<float> & parameters) {
+        printf("thermocouple: %d\r\n", hal->getThermocoupleReading());
+    }
+} ADCCmd_Inst;
+
+class Heating : public CLI::Command {
+public:
+    Heating() : Command("heat") {
+    }
+    virtual void callback(const arv::array_view<float> & parameters) {
+        printf("heating: %f\r\n", parameters[0]);
+        hal->setHeating(parameters[0]);
+    }
+} Heating_Inst;
 
 int main(void) {
     WellerHAL halInst;
@@ -42,15 +64,6 @@ int main(void) {
     float val = 0;
 
     hal->setContrast(30);
-
-	Command cmd_x = {"abc", first};
-    Command cmd_y = {"back", back};
-    Command cmd_contr = {"contr", contr};
-    Command cmd_adc = {"adc", adc};
-    Command cmd_heat = {"heat", heat};
-    Command arr[] = {cmd_x, cmd_y, cmd_contr, cmd_adc, cmd_heat};
-    CLI cliInst(sizeof(arr)/sizeof(Command), arr, write);
-    cli = & cliInst;
 
     HD44780::Init();
     HD44780::PutText(0, 0, "abcdefg");

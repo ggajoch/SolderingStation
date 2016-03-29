@@ -21,7 +21,7 @@ public:
 
     Type get() {
         Type output = 0.0;
-        for (int i = 0; i < elements; ++i) {
+        for (unsigned int i = 0; i < elements; ++i) {
             output += history[i];
         }
         output /= static_cast<Type>(elements);

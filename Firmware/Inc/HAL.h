@@ -34,7 +34,7 @@ namespace HAL {
     }
 
     void setHeating(float percent) {
-        TIM1->CCR1 = static_cast<uint16_t>(20.0 * percent);
+        TIM1->CCR1 = 2000-static_cast<uint16_t>(20.0 * percent);
     }
 
     void putch(uint8_t ch) {

@@ -57,6 +57,26 @@ public:
     }
 } Heating_Inst;
 
+class MidPoint_t : public CLI::Command {
+public:
+    MidPoint_t() : Command("mid") {}
+    virtual void callback(const arv::array_view<float> & parameters) {
+        printf("mid: %f\r\n", parameters[0]);
+        WellerController.setTemperature(parameters[0]);
+    }
+} MidPoint;
+
+class PIDSet_t : public CLI::Command {
+public:
+    PIDSet_t() : Command("pid") {}
+    virtual void callback(const arv::array_view<float> & parameters) {
+        PID::PIDParams params = {parameters[0], parameters[1], parameters[2]};
+        printf("pid: %f %f %f\r\n", params.Kp, params.Ki, params.Kd);
+        WellerController.tempPID.set_params(params);
+    }
+} PIDSet;
+
+
 int main(void) {
 	HAL::Init();
     float val = 0;

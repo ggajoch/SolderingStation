@@ -38,8 +38,10 @@ namespace HAL {
     }
 
     void putch(uint8_t ch) {
+    	__disable_irq();
         uart_tx_buf.append(ch);
         USART1->CR1 |= USART_CR1_TXEIE;
+        __enable_irq();
 //        __HAL_UART_ENABLE_IT(&huart1, UART_IT_TXE); //causing HardFault, for some reason
     }
 
@@ -82,7 +84,8 @@ namespace HAL {
 
     void __UART1_IRQ_TXE() {
         if (uart_tx_buf.isEmpty()) {
-            __HAL_UART_DISABLE_IT(&huart1, UART_IT_TXE);
+            //__HAL_UART_DISABLE_IT(&huart1, UART_IT_TXE);
+        	USART1->CR1 &= (~ (UART_IT_TXE));
         } else {
             huart1.Instance->DR = uart_tx_buf.get();
         }

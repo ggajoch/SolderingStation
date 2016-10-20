@@ -1,7 +1,7 @@
 #ifndef SOLDER_WELLER_H
 #define SOLDER_WELLER_H
 
-#include "Thermocuple.h"
+#include "Tip.h"
 #include "AVG.h"
 #include "pid.h"
 

@@ -2,9 +2,8 @@
 #define HAL_LIBS_ARRAY_VIEW_H_
 
 #include <stddef.h>
-#include "hal_assert.h"
+#include <cassert>
 
-namespace hal {
 namespace libs {
 
 template<typename T>
@@ -82,25 +81,15 @@ class array_view final {
             const size_type end_offset) const {
         check_not_null();
 
-        if (end_offset == start_offset) {
-            fail_due_to_error(
-                    "array_view slice start and end offsets are the same!");
-        }
-        if (start_offset > end_offset) {
-            fail_due_to_error(
-                    "array_view slice start offset greater than end offset!");
-        }
+        assert(end_offset != start_offset);
+        assert(start_offset < end_offset);
 
         size_type slice_size = end_offset - start_offset;
         pointer slice_ptr = const_cast<pointer>(data()) + start_offset;
         pointer end_ptr = const_cast<pointer>(data()) + size();
 
-        if (slice_ptr > end_ptr) {
-            fail_due_to_error("array_view slice start offset is out-of-bounds!");
-        }
-        if (slice_size > (size() - start_offset)) {
-            fail_due_to_error("array_view slice is larger than size!");
-        }
+        assert(slice_ptr <= end_ptr);
+        assert(slice_size <= (size() - start_offset));
 
         return array_view(slice_ptr, slice_size);
     }
@@ -114,9 +103,7 @@ class array_view final {
         // operator[] uses assert()s that can be disabled if
         // you care more about performance than runtime checking.
         check_not_null();
-        if (index >= size()) {
-            fail_due_to_error("array_view::at(): index is out-of-bounds!");
-        }
+        assert(index < size());
         return *(data() + index);
     }
 
@@ -186,9 +173,8 @@ class array_view final {
 
  private:
     void check_not_null() const {
-        if (data() == nullptr || size() == 0) {
-            fail_due_to_error("array_view pointer is null or size is zero!");
-        }
+        assert(data() != nullptr);
+        assert(size() > 0);
     }
 
     // Pointer is just a reference to external memory. Not owned by array_view.
@@ -215,6 +201,5 @@ constexpr auto make_array_view(const ContainerType & container) {
 }
 
 }  // namespace libs
-}  // namespace hal
 
 #endif  // HAL_LIBS_ARRAY_VIEW_H_

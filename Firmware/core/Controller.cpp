@@ -1,23 +1,38 @@
-void setup() {
-    HAL::setHeating(0);
-    HAL_Delay(15);
-    for(uint8_t i = 0; i < TEMP_AVERAGE; ++i) {
-        average.put(thermocouple.getTemperature());
+#include "Controller.h"
+
+#include "HAL.h"
+#include "config.h"
+
+#include "Average.h"
+#include "Tip.h"
+#include "pid.h"
+
+namespace core {
+
+class Controller {
+ public:
+    libs::Average<float, tempAverages> temperatureAverage;
+    Tip tip;
+    PID pid;
+
+    void setup() {
+        HAL::Tip::setHeating(0);
     }
-    float temp = average.get();
-    float ctrl = tempPID.tick(temp);
 
-    static char buf[16] = {' '};
-    sprintf(buf, "temp: %.1f  ", temp);
-    HD44780::PutText(0, 0, buf);
+    void loop() {
+        HAL::Tip::setHeating(0);
+        // [TODO]: delay?
 
-    sprintf(buf, "pwr: %.1f   ", ctrl);
-    HD44780::PutText(0, 1, buf);
-    printf("tick %f %f\r\n", temp, ctrl);
+        for (int i = 0; i < temperatureAverage.size(); ++i) {
+            uint16_t raw_reading = HAL::Tip::readRaw();
+            float temperature = tip.getTemperature(raw_reading);
+            temperatureAverage.put(temperature);
+        }
 
-    HAL::setHeating(ctrl);
-}
+        float power = pid.tick(temperatureAverage.get());
 
-void loop() {
+        HAL::Tip::setHeating(power);
+    }
+};
 
-}
+};  // namespace core

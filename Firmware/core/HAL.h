@@ -1,3 +1,6 @@
+#ifndef CORE_HAL_H_
+#define CORE_HAL_H_
+
 #include <stdint.h>
 #include "array_view.h"
 
@@ -32,4 +35,6 @@ void store(size_t addr, libs::array_view<const uint8_t> data);
 void get(size_t addr, libs::array_view<uint8_t> data);
 };
 
-};
+};  // namespace HAL
+
+#endif  // CORE_HAL_H_

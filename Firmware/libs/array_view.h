@@ -1,5 +1,5 @@
-#ifndef HAL_LIBS_ARRAY_VIEW_H_
-#define HAL_LIBS_ARRAY_VIEW_H_
+#ifndef LIBS_ARRAY_VIEW_H_
+#define LIBS_ARRAY_VIEW_H_
 
 #include <stddef.h>
 #include <cassert>
@@ -202,4 +202,4 @@ constexpr auto make_array_view(const ContainerType & container) {
 
 }  // namespace libs
 
-#endif  // HAL_LIBS_ARRAY_VIEW_H_
+#endif  // LIBS_ARRAY_VIEW_H_

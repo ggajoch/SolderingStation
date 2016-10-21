@@ -1,16 +1,18 @@
-#ifndef AVG_H_
-#define AVG_H_
+#ifndef LIBS_AVERAGE_H_
+#define LIBS_AVERAGE_H_
+
+#include <array>
 
 namespace libs {
 
 template<typename Type, size_t elements>
 class Average {
-private:
+ private:
     std::array<Type, elements> history;
     int insertion_index;
 
-public:
-    Average() : insertion_index(0) {
+ public:
+    constexpr Average() : insertion_index(0) {
         for (auto &elem : history)
             elem = 0;
     }
@@ -29,7 +31,12 @@ public:
         output /= static_cast<Type>(elements);
         return output;
     }
+
+    constexpr size_t size() {
+        return elements;
+    }
 };
 
-};
-#endif // AVG_H_
+};  // namespace libs
+
+#endif  // LIBS_AVERAGE_H_

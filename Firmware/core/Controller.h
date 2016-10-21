@@ -1,7 +1,5 @@
-#ifndef TESTS_CONTROLLER_H
-#define TESTS_CONTROLLER_H
+#ifndef CORE_CONTROLLER_H_
+#define CORE_CONTROLLER_H_
 
-void setup();
-void loop();
 
-#endif //TESTS_CONTROLLER_H
+#endif  // CORE_CONTROLLER_H_

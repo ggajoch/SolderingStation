@@ -5,12 +5,12 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++1z")
 
 add_subdirectory(external/googletest)
 
-set(CORE_FILES core/Tip.cpp core/Controller.cpp)
+set(CORE_FILES core/Controller.cpp)
 set(TEST_FILES tests/tempScaling.cpp tests/Average.cpp tests/array_view.cpp)
-set(TARGET_FILES )
+set(TARGET_FILES target/mock/HAL.cpp)
 set(LIBS_FILES )
 
-set(SOURCE_FILES ${CORE_FILES} ${TEST_FILES} ${TARGET_FILES} ${LIBS_FILES})
+set(SOURCE_FILES ${CORE_FILES} ${TEST_FILES} ${TARGET_FILES} ${LIBS_FILES} core/config.h)
 
 include_directories(core libs)
 

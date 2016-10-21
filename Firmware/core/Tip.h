@@ -1,29 +1,28 @@
-#ifndef SOLDER_THERMOCUPLE_H
-#define SOLDER_THERMOCUPLE_H
+#ifndef CORE_TIP_H_
+#define CORE_TIP_H_
 
 namespace core {
 
 class Tip {
-public:
+ public:
     Tip() {
         offset = 0;
         gain = 1;
     }
 
-    static float getTemperature(int raw_reading) {
+    float getTemperature(int raw_reading) {
         return offset + gain*static_cast<float>(raw_reading);
     }
 
-    static void setParameters(float offset_, float gain_) {
+    void setParameters(float offset_, float gain_) {
         offset = offset_;
         gain = gain_;
     }
 
-private:
-    static float offset,
-                 gain;
+ private:
+    float offset, gain;
 };
 
 };  // namespace core
 
-#endif //SOLDER_THERMOCUPLE_H
+#endif  // CORE_TIP_H_

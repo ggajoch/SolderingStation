@@ -1,7 +1,9 @@
-#ifndef PID_H_
-#define PID_H_
+#ifndef CORE_PID_H_
+#define CORE_PID_H_
 
 #include <math.h>
+
+namespace core {
 
 class PID {
  public:
@@ -20,47 +22,47 @@ class PID {
     }
 
     float getTarget() {
-		return this->mid;
-	}
+        return this->mid;
+    }
 
     float tick(float temp) {
         float pwr = this->feed_error(mid - temp);
-        if( pwr < 0 )
-        	pwr = 0;
-        if( pwr > 100 )
-        	pwr = 100;
+        if (pwr < 0)
+            pwr = 0;
+        if (pwr > 100)
+            pwr = 100;
         return pwr;
     }
 
     void reset() {
-    	this->integral = 0;
-    	this->prev_error = 0;
+        this->integral = 0;
+        this->prev_error = 0;
     }
 
-    void set_params(const PIDParams& params) {
+    void set_params(const PIDParams &params) {
         this->params = params;
     }
 
-private:
+ private:
     float feed_error(float error) {
-    	if( fabs(error) > 25 ) {
-    		integral = 0;
-    	} else {
-    		integral += error;
-    	}
+        if (fabs(error) > 25) {
+            integral = 0;
+        } else {
+            integral += error;
+        }
 
-    	if( error > 20 ) {
-    		return 100;
-    	}
-    	if( error < -20 ) {
-			return 0;
-		}
+        if (error > 20) {
+            return 100;
+        }
+        if (error < -20) {
+            return 0;
+        }
 
-        float Ipart = params.Ki*integral;
+        float Ipart = params.Ki * integral;
 
         float diff = error - prev_error;
         prev_error = error;
-        return (params.Kp * error +  Ipart + params.Kd * diff);
+        return (params.Kp * error + Ipart + params.Kd * diff);
     }
 
     PIDParams params;
@@ -69,4 +71,6 @@ private:
     float mid;
 };
 
-#endif  // PID_H_
+};  // namespace core
+
+#endif  // CORE_PID_H_

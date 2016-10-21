@@ -5,7 +5,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++1z")
 
 add_subdirectory(external/googletest)
 
-set(CORE_FILES core/Tip.cpp)
+set(CORE_FILES core/Tip.cpp core/Controller.cpp)
 set(TEST_FILES tests/tempScaling.cpp tests/Average.cpp)
 set(TARGET_FILES )
 set(LIBS_FILES )

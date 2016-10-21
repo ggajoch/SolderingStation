@@ -1,6 +1,8 @@
 #ifndef SOLDER_THERMOCUPLE_H
 #define SOLDER_THERMOCUPLE_H
 
+namespace core {
+
 class Tip {
 public:
     Tip() {
@@ -21,5 +23,7 @@ private:
     static float offset,
                  gain;
 };
+
+};  // namespace core
 
 #endif //SOLDER_THERMOCUPLE_H

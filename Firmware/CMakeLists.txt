@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.6)
+cmake_minimum_required(VERSION 3.5)
 
 project(tests)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++1z")
@@ -6,7 +6,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++1z")
 add_subdirectory(external/googletest)
 
 set(CORE_FILES core/Tip.cpp)
-set(TEST_FILES tests/tempScaling.cpp)
+set(TEST_FILES tests/tempScaling.cpp tests/Average.cpp)
 set(TARGET_FILES )
 set(LIBS_FILES )
 

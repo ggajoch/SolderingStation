@@ -2,7 +2,7 @@
 #define SOLDER_WELLER_H
 
 #include "Tip.h"
-#include "AVG.h"
+#include "Average.h"
 #include "pid.h"
 
 class WellerController_t {

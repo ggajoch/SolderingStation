@@ -1,3 +1,6 @@
+#include <stdint.h>
+#include "array_view.h"
+
 namespace HAL {
 bool timeTick();
 
@@ -21,7 +24,7 @@ void setCallback(void callback(const char * data));
 namespace Encoder {
 int getCount();
 void reset();
-setButtonCallback(void callback());
+void setButtonCallback(void (*callback)());
 };
 
 namespace Memory {

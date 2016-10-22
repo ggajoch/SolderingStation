@@ -1,4 +1,6 @@
 #include "HAL.h"
+#include "HALmock.h"
+#include <queue>
 
 namespace HAL {
 
@@ -11,11 +13,18 @@ namespace Display {
 };  // namespace Display
 
 namespace Tip {
+    float heatingPercentage;
     void setHeating(float percent) {
+        heatingPercentage = percent;
     }
 
+    std::queue<uint16_t> rawTemperatureData;
     uint16_t readRaw() {
-        return 0;
+        uint16_t now = rawTemperatureData.front();
+        if (rawTemperatureData.size() > 1) {
+            rawTemperatureData.pop();
+        }
+        return now;
     }
 
     bool inStand();

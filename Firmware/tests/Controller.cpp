@@ -6,8 +6,14 @@
 
 constexpr float eps = 1e-5;
 
+void testSetup() {
+    while (!HAL::Tip::rawTemperatureData.empty())
+        HAL::Tip::rawTemperatureData.pop();
+}
+
 TEST(Controller, setup) {
     using core::controller;
+    testSetup();
 
     controller.setup();
     EXPECT_NEAR(HAL::Tip::heatingPercentage, 0, eps);
@@ -15,6 +21,7 @@ TEST(Controller, setup) {
 
 TEST(Controller, averaging) {
     using core::controller;
+    testSetup();
 
     controller.setup();
     controller.tip.setParameters(0, 1);

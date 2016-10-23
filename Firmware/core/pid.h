@@ -5,70 +5,56 @@
 
 namespace core {
 
+// PID with back-calculation anti-windup method
+
 class PID {
  public:
-    struct PIDParams {
-        float Kp, Ki, Kd;
-    };
+    float target;
+    float Kp, Ki, Kd, Kb;
+    float lowerLimit, upperLimit;
 
     PID() {
-        params = {0, 0, 0};
-        mid = 0;
+        Kp = Ki = Kd = Kb = 0;
+        target = 0;
+        this->lowerLimit = 0;
+        this->upperLimit = 0;
         this->reset();
     }
 
-    void setTarget(float value) {
-        this->mid = value;
-    }
-
-    float getTarget() {
-        return this->mid;
-    }
-
     float tick(float temp) {
-        float pwr = this->feed_error(mid - temp);
-        if (pwr < 0)
-            pwr = 0;
-        if (pwr > 100)
-            pwr = 100;
-        return pwr;
+        error = temp-target;
+
+        float backCalculation = Kb * (constrain(prevOutput) - prevOutput);
+        integral += error + backCalculation;
+
+
+        float diff = error - prevError;
+        float pwr = (Kp * error + Ki * integral + Kd * diff);
+
+        prevError = error;
+        prevOutput = pwr;
+
+        return constrain(pwr);
     }
 
     void reset() {
         this->integral = 0;
-        this->prev_error = 0;
+        this->prevError = 0;
+        this->prevOutput = 0;
     }
 
-    void set_params(const PIDParams &params) {
-        this->params = params;
+    float constrain(float val) {
+        if (val < lowerLimit)
+            return lowerLimit;
+        if (val > upperLimit)
+            return upperLimit;
+        return val;
     }
 
- private:
-    float feed_error(float error) {
-        if (fabs(error) > 25) {
-            integral = 0;
-        } else {
-            integral += error;
-        }
-
-        if (error > 20) {
-            return 100;
-        }
-        if (error < -20) {
-            return 0;
-        }
-
-        float Ipart = params.Ki * integral;
-
-        float diff = error - prev_error;
-        prev_error = error;
-        return (params.Kp * error + Ipart + params.Kd * diff);
-    }
-
-    PIDParams params;
-    float prev_error;
+    float error;
+    float prevError;
+    float prevOutput;
     float integral;
-    float mid;
 };
 
 };  // namespace core

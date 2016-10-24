@@ -13,7 +13,6 @@ TEST(PID, setup) {
     EXPECT_NEAR(pid.Kp, 0, eps);
     EXPECT_NEAR(pid.integral, 0, eps);
     EXPECT_NEAR(pid.prevError, 0, eps);
-    EXPECT_NEAR(pid.prevOutput, 0, eps);
 }
 
 TEST(PID, noOutput) {
@@ -25,7 +24,7 @@ TEST(PID, noOutput) {
 
 TEST(PID, proportional) {
     core::PID pid;
-    pid.Kp = 1;
+    pid.Kp = -1;
     pid.target = 0;
     pid.lowerLimit = -1e6f;
     pid.upperLimit = 1e6f;
@@ -35,7 +34,7 @@ TEST(PID, proportional) {
     }
 
 
-    pid.Kp = -1.5f;
+    pid.Kp = 1.5f;
     pid.target = 10.0f;
     EXPECT_NEAR(pid.tick(10), 0, eps);
     for (float i = -500; i <= 500; i += 0.7) {
@@ -45,7 +44,7 @@ TEST(PID, proportional) {
 
 TEST(PID, integral) {
     core::PID pid;
-    pid.Ki = 1;
+    pid.Ki = -1;
     pid.target = 0;
     pid.lowerLimit = -1e6f;
     pid.upperLimit = 1e6f;
@@ -55,7 +54,7 @@ TEST(PID, integral) {
     }
 
     pid.reset();
-    pid.Ki = -1.5f;
+    pid.Ki = 1.5f;
     pid.target = 10.0f;
     EXPECT_NEAR(pid.tick(10), 0, eps);
     float sum = 0;
@@ -67,7 +66,7 @@ TEST(PID, integral) {
 
 TEST(PID, derivative) {
     core::PID pid;
-    pid.Kd = 1;
+    pid.Kd = -1;
     pid.target = 0;
     pid.lowerLimit = -1e6f;
     pid.upperLimit = 1e6f;
@@ -79,7 +78,7 @@ TEST(PID, derivative) {
     }
 
     pid.reset();
-    pid.Kd = -1.5f;
+    pid.Kd = 1.5f;
     pid.target = 10.0f;
     EXPECT_NEAR(pid.tick(10), 0, eps);
 
@@ -90,7 +89,7 @@ TEST(PID, derivative) {
 
 TEST(PID, limits) {
     core::PID pid;
-    pid.Kp = 1;
+    pid.Kp = -1;
     pid.lowerLimit = -107;
     pid.upperLimit = 257;
     EXPECT_NEAR(pid.tick(0), 0, eps);
@@ -112,17 +111,22 @@ TEST(PID, limits) {
 
 TEST(PID, antiWindup) {
     core::PID pid;
-    pid.Kp = -1;
-    pid.Ki = -1;
+    pid.Kp = 1;
+    pid.Ki = 1;
     pid.target = 10;
     pid.lowerLimit = 0;
     pid.upperLimit = 100;
 
     float temp = 0;
     for (int i = 1; i <= 100; ++i) {
+        pid.tick(0);
+    }
+    for (int i = 1; i <= 100; ++i) {
         float pwr = pid.tick(temp);
+//        printf("%f\t%f\t%f\n", pwr, temp, pid.integral);
+        EXPECT_GT(pwr, 99.0f);
         EXPECT_LT(pid.integral, pid.upperLimit);
-        EXPECT_LT(pid.integral, pid.lowerLimit);
+        EXPECT_GT(pid.integral, pid.lowerLimit);
 
         temp += 0.1;
     }

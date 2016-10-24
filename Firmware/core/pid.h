@@ -22,16 +22,19 @@ class PID {
     }
 
     float tick(float temp) {
-        error = temp-target;
+        error = target-temp;
 
-        if (lowerLimit < prevOutput < upperLimit)
-            integral += error;
+        integral += error;
 
         float diff = error - prevError;
-        float pwr = (Kp * error + Ki * integral + Kd * diff);
+        float pwr = Kp * error + Ki * integral + Kd * diff;
+
+        if (pwr < lowerLimit || pwr > upperLimit) {
+            integral -= error;
+//            pwr = Kp * error + Ki * integral + Kd * diff;
+        }
 
         prevError = error;
-        prevOutput = pwr;
 
         return constrain(pwr);
     }
@@ -39,7 +42,6 @@ class PID {
     void reset() {
         this->integral = 0;
         this->prevError = 0;
-        this->prevOutput = 0;
     }
 
     float constrain(float val) {
@@ -52,7 +54,6 @@ class PID {
 
     float error;
     float prevError;
-    float prevOutput;
     float integral;
 };
 

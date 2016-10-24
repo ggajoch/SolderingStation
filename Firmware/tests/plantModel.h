@@ -8,7 +8,7 @@ class TipModel {
            jointToBoardConductance = 0.3;  // 210 -> 60 deg in 5 sec
 
     const double tipThermalMass = 1.5,
-                 jointThermalMass = 1;
+                 jointThermalMass = 2;
 
     const double airLoss = 0.05;
 

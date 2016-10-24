@@ -21,7 +21,7 @@ TEST(plantModel, init) {
     // 5 sec
     for (int i = 0; i < 50; ++i) {
         tip.tick(100);
-        std::cout << tip.Ttip << ", " << tip.Tjoint << std::endl;
+//        std::cout << tip.Ttip << ", " << tip.Tjoint << std::endl;
         EXPECT_GT(tip.Ttip, lastTip);
         EXPECT_GT(tip.Ttip, tip.Tjoint);
         EXPECT_EQ(tip.Tjoint, lastJoint);
@@ -29,30 +29,32 @@ TEST(plantModel, init) {
         lastTip = tip.Ttip;
         lastJoint = tip.Tjoint;
     }
+    float tipheated = tip.Ttip;
+    EXPECT_GT(tip.Ttip, 400);
+    EXPECT_NEAR(tip.Tboard, 20, eps);
 
-    std::cout << "----- soldering -----\n";
+//    std::cout << "----- soldering -----\n";
     tip.soldering(true);
     // 5 sec
     for (int i = 0; i < 50; ++i) {
         tip.tick(100);
-        std::cout << tip.Ttip << ", " << tip.Tjoint << std::endl;
-//        EXPECT_GT(tip.Ttip, lastTip);
-//        EXPECT_GT(tip.Ttip, tip.Tjoint);
-//        EXPECT_EQ(tip.Tjoint, lastJoint);
+//        std::cout << tip.Ttip << ", " << tip.Tjoint << std::endl;
+        EXPECT_GT(tip.Tjoint, lastJoint);
+        EXPECT_GT(tipheated, tip.Ttip);
 
         lastTip = tip.Ttip;
         lastJoint = tip.Tjoint;
     }
 
-    std::cout << "----- cooling -----\n";
+
+//    std::cout << "----- cooling -----\n";
     tip.soldering(false);
     // 5 sec
     for (int i = 0; i < 50; ++i) {
         tip.tick(0);
-        std::cout << tip.Ttip << ", " << tip.Tjoint << std::endl;
-//        EXPECT_GT(tip.Ttip, lastTip);
-//        EXPECT_GT(tip.Ttip, tip.Tjoint);
-//        EXPECT_EQ(tip.Tjoint, lastJoint);
+//        std::cout << tip.Ttip << ", " << tip.Tjoint << std::endl;
+        EXPECT_LT(tip.Ttip, lastTip);
+        EXPECT_LT(tip.Tjoint, lastJoint);
 
         lastTip = tip.Ttip;
         lastJoint = tip.Tjoint;

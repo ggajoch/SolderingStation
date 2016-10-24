@@ -6,7 +6,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++1z")
 add_subdirectory(external/googletest)
 
 set(CORE_FILES core/Controller.cpp core/pid.h core/HAL.h core/Tip.h)
-set(TEST_FILES tests/tempScaling.cpp tests/Average.cpp tests/array_view.cpp tests/Controller.cpp tests/PID.cpp tests/plantModel.cpp)
+set(TEST_FILES tests/tempScaling.cpp tests/Average.cpp tests/array_view.cpp tests/Controller.cpp tests/PID.cpp tests/plantModel.cpp tests/PIDforTip.cpp)
 set(TARGET_FILES target/mock/HALmock.cpp tests/plantModel.h)
 set(LIBS_FILES )
 

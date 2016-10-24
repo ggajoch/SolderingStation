@@ -5,16 +5,16 @@
 
 namespace core {
 
-// PID with back-calculation anti-windup method
+// PID with clamping anti-windup method
 
 class PID {
  public:
     float target;
-    float Kp, Ki, Kd, Kb;
+    float Kp, Ki, Kd;
     float lowerLimit, upperLimit;
 
     PID() {
-        Kp = Ki = Kd = Kb = 0;
+        Kp = Ki = Kd = 0;
         target = 0;
         this->lowerLimit = 0;
         this->upperLimit = 0;
@@ -24,9 +24,8 @@ class PID {
     float tick(float temp) {
         error = temp-target;
 
-        float backCalculation = Kb * (constrain(prevOutput) - prevOutput);
-        integral += error + backCalculation;
-
+        if (lowerLimit < prevOutput < upperLimit)
+            integral += error;
 
         float diff = error - prevError;
         float pwr = (Kp * error + Ki * integral + Kd * diff);

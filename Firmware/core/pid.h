@@ -24,14 +24,11 @@ class PID {
     float tick(float temp) {
         error = target-temp;
 
-        integral += error;
-
         float diff = error - prevError;
-        float pwr = Kp * error + Ki * integral + Kd * diff;
+        float pwr = Kp * error + Ki * (integral+error) + Kd * diff;
 
-        if (pwr < lowerLimit || pwr > upperLimit) {
-            integral -= error;
-//            pwr = Kp * error + Ki * integral + Kd * diff;
+        if (lowerLimit < pwr && pwr < upperLimit) {
+            integral += error;
         }
 
         prevError = error;

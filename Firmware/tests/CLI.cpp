@@ -76,7 +76,7 @@ TEST(CLI, init) {
     }
 }
 
-void parse(const char * cmd) {
+static void parse(const char * cmd) {
     static char tmp[100];
     strcpy(tmp, cmd);
     libs::CLI::parse_line(tmp);

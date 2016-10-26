@@ -6,6 +6,7 @@
 
 namespace HAL {
 bool timeTick();
+void delay(uint32_t ms);
 
 namespace Display {
 void setBacklight(float percent);

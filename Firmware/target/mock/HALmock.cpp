@@ -1,6 +1,9 @@
+#include <queue>
+#include <cstdio>
+#include <cstring>
+
 #include "HAL.h"
 #include "HALmock.h"
-#include <queue>
 
 namespace HAL {
 
@@ -31,7 +34,22 @@ namespace Tip {
 };  // namespace Tip
 
 namespace Com {
-    void write(const char * data);
+    char lastLine[100];
+    bool checkLastLine(const char * line) {
+        bool res;
+        if (std::strcmp(line, lastLine) == 0) {
+            res = true;
+        } else {
+            res = false;
+        }
+        std::memset(lastLine, 0, sizeof(lastLine));
+        return res;
+    }
+
+    void puts(const char * data) {
+        std::printf("data: |%s|\n", data);
+        std::strcpy(lastLine, data);
+    }
     void setCallback(void callback(const char * data));
 };  // namespace Com
 

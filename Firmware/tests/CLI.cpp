@@ -1,6 +1,7 @@
 #include "gtest/gtest.h"
 
 #include "CLI.h"
+#include "HALmock.h"
 
 using libs::CLI::commands;
 using libs::CLI::nrOfCommands;
@@ -17,6 +18,11 @@ struct CLITest_ : Command {
     explicit CLITest_(const char *name) : Command(name), callbacked(false) {
         testCommands.push_back(this);
     }
+
+    CLITest_(const char * name, int requiredArguments) : Command(name, requiredArguments), callbacked(false) {
+        testCommands.push_back(this);
+    }
+
 
     void callback(const libs::array_view<char *> parameters) override {
 //        printf("callback: %s | ", this->name);
@@ -56,10 +62,13 @@ struct CLITest4_ : CLITest_ {
     CLITest4_() : CLITest_("test21") {}
 } CLITest4;
 
+struct CLITest5_ : CLITest_ {
+    CLITest5_() : CLITest_("test5", 3) {}
+} CLITest5;
 
 
 TEST(CLI, init) {
-    EXPECT_EQ(nrOfCommands, 4);
+    EXPECT_EQ(nrOfCommands, 5);
     EXPECT_EQ(testCommands.size() , nrOfCommands);
 
     for (auto x : testCommands) {
@@ -148,19 +157,50 @@ TEST(CLI, simple1) {
     test();
 }
 
+TEST(CLI, incorrectNrOfArugments) {
+    parse("test1 1 2 3");
+    checkIfCallbacked(&CLITest1);
+    test("1", "2", "3");
+
+    parse("test5");
+    checkIfCallbacked(nullptr);
+
+    EXPECT_TRUE(HAL::Com::checkLastLine("ERR Required 3 arguments for test5\n"));
+
+    parse("test5 1");
+    checkIfCallbacked(nullptr);
+    EXPECT_TRUE(HAL::Com::checkLastLine("ERR Required 3 arguments for test5\n"));
+
+    parse("test5 1 2");
+    checkIfCallbacked(nullptr);
+    EXPECT_TRUE(HAL::Com::checkLastLine("ERR Required 3 arguments for test5\n"));
+
+    parse("test5 1 2 3 ");
+    checkIfCallbacked(&CLITest5);
+    EXPECT_TRUE(HAL::Com::checkLastLine(""));
+
+    parse("test5 1 2 3 4 ");
+    checkIfCallbacked(nullptr);
+    EXPECT_TRUE(HAL::Com::checkLastLine("ERR Required 3 arguments for test5\n"));
+}
+
 TEST(CLI, allCasesRandom) {
     std::srand(std::time(0));
 
-    for (int params = 0; params < 20; ++params) {
-        for (int cases = 0; cases < 100; ++cases) {
-            for (auto test : testCommands) {
+    for (int cases = 0; cases < 100; ++cases) {
+        for (auto test : testCommands) {
+            for (int params = 0; params < 20; ++params) {
+                int nowParams = params;
+                if (test->requiredArguments != -1) {
+                    nowParams = test->requiredArguments;
+                }
                 static char buf[100];
                 char * bufPtr = buf;
                 bufPtr += sprintf(bufPtr, "%s ", test->name);
 
                 std::vector<char*> actualParameters;
 
-                for (int i = 0; i < params; ++i) {
+                for (int i = 0; i < nowParams; ++i) {
                     int len = 1+std::rand() % 5;
                     gen_random_string(bufPtr, len);
                     actualParameters.push_back(bufPtr);

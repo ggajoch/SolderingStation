@@ -6,7 +6,9 @@
 #include <string.h>
 #include <stdint.h>
 #include <array>
+
 #include "array_view.h"
+#include "Com.h"
 
 namespace libs {
 namespace CLI {
@@ -21,12 +23,27 @@ class Command {
     explicit Command(const char * name) :
             name(name) {
         commands[nrOfCommands++] = this;
+        requiredArguments = -1;
     }
 
-    virtual void callback(const array_view<char *> parameters) {
+    Command(const char * name, int requiredArguments) :
+            name(name),
+            requiredArguments(requiredArguments) {
+        commands[nrOfCommands++] = this;
     }
+
+    void callbackDispatcher(const array_view<char *> parameters) {
+        if (requiredArguments > -1 && parameters.size() != requiredArguments) {
+            HAL::Com::printf("ERR Required %d arguments for %s\n", requiredArguments, this->name);
+            return;
+        }
+        callback(parameters);
+    }
+
+    virtual void callback(const array_view<char *> parameters) = 0;
 
     const char * name;
+    int requiredArguments;
 };
 
 void parse_line(char *line);

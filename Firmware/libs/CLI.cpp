@@ -43,7 +43,7 @@ void parse_line(char *line) {
             }
 
             libs::array_view<char *> view(params.data(), param_nr);
-            cmd->callback(view);
+            cmd->callbackDispatcher(view);
             return;
         }
     }

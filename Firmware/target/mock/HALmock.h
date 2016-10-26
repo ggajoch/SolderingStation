@@ -11,11 +11,12 @@ namespace Display {
 
 namespace Tip {
     extern float heatingPercentage;
-
     extern std::queue<uint16_t> rawTemperatureData;
 };  // namespace Tip
 
 namespace Com {
+    extern char lastLine[100];
+    bool checkLastLine(const char * line);
 };  // namespace Com
 
 namespace Encoder {

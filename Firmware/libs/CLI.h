@@ -5,71 +5,33 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h>
-#include "ArrayView.h"
+#include <array>
+#include "array_view.h"
 
+namespace libs {
 namespace CLI {
+
 class Command;
 
-size_t nrOfCommands = 0;
-std::array<Command *, 50> commands;
+extern size_t nrOfCommands;
+extern std::array<Command *, 50> commands;
 
 class Command {
  public:
-    explicit Command(const char *name) : name(name) {
+    explicit Command(const char * name) :
+            name(name) {
         commands[nrOfCommands++] = this;
     }
 
-    virtual void callback(const arv::array_view<float> & parameters) {}
-
-    const char *name;
-
- private:
-    bool operator==(const Command &rhs) const {
-        if (strcmp(this->name, rhs.name) == 0) {
-            return true;
-        } else {
-            return false;
-        }
+    virtual void callback(const array_view<char *> parameters) {
     }
+
+    const char * name;
 };
 
-
-void parse_line(const char *line) {
-    size_t len = strlen(line);
-    uint8_t iter = 0;
-    float params[10];
-    while (line[iter] != ' ' && line[iter] != 0) ++iter;
-
-    for (auto &cmd : commands) {
-        if (strncmp(cmd->name, line, iter - 1) == 0) {
-            // found command
-            uint8_t param_nr = 0;
-            while (iter < len) {
-                iter++;
-                char *stop;
-                float val = strtof(line + iter, &stop);
-                params[param_nr++] = val;
-                iter = stop - line;
-            }
-            arv::array_view<float> view(params, param_nr);
-            cmd->callback(view);
-        }
-    }
-}
-
-void sendCommand(const Command & command, const arv::array_view<float> & params) {
-    static char buf[100];
-    uint8_t iter = 0;
-    strcpy(buf, command.name);
-    iter += strlen(command.name);
-    for (auto &param : params) {
-        buf[iter++] = ' ';
-        iter += snprintf(buf + iter, sizeof(buf)-iter, "%f", param);
-    }
-    buf[iter] = 0;
-    printf("%s\r\n", buf);
-}
+void parse_line(char *line);
 
 };  // namespace CLI
+};  // namespace libs
 
 #endif  // LIBS_CLI_H_

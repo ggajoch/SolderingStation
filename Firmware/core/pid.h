@@ -17,7 +17,7 @@ class PID {
         Kp = Ki = Kd = 0;
         target = 0;
         this->lowerLimit = 0;
-        this->upperLimit = 0;
+        this->upperLimit = 100;
         this->reset();
     }
 

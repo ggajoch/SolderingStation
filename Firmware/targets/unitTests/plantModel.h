@@ -1,5 +1,5 @@
-#ifndef TESTS_PLANTMODEL_H_
-#define TESTS_PLANTMODEL_H_
+#ifndef TARGETS_UNITTESTS_PLANTMODEL_H_
+#define TARGETS_UNITTESTS_PLANTMODEL_H_
 
 class TipModel {
  public:
@@ -50,4 +50,4 @@ class TipModel {
     bool randomAir;
 };
 
-#endif  // TESTS_PLANTMODEL_H_
+#endif  // TARGETS_UNITTESTS_PLANTMODEL_H_

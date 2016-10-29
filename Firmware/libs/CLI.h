@@ -8,7 +8,7 @@
 #include <array>
 
 #include "array_view.h"
-#include "Com.h"
+// #include "Com.h"
 
 namespace libs {
 namespace CLI {
@@ -34,7 +34,7 @@ class Command {
 
     void callbackDispatcher(const array_view<char *> parameters) {
         if (requiredArguments > -1 && parameters.size() != requiredArguments) {
-            HAL::Com::printf("ERR Required %d arguments for %s\n", requiredArguments, this->name);
+//            HAL::Com::printf("ERR Required %d arguments for %s\n", requiredArguments, this->name);
             return;
         }
         callback(parameters);

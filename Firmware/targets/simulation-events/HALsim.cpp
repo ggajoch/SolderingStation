@@ -3,11 +3,14 @@
 #include <cstring>
 
 #include "HAL.h"
-#include "HALmock.h"
+#include "HALsim.h"
 
 namespace HAL {
 
-bool timeTick();
+bool timeTick() {
+    return true;
+}
+
 void delay(uint32_t ms) {}
 
 namespace Display {
@@ -22,13 +25,13 @@ namespace Tip {
         heatingPercentage = percent;
     }
 
-    std::queue<uint16_t> rawTemperatureData;
+    uint16_t temperature;
+    void setTemperature(float temp) {
+        temperature = static_cast<uint16_t>(10*temp);
+    }
+
     uint16_t readRaw() {
-        uint16_t now = rawTemperatureData.front();
-        if (rawTemperatureData.size() > 1) {
-            rawTemperatureData.pop();
-        }
-        return now;
+        return temperature;
     }
 
     bool inStand();
@@ -48,10 +51,13 @@ namespace Com {
     }
 
     void puts(const char * data) {
-        std::printf("data: |%s|\n", data);
+        std::printf("data: %s", data);
         std::strcpy(lastLine, data);
     }
-    void setCallback(void callback(const char * data));
+    void (*callback)(char * data);
+    void setCallback(void (*callback_)(char * data)) {
+        callback = callback_;
+    }
 };  // namespace Com
 
 namespace Encoder {

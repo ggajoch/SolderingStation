@@ -22,7 +22,7 @@ bool inStand();
 
 namespace Com {
 void puts(const char * data);
-void setCallback(void callback(const char * data));
+void setCallback(void callback(char * data));
 };
 
 namespace Encoder {

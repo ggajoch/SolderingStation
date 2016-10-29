@@ -1,20 +1,37 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(tests)
+project(SolderingStation)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++1z")
 
 add_subdirectory(external/googletest)
 
-set(CORE_FILES core/Controller.cpp core/pid.h core/HAL.h core/Tip.h core/commands.cpp core/Com.h core/Com.cpp)
-set(TEST_FILES tests/tempScaling.cpp tests/Average.cpp tests/array_view.cpp tests/Controller.cpp tests/PID.cpp tests/plantModel.cpp tests/PIDforTip.cpp tests/CLI.cpp tests/Commands.cpp)
-set(TARGET_FILES target/mock/HALmock.cpp tests/plantModel.h)
-set(LIBS_FILES libs/CLI.cpp)
+include_directories(libs)
+file(GLOB LIBS_FILES
+        "libs/*.h"
+        "libs/*.cpp"
+        )
 
-set(SOURCE_FILES ${CORE_FILES} ${TEST_FILES} ${TARGET_FILES} ${LIBS_FILES} core/config.h)
+include_directories(core)
+file(GLOB CORE_FILES
+        "core/*.h"
+        "core/*.cpp"
+        )
 
-include_directories(core libs target/mock)
+
+file(GLOB SIMULATION_EVENTS_FILES
+        "targets/simulation-events/*.h"
+        "targets/simulation-events/*.cpp"
+        )
+
+add_executable(simulation_events ${SIMULATION_EVENTS_FILES} ${CORE_FILES} ${LIBS_FILES})
+target_link_libraries(simulation_events gtest)
 
 
-add_executable(tests ${SOURCE_FILES})
 
-target_link_libraries(tests gtest gtest_main)
+file(GLOB UNITTESTS_FILES
+        "targets/unitTests/*.h"
+        "targets/unitTests/*.cpp"
+        )
+
+add_executable(unitTests ${CORE_FILES} ${UNITTESTS_FILES} ${LIBS_FILES})
+target_link_libraries(unitTests gtest gtest_main)

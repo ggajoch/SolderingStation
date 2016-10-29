@@ -17,11 +17,11 @@ ${GTEST_FOLDER}: ${EXTERNALS_FOLDER}
 ${BUILD_FOLDER}:
 	mkdir ${BUILD_FOLDER}
 
-${BUILD_FOLDER}/test: ${BUILD_FOLDER} ${GTEST_FOLDER}
+build/unitTests: ${BUILD_FOLDER} ${GTEST_FOLDER} always
 	cd build; cmake ..; make
 
-tests: build/test
-	build/tests
+tests: build/unitTests
+	build/unitTests
 
 clean:
 	rm -rf build
@@ -31,9 +31,11 @@ ${EXTERNALS_FOLDER}/cpplint.py: ${EXTERNALS_FOLDER}
 	wget https://github.com/google/styleguide/raw/gh-pages/cpplint/cpplint.py -O ${EXTERNALS_FOLDER}/cpplint.py
 
 
-LINTER_PARAMS=--extensions=hpp,cpp,h,c --filter=-legal/copyright,-build/include,-runtime/arrays,-runtime/printf --root=Firmware --linelength=120
+LINTER_PARAMS=--extensions=hpp,cpp,h,c --filter=-legal/copyright,-build/include,-runtime/arrays,-runtime/printf,-build/c++11 --root=Firmware --linelength=120
 
 style: ${EXTERNALS_FOLDER}/cpplint.py
 	find . -not -path "./build/*" -not -path "./${EXTERNALS_FOLDER}/*" -type f \( -iname \*.h -o -iname \*.hpp -o -iname \*.h -o -iname \*.cpp \) | xargs python2 ${EXTERNALS_FOLDER}/cpplint.py $(LINTER_PARAMS)
 
-.PHONY += all tests build
+.PHONY += all tests build always
+
+always:

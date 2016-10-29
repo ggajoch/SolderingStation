@@ -1,5 +1,5 @@
-#ifndef TARGET_MOCK_HALMOCK_H_
-#define TARGET_MOCK_HALMOCK_H_
+#ifndef TARGETS_UNITTESTS_HALMOCK_H_
+#define TARGETS_UNITTESTS_HALMOCK_H_
 
 #include "HAL.h"
 #include <queue>
@@ -27,4 +27,4 @@ namespace Memory {
 
 };  // namespace HAL
 
-#endif  // TARGET_MOCK_HALMOCK_H_
+#endif  // TARGETS_UNITTESTS_HALMOCK_H_

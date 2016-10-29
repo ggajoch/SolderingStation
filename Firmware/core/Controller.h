@@ -7,7 +7,7 @@
 #include "Average.h"
 #include "Tip.h"
 #include "pid.h"
-#include "Com.h"
+#include "com.h"
 
 namespace core {
 
@@ -23,7 +23,7 @@ class Controller {
 
     void tick() {
         HAL::Tip::setHeating(0);
-        HAL::Com::printf("TICK %.2f %.2f %.2f %.2f\n", temperatureAverage.get(), pid.target, lastPower, pid.integral);
+        core::com::printf("TICK %.2f %.2f %.2f %.2f\n", temperatureAverage.get(), pid.target, lastPower, pid.integral);
         HAL::delay(5);
 
         for (int i = 0; i < temperatureAverage.size(); ++i) {

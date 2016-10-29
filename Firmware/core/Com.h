@@ -1,12 +1,14 @@
 #ifndef CORE_COM_H_
 #define CORE_COM_H_
 
-namespace HAL {
-namespace Com {
+namespace core {
+namespace com {
 
 int printf(const char *format, ...);
+void rxCommandCallback(char * data);
+void dispatchCommand();
 
-};  // namespace Com
-};  // namespace HAL
+};  // namespace com
+};  // namespace core
 
 #endif  // CORE_COM_H_

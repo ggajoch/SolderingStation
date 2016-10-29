@@ -1,6 +1,5 @@
 #include <chrono>
 #include <cstring>
-#include <experimental/optional>
 #include "gtest/gtest.h"
 
 #include "Controller.h"
@@ -87,20 +86,6 @@ void simTick() {
     events::tick();
 }
 
-std::experimental::optional<char *> rxCommandPtr = {};
-void rxCommand(char * data) {
-    rxCommandPtr = data;
-    printf("RX: |%s|\n", rxCommandPtr);
-}
-
-void dispatchCommand() {
-    if (rxCommandPtr) {
-        printf("dispatch: |%s|\n", *rxCommandPtr);
-        libs::CLI::parse_line(*rxCommandPtr);
-        rxCommandPtr = {};
-    }
-    HAL::Com::puts("*");
-}
 
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
@@ -109,13 +94,9 @@ int main(int argc, char **argv) {
 
     core::setup();
 
-    HAL::Com::setCallback(rxCommand);
-//            libs::CLI::parse_line);
 
     while (true) {
         core::tick();
-
-        dispatchCommand();
 
         // simulation-events
         simTick();

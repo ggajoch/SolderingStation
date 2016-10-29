@@ -52,7 +52,10 @@ namespace Com {
         std::strcpy(lastLine, data);
     }
 
-    void setCallback(void (*callback_)(char * data));
+    void (*callback)(char * data);
+    void setCallback(void (*callback_)(char * data)) {
+        callback = callback_;
+    }
 };  // namespace Com
 
 namespace Encoder {

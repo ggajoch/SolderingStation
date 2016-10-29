@@ -1,10 +1,11 @@
 #include <cstdio>
 #include <stdarg.h>
-
+#include <experimental/optional>
 #include "HAL.h"
+#include "CLI.h"
 
-namespace HAL {
-namespace Com {
+namespace core {
+namespace com {
 
 int printf(const char *format, ...) {
     va_list args;
@@ -18,5 +19,18 @@ int printf(const char *format, ...) {
     return n;
 }
 
-};  // namespace Com
-};  // namespace HAL
+std::experimental::optional<char *> rxCommandPtr = {};
+void rxCommandCallback(char * data) {
+    rxCommandPtr = data;
+}
+
+void dispatchCommand() {
+    if (rxCommandPtr) {
+        libs::CLI::parse_line(*rxCommandPtr);
+        rxCommandPtr = {};
+    }
+    HAL::Com::puts("*");
+}
+
+};  // namespace com
+};  // namespace core

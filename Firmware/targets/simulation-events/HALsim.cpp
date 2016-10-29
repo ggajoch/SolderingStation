@@ -7,10 +7,6 @@
 
 namespace HAL {
 
-bool timeTick() {
-    return true;
-}
-
 void delay(uint32_t ms) {}
 
 namespace Display {

@@ -5,7 +5,6 @@
 #include "array_view.h"
 
 namespace HAL {
-bool timeTick();
 void delay(uint32_t ms);
 
 namespace Display {

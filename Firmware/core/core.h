@@ -1,5 +1,5 @@
-#ifndef SOLDERINGSTATION_CORE_H
-#define SOLDERINGSTATION_CORE_H
+#ifndef CORE_CORE_H_
+#define CORE_CORE_H_
 
 namespace core {
 
@@ -8,4 +8,4 @@ void tick();
 
 };  // namespace core
 
-#endif //SOLDERINGSTATION_CORE_H
+#endif  // CORE_CORE_H_

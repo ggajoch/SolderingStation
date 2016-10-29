@@ -113,14 +113,12 @@ int main(int argc, char **argv) {
 //            libs::CLI::parse_line);
 
     while (true) {
-        if (HAL::timeTick()) {
-            core::tick();
+        core::tick();
 
-            dispatchCommand();
+        dispatchCommand();
 
-            // simulation-events
-            simTick();
-        }
+        // simulation-events
+        simTick();
     }
 
     return RUN_ALL_TESTS();

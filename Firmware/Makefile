@@ -17,10 +17,10 @@ ${GTEST_FOLDER}: ${EXTERNALS_FOLDER}
 ${BUILD_FOLDER}:
 	mkdir ${BUILD_FOLDER}
 
-build/unitTests: ${BUILD_FOLDER} ${GTEST_FOLDER} always
+build: ${BUILD_FOLDER} ${GTEST_FOLDER} always
 	cd build; cmake ..; make
 
-tests: build/unitTests
+tests: build
 	build/unitTests
 
 clean:

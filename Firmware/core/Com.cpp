@@ -13,7 +13,7 @@ int printf(const char *format, ...) {
 
     static char buf[100];
     int n = vsprintf(buf, format, args);
-    puts(buf);
+    HAL::Com::puts(buf);
 
     va_end(args);
     return n;
@@ -29,7 +29,7 @@ void dispatchCommand() {
         libs::CLI::parse_line(*rxCommandPtr);
         rxCommandPtr = {};
     }
-    HAL::Com::puts("*");
+    HAL::Com::puts("*\n");
 }
 
 };  // namespace com

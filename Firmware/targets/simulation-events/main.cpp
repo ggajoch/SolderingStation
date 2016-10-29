@@ -7,6 +7,7 @@
 #include "HALsim.h"
 #include "plantModel.h"
 #include "CLI.h"
+#include "core.h"
 
 using core::controller;
 TipModel model;
@@ -106,13 +107,15 @@ int main(int argc, char **argv) {
     model.soldering(false);
     HAL::Tip::setTemperature(20);
 
-    controller.setup();
+    core::setup();
+
     HAL::Com::setCallback(rxCommand);
 //            libs::CLI::parse_line);
 
     while (true) {
         if (HAL::timeTick()) {
-            controller.loop();
+            core::tick();
+
             dispatchCommand();
 
             // simulation-events

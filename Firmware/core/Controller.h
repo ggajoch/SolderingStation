@@ -21,7 +21,7 @@ class Controller {
         HAL::Tip::setHeating(0);
     }
 
-    void loop() {
+    void tick() {
         HAL::Tip::setHeating(0);
         HAL::Com::printf("TICK %.2f %.2f %.2f %.2f\n", temperatureAverage.get(), pid.target, lastPower, pid.integral);
         HAL::delay(5);

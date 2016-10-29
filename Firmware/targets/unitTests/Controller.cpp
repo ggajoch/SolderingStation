@@ -30,7 +30,7 @@ TEST(Controller, averaging) {
     for (int i = 0; i < core::tempAverages; ++i) {
         HAL::Tip::rawTemperatureData.push(100);
     }
-    controller.loop();
+    controller.tick();
 
     EXPECT_NEAR(controller.temperatureAverage.get(), 100, eps);
 }

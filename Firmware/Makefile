@@ -12,12 +12,9 @@ ${EXTERNALS_FOLDER}:
 
 ${GTEST_FOLDER}: ${EXTERNALS_FOLDER}
 	@if [ -e "external/googletest" ]; then echo "Exists"; else git clone ${GTEST_REPO} ${GTEST_FOLDER}; fi
-	
 
-${BUILD_FOLDER}:
-	mkdir ${BUILD_FOLDER}
-
-build: ${BUILD_FOLDER} ${GTEST_FOLDER} always
+build: ${GTEST_FOLDER} always
+	mkdir -p ${BUILD_FOLDER}
 	cd build; cmake ..; make
 
 tests: build

@@ -46,5 +46,33 @@ class SetTipScaling : public Command {
     }
 } setTipScaling;
 
+
+class SendConfig : public Command {
+public:
+    SendConfig() : Command("conf", 0) {
+    }
+
+    void callback(const libs::array_view<char *> parameters) override {
+        core::com::printf("conf %.2f %.2f %.2f %.2f %.2f %.2f\n",
+                          controller.pid.target,
+                          controller.pid.Kp,
+                          controller.pid.Ki,
+                          controller.pid.Kd,
+                          controller.tip.offset,
+                          controller.tip.gain);
+    }
+} sendConfig;
+
+class Ping : public Command {
+public:
+    Ping() : Command("ping", 0) {
+    }
+
+    void callback(const libs::array_view<char *> parameters) override {
+        core::com::printf("ping\n");
+        std::printf("ping\n");
+    }
+} ping;
+
 };  // namespace commands
 };  // namespace core

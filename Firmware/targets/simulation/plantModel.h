@@ -10,13 +10,13 @@ class TipModel {
     double tipThermalMass = 1.5,
                  jointThermalMass = 2;
 
-    double airLoss = 0.05;
+    double airLoss = 0.1;
 
     double _tipToJointConducance;
 
     double Ttip, Tjoint;
     const double Tboard = 20;
-    double dt = 0.1;
+    double dt = 0.01;
 
     explicit TipModel(bool randomAir = false) : randomAir(randomAir) {
         std::srand(std::time(0));
@@ -34,7 +34,7 @@ class TipModel {
     }
 
     double airLossNow() {
-        return airLoss*(Ttip - Tboard) + (randomAir ? (std::rand() % 10 - 5) : 0);
+        return airLoss*(Ttip - Tboard) + (randomAir ? (std::rand() % 200 - 100) : 0);
     }
 
     void tick(float pwr) {
@@ -47,7 +47,7 @@ class TipModel {
         Tjoint += dTjointdt/jointThermalMass * dt;
     }
 
-    bool randomAir;
+    bool randomAir = true;
 };
 
 #endif  // TARGETS_SIMULATION_PLANTMODEL_H_

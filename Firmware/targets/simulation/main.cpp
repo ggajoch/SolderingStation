@@ -21,8 +21,15 @@ void sendCommand(const char * data) {
 }
 
 void simTick() {
-    model.tick(HAL::Tip::heatingPercentage);
-    HAL::Tip::setTemperature(model.Ttip);
+    for (int i = 0; i < 10; ++i) {
+        model.tick(HAL::Tip::heatingPercentage);
+        HAL::Tip::setTemperature(model.Ttip);
+        core::com::printf("TICK %.2f %.2f %.2f %.2f\n",
+                          model.Ttip,
+                          controller.pid.target,
+                          controller.lastPower,
+                          controller.pid.integral);
+    }
 }
 
 class JointCmd : libs::CLI::Command {

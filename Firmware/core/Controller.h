@@ -37,7 +37,6 @@ class Controller {
         HAL::Tip::setHeating(lastPower);
     }
 
- private:
     float lastPower;
 };
 

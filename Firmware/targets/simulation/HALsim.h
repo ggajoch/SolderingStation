@@ -12,6 +12,7 @@ namespace Display {
 namespace Tip {
     extern float heatingPercentage;
     void setTemperature(float temp);
+    extern bool inStandFlag;
 };  // namespace Tip
 
 namespace Com {

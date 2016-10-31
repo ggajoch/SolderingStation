@@ -12,7 +12,7 @@ void delay(uint32_t ms) {}
 namespace Display {
     void setBacklight(float percent);
     void setContrast(float percent);
-    void write(char array[2][16]);
+    void write(char array[2][16]) {}
 };  // namespace Display
 
 namespace Tip {
@@ -30,7 +30,9 @@ namespace Tip {
         return temperature;
     }
 
-    bool inStand();
+    bool inStand() {
+        return false;
+    }
 };  // namespace Tip
 
 namespace Com {

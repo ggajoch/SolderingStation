@@ -1,6 +1,7 @@
 #include <queue>
 #include <cstdio>
 #include <cstring>
+#include "com.h"
 
 #include "HAL.h"
 #include "HALsim.h"
@@ -16,7 +17,14 @@ void delay(uint32_t ms) {}
 namespace Display {
     void setBacklight(float percent);
     void setContrast(float percent);
-    void write(char array[2][16]);
+    void write(char array[2][16])  {
+        char line1[17], line2[17];
+        std::memcpy(line1, array[0], 16);
+        line1[16] = '\0';
+        std::memcpy(line2, array[1], 16);
+        line2[16] = '\0';
+        core::com::printf("DISP |%s%s|\n", line1, line2);
+    }
 };  // namespace Display
 
 namespace Tip {
@@ -34,11 +42,15 @@ namespace Tip {
         return temperature;
     }
 
-    bool inStand();
+    bool inStandFlag = false;
+    bool inStand() {
+        return inStandFlag;
+    }
 };  // namespace Tip
 
 namespace Com {
     void puts(const char * data) {
+        std::printf("%s", data);
         serial->WriteData(data, strlen(data));
     }
 

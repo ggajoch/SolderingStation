@@ -35,8 +35,10 @@ file(GLOB SIMULATION_FILES
         "targets/simulation/*.cpp"
 )
 
-add_executable(simulation ${SIMULATION_FILES} ${CORE_FILES} ${LIBS_FILES})
-target_link_libraries(simulation gtest)
+IF (WIN32)
+    add_executable(simulation ${SIMULATION_FILES} ${CORE_FILES} ${LIBS_FILES})
+    target_link_libraries(simulation gtest)
+ENDIF()
 
 # -------------------------- UNIT TESTS -----------------------------------------------------------
 file(GLOB UNITTESTS_FILES

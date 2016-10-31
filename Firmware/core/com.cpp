@@ -1,6 +1,5 @@
 #include <cstdio>
 #include <stdarg.h>
-#include <experimental/optional>
 #include "HAL.h"
 #include "CLI.h"
 
@@ -19,15 +18,15 @@ int printf(const char *format, ...) {
     return n;
 }
 
-std::experimental::optional<char *> rxCommandPtr = {};
+char * rxCommandPtr = nullptr;
 void rxCommandCallback(char * data) {
     rxCommandPtr = data;
 }
 
 void dispatchCommand() {
-    if (rxCommandPtr) {
-        libs::CLI::parse_line(*rxCommandPtr);
-        rxCommandPtr = {};
+    if (rxCommandPtr != nullptr) {
+        libs::CLI::parse_line(rxCommandPtr);
+        rxCommandPtr = nullptr;
     }
     HAL::Com::puts("*\n");
 }

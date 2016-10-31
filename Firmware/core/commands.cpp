@@ -1,7 +1,8 @@
 #include <cstdio>
 
 #include "CLI.h"
-#include "Controller.h"
+#include "core.h"
+#include "com.h"
 
 namespace core {
 namespace commands {
@@ -14,8 +15,8 @@ class SetTemperature : public Command {
     }
 
     void callback(const libs::array_view<char *> parameters) override {
-        controller.pid.target = static_cast<float>(std::atof(parameters[0]));
-        printf("temp %f\n", controller.pid.target);
+        core::target = static_cast<float>(std::atof(parameters[0]));
+        printf("temp %f\n", core::pid.target);
     }
 } setTemperature;
 
@@ -25,12 +26,10 @@ class SetPIDCoefficients : public Command {
     }
 
     void callback(const libs::array_view<char *> parameters) override {
-        controller.pid.Kp = static_cast<float>(std::atof(parameters[0]));
-        controller.pid.Ki = static_cast<float>(std::atof(parameters[1]));
-        controller.pid.Kd = static_cast<float>(std::atof(parameters[2]));
-
-        controller.pid.reset();
-        printf("pid %f %f %f\n", controller.pid.Kp, controller.pid.Ki, controller.pid.Kd);
+        core::pid.params.Kp = static_cast<float>(std::atof(parameters[0]));
+        core::pid.params.Ki = static_cast<float>(std::atof(parameters[1]));
+        core::pid.params.Kd = static_cast<float>(std::atof(parameters[2]));
+        core::pid.reset();
     }
 } setPIDCoefficients;
 
@@ -40,31 +39,30 @@ class SetTipScaling : public Command {
     }
 
     void callback(const libs::array_view<char *> parameters) override {
-        controller.tip.offset = static_cast<float>(std::atof(parameters[0]));
-        controller.tip.gain = static_cast<float>(std::atof(parameters[1]));
-        printf("tip %f %f\n", controller.tip.offset, controller.tip.gain);
+        core::tip.params.offset = static_cast<float>(std::atof(parameters[0]));
+        core::tip.params.gain = static_cast<float>(std::atof(parameters[1]));
     }
 } setTipScaling;
 
 
 class SendConfig : public Command {
-public:
+ public:
     SendConfig() : Command("conf", 0) {
     }
 
     void callback(const libs::array_view<char *> parameters) override {
         core::com::printf("conf %.2f %.2f %.2f %.2f %.2f %.2f\n",
-                          controller.pid.target,
-                          controller.pid.Kp,
-                          controller.pid.Ki,
-                          controller.pid.Kd,
-                          controller.tip.offset,
-                          controller.tip.gain);
+                          core::target,
+                          core::pid.params.Kp,
+                          core::pid.params.Ki,
+                          core::pid.params.Kd,
+                          core::tip.params.offset,
+                          core::tip.params.gain);
     }
 } sendConfig;
 
 class Ping : public Command {
-public:
+ public:
     Ping() : Command("ping", 0) {
     }
 

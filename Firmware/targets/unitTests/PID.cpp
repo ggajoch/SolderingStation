@@ -7,10 +7,10 @@ constexpr float eps = 1e-2;
 TEST(PID, setup) {
     core::PID pid;
     EXPECT_NEAR(pid.target, 0, eps);
-    EXPECT_NEAR(pid.Kp, 0, eps);
-    EXPECT_NEAR(pid.Ki, 0, eps);
-    EXPECT_NEAR(pid.Kd, 0, eps);
-    EXPECT_NEAR(pid.Kp, 0, eps);
+    EXPECT_NEAR(pid.params.Kp, 0, eps);
+    EXPECT_NEAR(pid.params.Ki, 0, eps);
+    EXPECT_NEAR(pid.params.Kd, 0, eps);
+    EXPECT_NEAR(pid.params.Kp, 0, eps);
     EXPECT_NEAR(pid.integral, 0, eps);
     EXPECT_NEAR(pid.prevError, 0, eps);
 }
@@ -24,7 +24,7 @@ TEST(PID, noOutput) {
 
 TEST(PID, proportional) {
     core::PID pid;
-    pid.Kp = -1;
+    pid.params.Kp = -1;
     pid.target = 0;
     pid.lowerLimit = -1e6f;
     pid.upperLimit = 1e6f;
@@ -34,7 +34,7 @@ TEST(PID, proportional) {
     }
 
 
-    pid.Kp = 1.5f;
+    pid.params.Kp = 1.5f;
     pid.target = 10.0f;
     EXPECT_NEAR(pid.tick(10), 0, eps);
     for (float i = -500; i <= 500; i += 0.7) {
@@ -44,7 +44,7 @@ TEST(PID, proportional) {
 
 TEST(PID, integral) {
     core::PID pid;
-    pid.Ki = -1;
+    pid.params.Ki = -1;
     pid.target = 0;
     pid.lowerLimit = -1e6f;
     pid.upperLimit = 1e6f;
@@ -54,7 +54,7 @@ TEST(PID, integral) {
     }
 
     pid.reset();
-    pid.Ki = 1.5f;
+    pid.params.Ki = 1.5f;
     pid.target = 10.0f;
     EXPECT_NEAR(pid.tick(10), 0, eps);
     float sum = 0;
@@ -66,7 +66,7 @@ TEST(PID, integral) {
 
 TEST(PID, derivative) {
     core::PID pid;
-    pid.Kd = -1;
+    pid.params.Kd = -1;
     pid.target = 0;
     pid.lowerLimit = -1e6f;
     pid.upperLimit = 1e6f;
@@ -78,7 +78,7 @@ TEST(PID, derivative) {
     }
 
     pid.reset();
-    pid.Kd = 1.5f;
+    pid.params.Kd = 1.5f;
     pid.target = 10.0f;
     EXPECT_NEAR(pid.tick(10), 0, eps);
 
@@ -89,7 +89,7 @@ TEST(PID, derivative) {
 
 TEST(PID, limits) {
     core::PID pid;
-    pid.Kp = -1;
+    pid.params.Kp = -1;
     pid.lowerLimit = -107;
     pid.upperLimit = 257;
     EXPECT_NEAR(pid.tick(0), 0, eps);
@@ -111,8 +111,8 @@ TEST(PID, limits) {
 
 TEST(PID, antiWindup) {
     core::PID pid;
-    pid.Kp = 1;
-    pid.Ki = 1;
+    pid.params.Kp = 1;
+    pid.params.Ki = 1;
     pid.target = 10;
     pid.lowerLimit = 0;
     pid.upperLimit = 100;

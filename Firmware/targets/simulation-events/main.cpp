@@ -2,13 +2,11 @@
 #include <cstring>
 #include "gtest/gtest.h"
 
-#include "Controller.h"
 #include "HALsim.h"
 #include "plantModel.h"
 #include "CLI.h"
 #include "core.h"
 
-using core::controller;
 TipModel model;
 
 std::chrono::milliseconds tickTime{100};

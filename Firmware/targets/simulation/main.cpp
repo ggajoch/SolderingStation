@@ -4,14 +4,14 @@
 
 #include "gtest/gtest.h"
 
-#include "Controller.h"
+#include "core.h"
 #include "HALsim.h"
 #include "plantModel.h"
 #include "CLI.h"
 #include "core.h"
-
+#include "com.h"
 #include "Serial.h"
-using core::controller;
+
 TipModel model;
 
 void sendCommand(const char * data) {
@@ -26,9 +26,9 @@ void simTick() {
         HAL::Tip::setTemperature(model.Ttip);
         core::com::printf("TICK %.2f %.2f %.2f %.2f\n",
                           model.Ttip,
-                          controller.pid.target,
-                          controller.lastPower,
-                          controller.pid.integral);
+                          core::target,
+                          core::power,
+                          core::pid.integral);
     }
 }
 
@@ -46,6 +46,20 @@ class JointCmd : libs::CLI::Command {
     }
 } jointCmd;
 
+class StandCmd : libs::CLI::Command {
+ public:
+    StandCmd() : Command("stand", 1) {}
+
+ private:
+    void callback(const libs::array_view<char *> parameters) override {
+        if (parameters[0][0] == '1') {
+            HAL::Tip::inStandFlag = true;
+        } else {
+            HAL::Tip::inStandFlag = false;
+        }
+    }
+} standCmd;
+
 Serial * serial;
 
 int main(int argc, char **argv) {
@@ -54,12 +68,11 @@ int main(int argc, char **argv) {
     HAL::Tip::setTemperature(20);
 
     core::setup();
-    core::controller.tip.gain = 0.1;
+    core::tip.params.gain = 0.1;
 
     serial = new Serial("COM1");
 
     printf("Connect: %d\n", serial->IsConnected());
-
 
     std::string buffer;
     std::chrono::system_clock::time_point next_point = std::chrono::system_clock::now();

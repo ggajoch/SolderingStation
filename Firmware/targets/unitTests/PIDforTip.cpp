@@ -10,8 +10,8 @@ TEST(plantTip, simplesoldering) {
     core::PID pid;
 
     pid.target = 300;
-    pid.Kp = 10;
-    pid.Ki = 4;
+    pid.params.Kp = 10;
+    pid.params.Ki = 4;
     pid.upperLimit = 100;
     pid.integral = 0;
 

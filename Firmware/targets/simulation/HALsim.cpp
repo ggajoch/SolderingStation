@@ -50,7 +50,7 @@ namespace Tip {
 
 namespace Com {
     void puts(const char * data) {
-        std::printf("%s", data);
+//        std::printf("%s", data);
         serial->WriteData(data, strlen(data));
     }
 
@@ -61,7 +61,12 @@ namespace Com {
 };  // namespace Com
 
 namespace Encoder {
-    int getCount();
+    int count;
+    int getCountAndReset() {
+        int now = count;
+        count = 0;
+        return now;
+    }
     void reset();
     void setButtonCallback(void (*callback)());
 };  // namespace Encoder

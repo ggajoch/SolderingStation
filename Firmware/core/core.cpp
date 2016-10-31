@@ -28,7 +28,6 @@ void tick() {
         pid.target = target;
     }
 
-    core::com::printf("TICK %.2f %.2f %.2f %.2f\n", temp, target, power, pid.integral);
     HAL::delay(5);
 
     for (int i = 0; i < temperatureAverage.size(); ++i) {
@@ -42,6 +41,7 @@ void tick() {
     HAL::Tip::setHeating(power);
 
 
+    core::com::printf("TICK %.2f %.2f %.2f %.2f\n", temp, target, power, pid.integral);
     com::dispatchCommand();
 
     char display[2][16];
@@ -53,7 +53,7 @@ void tick() {
 
 
     if (tip.inStand) {
-        std::memcpy(display[1], "     SLEEP      ", 16);
+        std::memcpy(display[1], "     STAND      ", 16);
     } else {
         int lastBarElement = static_cast<int>(16.0 * power / 100.0);
         for (int i = 0; i < 16; ++i) {

@@ -22,6 +22,8 @@ namespace Com {
 };  // namespace Com
 
 namespace Encoder {
+    extern int count;
+    int getCountAndReset();
 };  // namespace Encoder
 
 namespace Memory {

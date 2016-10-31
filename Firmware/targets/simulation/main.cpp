@@ -60,6 +60,16 @@ class StandCmd : libs::CLI::Command {
     }
 } standCmd;
 
+class EncoderCmd : libs::CLI::Command {
+public:
+    EncoderCmd() : Command("enc", 1) {}
+
+private:
+    void callback(const libs::array_view<char *> parameters) override {
+        HAL::Encoder::count = static_cast<int>(std::atoi(parameters[0]));
+    }
+} encoderCmd;
+
 Serial * serial;
 
 int main(int argc, char **argv) {
@@ -101,6 +111,7 @@ int main(int argc, char **argv) {
             HAL::Com::callback(data);
         }
 
+        std::printf("enc: %d\n", HAL::Encoder::getCountAndReset());
 //        serial.WriteData("test\r", 5);
         core::tick();
 

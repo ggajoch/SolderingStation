@@ -7,6 +7,7 @@
 #include "HALsim.h"
 
 #include "Serial.h"
+#include "storage.h"
 
 extern Serial * serial;
 
@@ -72,8 +73,28 @@ namespace Encoder {
 };  // namespace Encoder
 
 namespace Memory {
-    void store(size_t addr, libs::array_view<const uint8_t> data);
-    void get(size_t addr, libs::array_view<uint8_t> data);
+    void store(libs::array_view<const uint8_t> data) {
+        std::printf("SAVING TO MEMORY\n");
+    }
+
+    void get(libs::array_view<uint8_t> data) {
+        static core::storage::Elements elements = {
+                .targetTemperature = -1,
+                .pidParams = {
+                        .Kp = 10.0,
+                        .Ki = 6.0,
+                        .Kd = 0
+                },
+                .tipParams = {
+                        .offset = 0,
+                        .gain = 0.1
+                },
+                .contrast = 0,
+                .backlight = 100
+        };
+
+        std::memcpy(data.data(), &elements, sizeof(core::storage::Elements));
+    }
 };  // namespace Memory
 
 };  // namespace HAL

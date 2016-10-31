@@ -5,16 +5,19 @@
 #include "config.h"
 #include "core.h"
 #include "com.h"
+#include "timer.h"
+#include "storage.h"
 
 namespace core {
 
-libs::Average<float, tempAverages> temperatureAverage;
+libs::Average<float, config::tempAverages> temperatureAverage;
 Tip tip;
 PID pid;
 float temp, target, power;
 
 
 void setup() {
+    storage::read();
     HAL::Tip::setHeating(0);
     HAL::Com::setCallback(com::rxCommandCallback);
 }
@@ -61,11 +64,10 @@ void tick() {
         }
     }
 
-
-
     HAL::Display::write(display);
-//    display[1][16] = '\0';
-//    printf("%s\n%s\n",display[0], display[1]);
+
+    timer::tick();
+    storage::save();
 }
 
 };  // namespace core

@@ -111,8 +111,6 @@ int main(int argc, char **argv) {
             HAL::Com::callback(data);
         }
 
-        std::printf("enc: %d\n", HAL::Encoder::getCountAndReset());
-//        serial.WriteData("test\r", 5);
         core::tick();
 
         // simulation-events

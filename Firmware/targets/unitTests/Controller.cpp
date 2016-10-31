@@ -25,7 +25,7 @@ TEST(Controller, averaging) {
     core::tip.params.offset = 0;
     core::tip.params.gain = 1;
 
-    for (int i = 0; i < core::tempAverages; ++i) {
+    for (int i = 0; i < core::config::tempAverages; ++i) {
         HAL::Tip::rawTemperatureData.push(100);
     }
     core::tick();

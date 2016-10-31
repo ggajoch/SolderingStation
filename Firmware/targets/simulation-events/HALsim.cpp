@@ -65,8 +65,8 @@ namespace Encoder {
 };  // namespace Encoder
 
 namespace Memory {
-    void store(size_t addr, libs::array_view<const uint8_t> data);
-    void get(size_t addr, libs::array_view<uint8_t> data);
+    void store(libs::array_view<const uint8_t> data) {}
+    void get(libs::array_view<uint8_t> data) {}
 };  // namespace Memory
 
 };  // namespace HAL

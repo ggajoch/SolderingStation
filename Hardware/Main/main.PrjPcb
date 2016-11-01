@@ -30,7 +30,7 @@ DItemRevisionGUID=
 ReportSuppressedErrorsInMessages=0
 FSMCodingStyle=eFMSDropDownList_OneProcess
 FSMEncodingStyle=eFMSDropDownList_OneHot
-OutputPath=Project Outputs for main
+OutputPath=
 LogFolderPath=
 ManagedProjectGUID=
 
@@ -141,7 +141,7 @@ GenerateClassCluster=0
 DocumentUniqueId=FIIMDNDO
 
 [Document7]
-DocumentPath=weller.SchDoc
+DocumentPath=tipController.SchDoc
 AnnotationEnabled=1
 AnnotateStartValue=1
 AnnotationIndexControlEnabled=0
@@ -293,6 +293,10 @@ DItemRevisionGUID=
 GenerateClassCluster=0
 DocumentUniqueId=
 
+[GeneratedDocument1]
+DocumentPath=Project Outputs for main\Design Rule Check - Main.html
+DItemRevisionGUID=
+
 [Configuration1]
 Name=Default Configuration
 ParameterCount=0
@@ -304,7 +308,7 @@ GenerateBOM=1
 OutputJobsCount=0
 
 [Generic_EDE]
-OutputDir=Project Outputs for main
+OutputDir=
 
 [OutputGroup1]
 Name=Netlist Outputs

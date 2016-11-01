@@ -62,20 +62,20 @@ class StandCmd : libs::CLI::Command {
 } standCmd;
 
 class EncoderCmd : libs::CLI::Command {
-public:
+ public:
     EncoderCmd() : Command("enc", 1) {}
 
-private:
+ private:
     void callback(const libs::array_view<char *> parameters) override {
         HAL::Encoder::count = static_cast<int>(std::atoi(parameters[0]));
     }
 } encoderCmd;
 
 class EncoderButtonCmd : libs::CLI::Command {
-public:
+ public:
     EncoderButtonCmd() : Command("encbtn", 0) {}
 
-private:
+ private:
     void callback(const libs::array_view<char *> parameters) override {
         HAL::Encoder::callback();
     }

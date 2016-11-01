@@ -1,5 +1,5 @@
-#ifndef CORE_TIP_H_
-#define CORE_TIP_H_
+#ifndef CORE_TEMPSENSOR_H_
+#define CORE_TEMPSENSOR_H_
 
 namespace core {
 namespace tempSensor {
@@ -15,4 +15,4 @@ float getAveragedTemperature();
 };  // namespace tempSensor
 };  // namespace core
 
-#endif  // CORE_TIP_H_
+#endif  // CORE_TEMPSENSOR_H_

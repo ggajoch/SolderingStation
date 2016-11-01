@@ -10,8 +10,8 @@ namespace HAL {
 void delay(uint32_t ms) {}
 
 namespace Display {
-    void setBacklight(float percent);
-    void setContrast(float percent);
+    void setBacklight(float percent) {}
+    void setContrast(float percent) {}
     void write(char array[2][16]) {}
 };  // namespace Display
 
@@ -59,8 +59,7 @@ namespace Com {
 };  // namespace Com
 
 namespace Encoder {
-    int getCount();
-    void reset();
+    int getCountAndReset() { return 0; }
     void setButtonCallback(void (*callback)()) {}
 };  // namespace Encoder
 

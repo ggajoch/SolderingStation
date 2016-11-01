@@ -1,5 +1,5 @@
-#ifndef SOLDERINGSTATION_DISPLAY_H
-#define SOLDERINGSTATION_DISPLAY_H
+#ifndef CORE_DISPLAY_H_
+#define CORE_DISPLAY_H_
 
 namespace core {
 namespace display {
@@ -14,4 +14,4 @@ void setContrast(float percentage);
 };  // namespace display
 };  // namespace core
 
-#endif //SOLDERINGSTATION_DISPLAY_H
+#endif  // CORE_DISPLAY_H_

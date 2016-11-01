@@ -1,5 +1,5 @@
-#ifndef SOLDERINGSTATION_STORAGE_H
-#define SOLDERINGSTATION_STORAGE_H
+#ifndef CORE_STORAGE_H_
+#define CORE_STORAGE_H_
 
 #include <cstring>
 #include "core.h"
@@ -32,16 +32,12 @@ struct Elements {
     }
 };
 
-
 void read();
 
 // this function should be invoked on every tick
 void tick();
 
-};
-
-
-
+};  // namespace storage
 };  // namespace core
 
-#endif  // SOLDERINGSTATION_STORAGE_H
+#endif  // CORE_STORAGE_H_

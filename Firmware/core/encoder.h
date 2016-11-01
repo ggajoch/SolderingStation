@@ -1,5 +1,5 @@
-#ifndef SOLDERINGSTATION_ENCODER_H
-#define SOLDERINGSTATION_ENCODER_H
+#ifndef CORE_ENCODER_H_
+#define CORE_ENCODER_H_
 
 #include "HAL.h"
 #include "core.h"
@@ -15,4 +15,4 @@ void tick() {
 };  // namespace encoder
 };  // namespace core
 
-#endif //SOLDERINGSTATION_ENCODER_H
+#endif  // CORE_ENCODER_H_

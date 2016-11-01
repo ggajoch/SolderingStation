@@ -1,5 +1,5 @@
-#ifndef SOLDERINGSTATION_TIMER_H
-#define SOLDERINGSTATION_TIMER_H
+#ifndef CORE_TIMER_H_
+#define CORE_TIMER_H_
 
 #include "config.h"
 
@@ -9,7 +9,7 @@ namespace timer {
 void tick();
 std::chrono::milliseconds now();
 
-};  // namespace core
 };  // namespace timer
+};  // namespace core
 
-#endif //SOLDERINGSTATION_TIMER_H
+#endif  // CORE_TIMER_H_

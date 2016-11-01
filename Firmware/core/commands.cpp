@@ -76,7 +76,7 @@ class Display : public Command {
 } display;
 
 class Ping : public Command {
-public:
+ public:
     Ping() : Command("ping", 0) {
     }
 

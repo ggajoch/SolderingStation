@@ -1,5 +1,5 @@
-#ifndef SOLDERINGSTATION_SLEEPMANAGER_H
-#define SOLDERINGSTATION_SLEEPMANAGER_H
+#ifndef CORE_SLEEPMANAGER_H_
+#define CORE_SLEEPMANAGER_H_
 
 namespace core {
 namespace sleepManager {
@@ -13,4 +13,4 @@ void encoderCallback();
 };  // namespace core
 
 
-#endif  // SOLDERINGSTATION_SLEEPMANAGER_H
+#endif  // CORE_SLEEPMANAGER_H_

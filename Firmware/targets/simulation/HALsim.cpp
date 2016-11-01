@@ -88,7 +88,7 @@ namespace Memory {
     }
 
     void get(libs::array_view<uint8_t> data) {
-        static core::storage::Elements elements = {
+        static constexpr core::storage::Elements elements = {
                 .targetTemperature = 0,
                 .pidParams = {
                         .Kp = 10.0,

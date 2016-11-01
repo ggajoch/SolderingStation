@@ -16,8 +16,14 @@ namespace HAL {
 void delay(uint32_t ms) {}
 
 namespace Display {
-    void setBacklight(float percent);
-    void setContrast(float percent);
+    void setBacklight(float percent) {
+        std::printf("Setting backlight: %f\n", percent);
+    }
+
+    void setContrast(float percent) {
+        std::printf("Setting contrast: %f\n", percent);
+    }
+
     void write(char array[2][16])  {
         char line1[17], line2[17];
         std::memcpy(line1, array[0], 16);
@@ -69,7 +75,11 @@ namespace Encoder {
         return now;
     }
     void reset();
-    void setButtonCallback(void (*callback)());
+
+    void (*callback)();
+    void setButtonCallback(void (*callback_)()) {
+        callback = callback_;
+    }
 };  // namespace Encoder
 
 namespace Memory {
@@ -79,7 +89,7 @@ namespace Memory {
 
     void get(libs::array_view<uint8_t> data) {
         static core::storage::Elements elements = {
-                .targetTemperature = -1,
+                .targetTemperature = 0,
                 .pidParams = {
                         .Kp = 10.0,
                         .Ki = 6.0,
@@ -89,8 +99,8 @@ namespace Memory {
                         .offset = 0,
                         .gain = 0.1
                 },
-                .contrast = 0,
-                .backlight = 100
+                .contrast = 27.5,
+                .backlight = 66.6
         };
 
         std::memcpy(data.data(), &elements, sizeof(core::storage::Elements));

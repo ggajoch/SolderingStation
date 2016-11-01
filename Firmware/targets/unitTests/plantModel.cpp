@@ -21,7 +21,7 @@ TEST(plantModel, init) {
     // 5 sec
     for (int i = 0; i < 50; ++i) {
         tip.tick(100);
-//        std::cout << tip.Ttip << ", " << tip.Tjoint << std::endl;
+//        std::cout << tempSensor.Ttip << ", " << tempSensor.Tjoint << std::endl;
         EXPECT_GT(tip.Ttip, lastTip);
         EXPECT_GT(tip.Ttip, tip.Tjoint);
         EXPECT_EQ(tip.Tjoint, lastJoint);
@@ -38,7 +38,7 @@ TEST(plantModel, init) {
     // 5 sec
     for (int i = 0; i < 50; ++i) {
         tip.tick(100);
-//        std::cout << tip.Ttip << ", " << tip.Tjoint << std::endl;
+//        std::cout << tempSensor.Ttip << ", " << tempSensor.Tjoint << std::endl;
         EXPECT_GT(tip.Tjoint, lastJoint);
         EXPECT_GT(tipheated, tip.Ttip);
 
@@ -52,7 +52,7 @@ TEST(plantModel, init) {
     // 5 sec
     for (int i = 0; i < 50; ++i) {
         tip.tick(0);
-//        std::cout << tip.Ttip << ", " << tip.Tjoint << std::endl;
+//        std::cout << tempSensor.Ttip << ", " << tempSensor.Tjoint << std::endl;
         EXPECT_LT(tip.Ttip, lastTip);
         EXPECT_LT(tip.Tjoint, lastJoint);
 

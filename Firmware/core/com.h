@@ -6,7 +6,7 @@ namespace com {
 
 int printf(const char *format, ...);
 void rxCommandCallback(char * data);
-void dispatchCommand();
+void tick();
 
 };  // namespace com
 };  // namespace core

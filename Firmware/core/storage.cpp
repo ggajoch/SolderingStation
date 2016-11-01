@@ -1,6 +1,9 @@
 #include "config.h"
 #include "storage.h"
 #include "timer.h"
+#include "tempSensor.h"
+#include "HAL.h"
+#include "display.h"
 
 namespace core {
 namespace storage {
@@ -9,9 +12,9 @@ Elements actualState() {
     return {
             .targetTemperature = core::target,
             .pidParams = core::pid.params,
-            .tipParams = core::tip.params,
-            .contrast = 0,
-            .backlight = 100
+            .tipParams = core::tempSensor::params,
+            .contrast = core::display::contrast,
+            .backlight = core::display::backlight
     };
 }
 
@@ -22,11 +25,13 @@ void read() {
     HAL::Memory::get(inMemory.asArrayView());
     core::target = inMemory.targetTemperature;
     core::pid.params = inMemory.pidParams;
-    core::tip.params = inMemory.tipParams;
+    core::tempSensor::params = inMemory.tipParams;
+    core::display::setContrast(inMemory.contrast);
+    core::display::setBacklight(inMemory.backlight);
 }
 
 // this function should be invoked on every tick
-void save() {
+void tick() {
     static std::chrono::milliseconds saveDataTimePoint;
     static bool saved = true;
 

@@ -23,7 +23,7 @@ namespace Com {
 
 namespace Encoder {
     extern int count;
-    int getCountAndReset();
+    extern void (*callback)();
 };  // namespace Encoder
 
 namespace Memory {

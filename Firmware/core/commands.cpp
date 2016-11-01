@@ -3,6 +3,7 @@
 #include "CLI.h"
 #include "core.h"
 #include "com.h"
+#include "display.h"
 
 namespace core {
 namespace commands {
@@ -39,8 +40,8 @@ class SetTipScaling : public Command {
     }
 
     void callback(const libs::array_view<char *> parameters) override {
-        core::tip.params.offset = static_cast<float>(std::atof(parameters[0]));
-        core::tip.params.gain = static_cast<float>(std::atof(parameters[1]));
+        core::tempSensor::params.offset = static_cast<float>(std::atof(parameters[0]));
+        core::tempSensor::params.gain = static_cast<float>(std::atof(parameters[1]));
     }
 } setTipScaling;
 
@@ -51,18 +52,31 @@ class SendConfig : public Command {
     }
 
     void callback(const libs::array_view<char *> parameters) override {
-        core::com::printf("conf %.2f %.2f %.2f %.2f %.2f %.2f\n",
+        core::com::printf("conf %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f\n",
                           core::target,
                           core::pid.params.Kp,
                           core::pid.params.Ki,
                           core::pid.params.Kd,
-                          core::tip.params.offset,
-                          core::tip.params.gain);
+                          core::tempSensor::params.offset,
+                          core::tempSensor::params.gain,
+                          core::display::backlight,
+                          core::display::contrast);
     }
 } sendConfig;
 
-class Ping : public Command {
+class Display : public Command {
  public:
+    Display() : Command("disp", 2) {
+    }
+
+    void callback(const libs::array_view<char *> parameters) override {
+        core::display::setBacklight(static_cast<float>(std::atof(parameters[0])));
+        core::display::setContrast(static_cast<float>(std::atof(parameters[1])));
+    }
+} display;
+
+class Ping : public Command {
+public:
     Ping() : Command("ping", 0) {
     }
 

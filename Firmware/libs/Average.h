@@ -32,6 +32,14 @@ class Average {
         return output;
     }
 
+    Type getSum() {
+        Type output = 0.0;
+        for (unsigned int i = 0; i < elements; ++i) {
+            output += history[i];
+        }
+        return output;
+    }
+
     constexpr size_t size() {
         return elements;
     }

@@ -11,6 +11,7 @@
 #include "core.h"
 #include "com.h"
 #include "Serial.h"
+#include "tempSensor.h"
 
 TipModel model;
 
@@ -70,18 +71,25 @@ private:
     }
 } encoderCmd;
 
+class EncoderButtonCmd : libs::CLI::Command {
+public:
+    EncoderButtonCmd() : Command("encbtn", 0) {}
+
+private:
+    void callback(const libs::array_view<char *> parameters) override {
+        HAL::Encoder::callback();
+    }
+} encoderButtonCmd;
+
 Serial * serial;
 
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);
     model.soldering(false);
-    HAL::Tip::setTemperature(20);
 
     core::setup();
-    core::tip.params.gain = 0.1;
 
     serial = new Serial("COM1");
-
     printf("Connect: %d\n", serial->IsConnected());
 
     std::string buffer;
@@ -108,14 +116,17 @@ int main(int argc, char **argv) {
             char data[100];
             strcpy(data, cmd.c_str());
 
+            std::printf("command: %s", data);
             HAL::Com::callback(data);
         }
 
+//        std::printf("enc: %d\n", HAL::Encoder::getCountAndReset());
         core::tick();
 
         // simulation-events
         simTick();
     }
 
+    delete serial;
     return RUN_ALL_TESTS();
 }

@@ -33,7 +33,7 @@ Serial::Serial(char *portName) {
             printf("failed to get current serial parameters!");
         } else {
             // Define serial connection parameters for the arduino board
-            dcbSerialParams.BaudRate = CBR_115200;
+            dcbSerialParams.BaudRate = CBR_9600;
             dcbSerialParams.ByteSize = 8;
             dcbSerialParams.StopBits = ONESTOPBIT;
             dcbSerialParams.Parity = NOPARITY;
@@ -103,6 +103,7 @@ bool Serial::WriteData(const char *buffer, unsigned int nbChar) {
         ClearCommError(this->hSerial, &this->errors, &this->status);
         return false;
     } else {
+        ClearCommError(this->hSerial, &this->errors, &this->status);
         return true;
     }
 }

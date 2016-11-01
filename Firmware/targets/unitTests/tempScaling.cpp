@@ -1,6 +1,6 @@
 #include "gtest/gtest.h"
 
-#include "Tip.h"
+#include "tempSensor.h"
 
 constexpr float eps = 1e-5;
 

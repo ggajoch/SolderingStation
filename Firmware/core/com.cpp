@@ -2,6 +2,7 @@
 #include <stdarg.h>
 #include "HAL.h"
 #include "CLI.h"
+#include "core.h"
 
 namespace core {
 namespace com {
@@ -23,7 +24,9 @@ void rxCommandCallback(char * data) {
     rxCommandPtr = data;
 }
 
-void dispatchCommand() {
+void tick() {
+    core::com::printf("TICK %.2f %.2f %.2f %.2f\n", core::temp, core::target, core::power, core::pid.integral);
+
     if (rxCommandPtr != nullptr) {
         libs::CLI::parse_line(rxCommandPtr);
         rxCommandPtr = nullptr;

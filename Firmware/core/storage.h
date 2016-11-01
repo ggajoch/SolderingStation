@@ -4,16 +4,16 @@
 #include <cstring>
 #include "core.h"
 #include "pid.h"
-#include "tip.h"
+#include "tempSensor.h"
+#include "array_view.h"
 
 namespace core {
-
 namespace storage {
 
 struct Elements {
     float targetTemperature;
     PID::Params pidParams;
-    Tip::Params tipParams;
+    tempSensor::Params tipParams;
     float contrast;
     float backlight;
 
@@ -36,7 +36,7 @@ struct Elements {
 void read();
 
 // this function should be invoked on every tick
-void save();
+void tick();
 
 };
 

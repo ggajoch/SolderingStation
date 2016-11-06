@@ -1,4 +1,5 @@
 #include <cstdio>
+#include <cstdlib>
 
 #include "CLI.h"
 #include "core.h"

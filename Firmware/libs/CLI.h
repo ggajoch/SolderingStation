@@ -40,7 +40,7 @@ class Command {
         callback(parameters);
     }
 
-    virtual void callback(const array_view<char *> parameters) = 0;
+    virtual void callback(const array_view<char *> parameters) {}
 
     const char * name;
     int requiredArguments;

@@ -32,7 +32,7 @@ void read() {
 
 // this function should be invoked on every tick
 void tick() {
-    static std::chrono::milliseconds saveDataTimePoint;
+    static std::chrono::milliseconds saveDataTimePoint{0};
     static bool saved = true;
 
     Elements now = actualState();

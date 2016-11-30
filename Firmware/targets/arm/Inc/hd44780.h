@@ -1,8 +1,8 @@
-#ifndef TM_HD44780_H
-#define TM_HD44780_H
+#ifndef TARGETS_ARM_INC_HD44780_H_
+#define TARGETS_ARM_INC_HD44780_H_
 
 #ifdef __cplusplus
- extern "C" {
+extern "C" {
 #endif
 
 #include <stdint.h>
@@ -109,5 +109,5 @@ void TM_HD44780_PutCustom(uint8_t x, uint8_t y, uint8_t location);
 }
 #endif
 
-#endif
+#endif  // TARGETS_ARM_INC_HD44780_H_
 

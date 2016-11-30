@@ -33,7 +33,7 @@ void tick() {
     HAL::delay(5);
 
     temp = tempSensor::getAveragedTemperature();
-    power = pid.tick(temp);
+    power = pid.tick(temp - 0.5);  // 0.5 to follow temperature between full degrees
     HAL::Tip::setHeating(power);
 
     com::tick();

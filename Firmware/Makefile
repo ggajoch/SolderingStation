@@ -31,7 +31,7 @@ ${EXTERNALS_FOLDER}/cpplint.py: ${EXTERNALS_FOLDER}
 LINTER_PARAMS=--extensions=hpp,cpp,h,c --filter=-legal/copyright,-build/include,-runtime/arrays,-runtime/printf,-build/c++11 --root=Firmware --linelength=120
 
 style: ${EXTERNALS_FOLDER}/cpplint.py
-	find . -not -path "./build/*" -not -path "./${EXTERNALS_FOLDER}/*" -type f \( -iname \*.h -o -iname \*.hpp -o -iname \*.h -o -iname \*.cpp \) | xargs python2 ${EXTERNALS_FOLDER}/cpplint.py $(LINTER_PARAMS)
+	find . -not -path "./build/*" -not -path "./${EXTERNALS_FOLDER}/*" -not -path "./targets/arm/Drivers/*" -type f \( -iname \*.h -o -iname \*.hpp -o -iname \*.h -o -iname \*.cpp \) | xargs python2 ${EXTERNALS_FOLDER}/cpplint.py $(LINTER_PARAMS)
 
 .PHONY += all tests build always
 

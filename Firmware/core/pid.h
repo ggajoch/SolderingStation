@@ -24,7 +24,7 @@ class PID {
     }
 
     float tick(float temp) {
-        error = target-temp+0.5;  // 0.5 to follow temperature between full degrees
+        error = target-temp;
 
         float diff = error - prevError;
         float pwr = params.Kp * error + params.Ki * (integral+error) + params.Kd * diff;

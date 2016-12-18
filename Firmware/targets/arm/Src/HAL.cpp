@@ -85,7 +85,7 @@ namespace Tip {
 
 namespace Com {
     void puts(const char * data) {
-        HAL_UART_Transmit(&huart1, static_cast<uint8_t*>(data), strlen(data), 1000);
+        HAL_UART_Transmit(&huart1, reinterpret_cast<uint8_t*>(const_cast<char *>(data)), strlen(data), 1000);
     }
 
     void (*callback)(char * data);

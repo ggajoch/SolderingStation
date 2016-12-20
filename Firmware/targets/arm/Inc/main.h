@@ -43,6 +43,12 @@
 #define LCD_BACKLIGHT_CHANNEL 12
 #define LCD_CONTRAST_CHANNEL 12
 
+#define ENC_B_Pin GPIO_PIN_13
+#define ENC_B_GPIO_Port GPIOC
+#define ENC_N_Pin GPIO_PIN_14
+#define ENC_N_GPIO_Port GPIOC
+#define ENC_P_Pin GPIO_PIN_15
+#define ENC_P_GPIO_Port GPIOC
 #define ADC1_IN0_Pin GPIO_PIN_0
 #define ADC1_IN0_GPIO_Port GPIOA
 #define LCD_BACKLIGHT_Pin GPIO_PIN_1

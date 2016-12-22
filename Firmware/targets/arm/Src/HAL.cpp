@@ -13,6 +13,8 @@
 
 #include "hd44780.h"
 
+#include "encoder_hw.h"
+
 namespace HAL {
 
 void delay(uint32_t ms) {

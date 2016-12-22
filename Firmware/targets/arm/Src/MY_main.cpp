@@ -8,12 +8,15 @@
 #include "adc.h"
 #include "hd44780.h"
 
+#include "encoder_hw.h"
+
 extern "C" {
     extern volatile uint8_t tickTimeElapsed;
 }
 
 extern "C" void MY_main() {
     TM_HD44780_Init(16, 2);
+    encoderInit();
 
     core::setup();
 

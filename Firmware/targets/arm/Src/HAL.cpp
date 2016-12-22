@@ -97,8 +97,12 @@ namespace Com {
 };  // namespace Com
 
 namespace Encoder {
-    int getCountAndReset() { return 0; }
-    void setButtonCallback(void (*callback)()) {}
+    int getCountAndReset() {
+    	return encoderGetAndReset();
+    }
+    void setButtonCallback(void (*callback)()) {
+    	encoderSetCallback(callback);
+    }
 };  // namespace Encoder
 
 namespace Memory {

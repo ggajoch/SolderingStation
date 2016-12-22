@@ -10,6 +10,9 @@ extern "C" {
 #include "main.h"
 
 void encoderInit(void);
+int encoderGetAndReset(void);
+void encoderSetCallback(void (*callback)());
+
 void encoderTimCallback(void);
 
 #ifdef __cplusplus

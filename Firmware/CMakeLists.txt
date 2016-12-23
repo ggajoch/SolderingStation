@@ -1,50 +1,43 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.1)
 
-project(SolderingStation)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++1z")
+#include(toolchain.cmake)
+#include(utils/functions.cmake)
 
-add_subdirectory(external/googletest)
+project(SolderingStation C CXX ASM)
 
-include_directories(libs)
-file(GLOB LIBS_FILES
-        "libs/*.h"
-        "libs/*.cpp"
-)
+set(TARGET_PLATFORM "unitTests" CACHE STRING "Target platform")
+set(PLATFORM_PATH ${CMAKE_CURRENT_SOURCE_DIR}/targets/${TARGET_PLATFORM})
 
-include_directories(core)
-file(GLOB CORE_FILES
-        "core/*.h"
-        "core/*.cpp"
-)
+set(OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR}/build/${TARGET_PLATFORM})
+set(REPORTS_PATH ${OUTPUT_PATH}/reports)
+
+file(MAKE_DIRECTORY ${OUTPUT_PATH})
+
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${OUTPUT_PATH}/lib)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${OUTPUT_PATH}/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${OUTPUT_PATH}/bin)
+
+if(NOT CMAKE_BUILD_TYPE)
+    set(CMAKE_BUILD_TYPE Debug CACHE STRING "" FORCE)
+else()
+    set(CMAKE_BUILD_TYPE ${CMAKE_BUILD_TYPE} CACHE STRING "" FORCE)
+endif()
+
+if(EXISTS ${PLATFORM_PATH})
+else()
+  message(FATAL_ERROR "Target platform ${TARGET_PLATFORM} does not exist")
+endif()
+
+include(${PLATFORM_PATH}/settings.cmake)
 
 
-# -------------------------- EVENT BASED SIMULATION -----------------------------------------------
 
-file(GLOB SIMULATION_EVENTS_FILES
-        "targets/simulation-events/*.h"
-        "targets/simulation-events/*.cpp"
-)
+message(STATUS "Using C compiler from ${CMAKE_C_COMPILER}")
+message(STATUS "Target platform ${TARGET_PLATFORM}")
+message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
+message(STATUS "Code coverage: ${ENABLE_COVERAGE}")
 
-add_executable(simulation_events ${SIMULATION_EVENTS_FILES} ${CORE_FILES} ${LIBS_FILES})
-target_link_libraries(simulation_events gtest)
-
-# -------------------------- FULL SIMULATION ------------------------------------------------------
-
-file(GLOB SIMULATION_FILES
-        "targets/simulation/*.h"
-        "targets/simulation/*.cpp"
-)
-
-IF (WIN32)
-    add_executable(simulation ${SIMULATION_FILES} ${CORE_FILES} ${LIBS_FILES})
-    target_link_libraries(simulation gtest)
-ENDIF()
-
-# -------------------------- UNIT TESTS -----------------------------------------------------------
-file(GLOB UNITTESTS_FILES
-        "targets/unitTests/*.h"
-        "targets/unitTests/*.cpp"
-)
-
-add_executable(unitTests ${CORE_FILES} ${UNITTESTS_FILES} ${LIBS_FILES})
-target_link_libraries(unitTests gtest gtest_main)
+add_subdirectory(libs)
+add_subdirectory(${PLATFORM_PATH})

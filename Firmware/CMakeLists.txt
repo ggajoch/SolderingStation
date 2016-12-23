@@ -40,4 +40,5 @@ message(STATUS "Build type: ${CMAKE_BUILD_TYPE}")
 message(STATUS "Code coverage: ${ENABLE_COVERAGE}")
 
 add_subdirectory(libs)
+add_subdirectory(core)
 add_subdirectory(${PLATFORM_PATH})

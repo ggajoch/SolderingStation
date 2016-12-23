@@ -10,8 +10,14 @@ namespace HAL {
 void delay(uint32_t ms) {}
 
 namespace Display {
-    void setBacklight(float percent) {}
-    void setContrast(float percent) {}
+	float backlight, contrast;
+
+    void setBacklight(float percent) {
+    	backlight = percent;
+    }
+    void setContrast(float percent) {
+    	contrast = percent;
+    }
     void write(char array[2][16]) {}
 };  // namespace Display
 

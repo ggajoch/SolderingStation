@@ -1,10 +1,16 @@
+#include <array>
 #include "gtest/gtest.h"
 
 #include "CLI.h"
 #include "HALmock.h"
 
+namespace libs {
+namespace CLI {
+	extern libs::array_view<Command *> commands;
+}
+}
 using libs::CLI::commands;
-using libs::CLI::nrOfCommands;
+using libs::CLI::set_commands;
 using libs::CLI::Command;
 
 struct CLITest_;
@@ -45,31 +51,61 @@ struct CLITest_ : Command {
 };
 
 
-
 struct CLITest1_ : CLITest_ {
     CLITest1_() : CLITest_("test1") {}
-} CLITest1;
+};
 
 struct CLITest2_ : CLITest_ {
     CLITest2_() : CLITest_("test2") {}
-} CLITest2;
+};
 
 struct CLITest3_ : CLITest_ {
     CLITest3_() : CLITest_("test") {}
-} CLITest3;
+};
 
 struct CLITest4_ : CLITest_ {
     CLITest4_() : CLITest_("test21") {}
-} CLITest4;
+};
 
 struct CLITest5_ : CLITest_ {
     CLITest5_() : CLITest_("test5", 3) {}
-} CLITest5;
+};
 
+CLITest1_ * CLITest1;
+CLITest2_ * CLITest2;
+CLITest3_ * CLITest3;
+CLITest4_ * CLITest4;
+CLITest5_ * CLITest5;
 
-TEST(CLI, init) {
-//    EXPECT_EQ(nrOfCommands, 5);
-//    EXPECT_EQ(testCommands.size() , nrOfCommands);
+class CLITest : public ::testing::Test {
+	void SetUp() {
+		static CLITest1_ CLITest1_o;
+		static CLITest2_ CLITest2_o;
+		static CLITest3_ CLITest3_o;
+		static CLITest4_ CLITest4_o;
+		static CLITest5_ CLITest5_o;
+
+		CLITest1 = &CLITest1_o;
+		CLITest2 = &CLITest2_o;
+		CLITest3 = &CLITest3_o;
+		CLITest4 = &CLITest4_o;
+		CLITest5 = &CLITest5_o;
+
+		static Command * tab[] = {
+			CLITest1,
+			CLITest2,
+			CLITest3,
+			CLITest4,
+			CLITest5
+		};
+		auto x = libs::array_view<Command *>(tab);
+		set_commands(x);
+	}
+};
+
+TEST_F(CLITest, init) {
+	EXPECT_EQ(commands.size(), 5);
+	EXPECT_EQ(testCommands.size(), 5);
 
     for (auto x : testCommands) {
         EXPECT_FALSE(x->callbacked);
@@ -83,13 +119,17 @@ static void parse(const char * cmd) {
 }
 
 void checkIfCallbacked(Command * cmd) {
+	bool was = false;
     for (auto x : testCommands) {
         if (x != cmd) {
             EXPECT_FALSE(x->wasCallbacked());
         } else {
             EXPECT_TRUE(x->wasCallbacked());
+            was = true;
         }
     }
+    if(cmd != nullptr)
+    	EXPECT_TRUE(was);
 }
 
 
@@ -147,19 +187,19 @@ void gen_random_string(char *s, const int len) {
     s[len] = 0;
 }
 
-TEST(CLI, simple1) {
+TEST_F(CLITest, simple1) {
     parse("test1 1 2 3");
-    checkIfCallbacked(&CLITest1);
+    checkIfCallbacked(CLITest1);
     test("1", "2", "3");
 
     parse("test2");
-    checkIfCallbacked(&CLITest2);
+    checkIfCallbacked(CLITest2);
     test();
 }
 
-TEST(CLI, incorrectNrOfArugments) {
+TEST_F(CLITest, incorrectNrOfArugments) {
     parse("test1 1 2 3");
-    checkIfCallbacked(&CLITest1);
+    checkIfCallbacked(CLITest1);
     test("1", "2", "3");
 
     parse("test5");
@@ -176,7 +216,7 @@ TEST(CLI, incorrectNrOfArugments) {
 //    EXPECT_TRUE(HAL::Com::checkLastLine("ERR Required 3 arguments for test5\n"));
 
     parse("test5 1 2 3 ");
-    checkIfCallbacked(&CLITest5);
+    checkIfCallbacked(CLITest5);
 //    EXPECT_TRUE(HAL::Com::checkLastLine(""));
 
     parse("test5 1 2 3 4 ");
@@ -184,7 +224,7 @@ TEST(CLI, incorrectNrOfArugments) {
 //    EXPECT_TRUE(HAL::Com::checkLastLine("ERR Required 3 arguments for test5\n"));
 }
 
-TEST(CLI, allCasesRandom) {
+TEST_F(CLITest, allCasesRandom) {
     std::srand(std::time(0));
 
     for (int cases = 0; cases < 100; ++cases) {
@@ -210,7 +250,7 @@ TEST(CLI, allCasesRandom) {
                 }
                 *bufPtr = '\0';
 
-//                printf("Test: |%s|\n", buf);
+                // printf("Test: |%s|\n", buf);
 
                 parse(buf);
                 checkIfCallbacked(test);

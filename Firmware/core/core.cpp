@@ -11,6 +11,7 @@
 #include "display.h"
 #include "sleepManager.h"
 #include "encoder.h"
+#include "commands.h"
 
 namespace core {
 
@@ -19,6 +20,7 @@ float temp, target, power;
 
 
 void setup() {
+	commands::setup();
     storage::read();
     HAL::Tip::setHeating(0);
     HAL::Com::setCallback(com::rxCommandCallback);

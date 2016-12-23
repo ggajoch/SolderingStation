@@ -40,3 +40,6 @@ Firmware/STM32F103/Debug
 *.PrjPcb.Zip
 *.SchDocPreview
 *.PcbDocPreview
+
+build
+workspace

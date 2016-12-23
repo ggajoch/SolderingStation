@@ -14,13 +14,14 @@ using libs::CLI::Command;
 class SetTemperature : public Command {
  public:
     SetTemperature() : Command("temp", 1) {
+		std::printf("TEMP command\n");
     }
 
     void callback(const libs::array_view<char *> parameters) override {
         core::target = static_cast<float>(std::atof(parameters[0]));
         printf("temp %f\n", core::pid.target);
     }
-} setTemperature;
+};
 
 class SetPIDCoefficients : public Command {
  public:
@@ -33,7 +34,7 @@ class SetPIDCoefficients : public Command {
         core::pid.params.Kd = static_cast<float>(std::atof(parameters[2]));
         core::pid.reset();
     }
-} setPIDCoefficients;
+};
 
 class SetTipScaling : public Command {
  public:
@@ -44,7 +45,7 @@ class SetTipScaling : public Command {
         core::tempSensor::params.offset = static_cast<float>(std::atof(parameters[0]));
         core::tempSensor::params.gain = static_cast<float>(std::atof(parameters[1]));
     }
-} setTipScaling;
+};
 
 
 class SendConfig : public Command {
@@ -63,7 +64,7 @@ class SendConfig : public Command {
                           core::display::backlight,
                           core::display::contrast);
     }
-} sendConfig;
+};
 
 class Display : public Command {
  public:
@@ -74,7 +75,7 @@ class Display : public Command {
         core::display::setBacklight(static_cast<float>(std::atof(parameters[0])));
         core::display::setContrast(static_cast<float>(std::atof(parameters[1])));
     }
-} display;
+};
 
 class Ping : public Command {
  public:
@@ -85,7 +86,29 @@ class Ping : public Command {
         core::com::printf("ping\n");
         std::printf("ping\n");
     }
-} ping;
+};
+
+
+void setup() {
+	std::printf("DBG COMMAND SETUP\n");
+	static SetTemperature setTemperature;
+	static SetPIDCoefficients setPIDCoefficients;
+	static SetTipScaling setTipScaling;
+	static SendConfig sendConfig;
+	static Display display;
+	static Ping ping;
+	
+	static Command * commands[] = {
+		&setTemperature,
+		&setPIDCoefficients,
+		&setTipScaling,
+		&sendConfig,
+		&ping,
+		&display
+
+	};
+	libs::CLI::set_commands(libs::array_view<Command *>(commands));
+}
 
 };  // namespace commands
 };  // namespace core

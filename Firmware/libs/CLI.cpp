@@ -3,10 +3,13 @@
 namespace libs {
 namespace CLI {
 
-size_t nrOfCommands = 0;
-std::array<Command *, 50> commands;
+libs::array_view<Command *> commands;
 
-void parse_line(char *line) {
+void set_commands(libs::array_view<Command *> cmds) {
+	commands = cmds;
+}
+
+bool parse_line(char *line) {
 //    printf("parse: %s\n", line);
     size_t len = strlen(line);
     static std::array<char*, 20> params;
@@ -17,10 +20,7 @@ void parse_line(char *line) {
         }
     }
 
-
-
-    for (int i = 0; i < nrOfCommands; ++i) {
-        auto cmd = commands[i];
+	for(auto cmd : commands) {
 //        printf("now: %s\n", cmd->name);
         if (strcmp(cmd->name, line) == 0) {
             // found command
@@ -43,11 +43,11 @@ void parse_line(char *line) {
             }
 
             libs::array_view<char *> view(params.data(), param_nr);
-            cmd->callbackDispatcher(view);
-            return;
+            return cmd->callbackDispatcher(view);
         }
     }
     printf("No such command: |%s|!\r\n", line);
+	return false;
 }
 
 };  // namespace CLI

@@ -7,6 +7,7 @@
 namespace HAL {
 
 namespace Display {
+	extern float backlight, contrast;
 };  // namespace Display
 
 namespace Tip {

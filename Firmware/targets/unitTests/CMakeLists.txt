@@ -1,8 +1,8 @@
 set(NAME unit_tests)
 
-set(SOURCES
-	Average.cpp
-	test.cpp
+file(GLOB SOURCES
+        "*.h"
+        "*.cpp"
 )
 
 add_executable(${NAME} ${SOURCES})
@@ -11,7 +11,6 @@ target_compile_options(${NAME} PRIVATE "-fexceptions")
 
 target_link_libraries(${NAME}
 	libs
+	core
 	gtest
 )
-
-#set (EXEC_OBJ ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/${NAME})

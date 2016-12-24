@@ -1,8 +1,8 @@
 #include <cstdlib>
 
 #include "CLI.h"
-#include "core.h"
 #include "com.h"
+#include "core.h"
 #include "display.h"
 
 namespace core {
@@ -15,7 +15,7 @@ class SetTemperature : public Command {
     SetTemperature() : Command("temp", 1) {
     }
 
-    void callback(const libs::array_view<char *> parameters) override {
+    void callback(const libs::array_view<char*> parameters) override {
         core::target = static_cast<float>(std::atof(parameters[0]));
         core::com::printf("temp %f\n", core::pid.target);
     }
@@ -26,7 +26,7 @@ class SetPIDCoefficients : public Command {
     SetPIDCoefficients() : Command("pid", 3) {
     }
 
-    void callback(const libs::array_view<char *> parameters) override {
+    void callback(const libs::array_view<char*> parameters) override {
         core::pid.params.Kp = static_cast<float>(std::atof(parameters[0]));
         core::pid.params.Ki = static_cast<float>(std::atof(parameters[1]));
         core::pid.params.Kd = static_cast<float>(std::atof(parameters[2]));
@@ -39,28 +39,27 @@ class SetTipScaling : public Command {
     SetTipScaling() : Command("tip", 2) {
     }
 
-    void callback(const libs::array_view<char *> parameters) override {
+    void callback(const libs::array_view<char*> parameters) override {
         core::tempSensor::params.offset = static_cast<float>(std::atof(parameters[0]));
         core::tempSensor::params.gain = static_cast<float>(std::atof(parameters[1]));
     }
 };
-
 
 class SendConfig : public Command {
  public:
     SendConfig() : Command("conf", 0) {
     }
 
-    void callback(const libs::array_view<char *> parameters) override {
+    void callback(const libs::array_view<char*> parameters) override {
         core::com::printf("conf %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f\n",
-                          core::target,
-                          core::pid.params.Kp,
-                          core::pid.params.Ki,
-                          core::pid.params.Kd,
-                          core::tempSensor::params.offset,
-                          core::tempSensor::params.gain,
-                          core::display::backlight,
-                          core::display::contrast);
+            core::target,
+            core::pid.params.Kp,
+            core::pid.params.Ki,
+            core::pid.params.Kd,
+            core::tempSensor::params.offset,
+            core::tempSensor::params.gain,
+            core::display::backlight,
+            core::display::contrast);
     }
 };
 
@@ -69,7 +68,7 @@ class Display : public Command {
     Display() : Command("disp", 2) {
     }
 
-    void callback(const libs::array_view<char *> parameters) override {
+    void callback(const libs::array_view<char*> parameters) override {
         core::display::setBacklight(static_cast<float>(std::atof(parameters[0])));
         core::display::setContrast(static_cast<float>(std::atof(parameters[1])));
     }
@@ -80,31 +79,24 @@ class Ping : public Command {
     Ping() : Command("ping", 0) {
     }
 
-    void callback(const libs::array_view<char *> parameters) override {
+    void callback(const libs::array_view<char*> parameters) override {
         core::com::printf("ping\n");
         core::com::printf("ping\n");
     }
 };
 
-
 void setup() {
-	static SetTemperature setTemperature;
-	static SetPIDCoefficients setPIDCoefficients;
-	static SetTipScaling setTipScaling;
-	static SendConfig sendConfig;
-	static Display display;
-	static Ping ping;
-	
-	static Command * commands[] = {
-		&setTemperature,
-		&setPIDCoefficients,
-		&setTipScaling,
-		&sendConfig,
-		&ping,
-		&display
+    static SetTemperature setTemperature;
+    static SetPIDCoefficients setPIDCoefficients;
+    static SetTipScaling setTipScaling;
+    static SendConfig sendConfig;
+    static Display display;
+    static Ping ping;
 
-	};
-	libs::CLI::set_commands(libs::array_view<Command *>(commands));
+    static Command* commands[] = {&setTemperature, &setPIDCoefficients, &setTipScaling, &sendConfig, &ping, &display
+
+    };
+    libs::CLI::set_commands(libs::array_view<Command*>(commands));
 }
 
 }  // namespace commands

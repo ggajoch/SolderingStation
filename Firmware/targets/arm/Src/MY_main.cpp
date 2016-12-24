@@ -1,15 +1,15 @@
 #include <stdint.h>
 
-#include "core.h"
 #include "HAL.h"
 #include "STM32_HAL.h"
 #include "com.h"
+#include "core.h"
 
 #include "adc.h"
 #include "hd44780.h"
 
 extern "C" {
-    extern volatile uint8_t tickTimeElapsed;
+extern volatile uint8_t tickTimeElapsed;
 }
 
 extern "C" void MY_main() {
@@ -28,6 +28,6 @@ extern "C" void MY_main() {
     }
 }
 
-extern "C" void HAL_CmdCallback(char * buf) {
+extern "C" void HAL_CmdCallback(char* buf) {
     HAL::Com::callback(buf);
 }

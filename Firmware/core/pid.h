@@ -24,10 +24,10 @@ class PID {
     }
 
     float tick(float temp) {
-        error = target-temp;
+        error = target - temp;
 
         float diff = error - prevError;
-        float pwr = params.Kp * error + params.Ki * (integral+error) + params.Kd * diff;
+        float pwr = params.Kp * error + params.Ki * (integral + error) + params.Kd * diff;
 
         if (lowerLimit < pwr && pwr < upperLimit) {
             integral += error;

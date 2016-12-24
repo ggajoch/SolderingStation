@@ -12,5 +12,4 @@ void encoderCallback();
 }  // namespace sleepManager
 }  // namespace core
 
-
 #endif  // CORE_SLEEPMANAGER_H_

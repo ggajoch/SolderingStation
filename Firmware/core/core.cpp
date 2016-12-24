@@ -1,26 +1,25 @@
 #include <cstring>
-#include "array_view.h"
 #include "Average.h"
+#include "array_view.h"
 
 #include "HAL.h"
+#include "com.h"
+#include "commands.h"
 #include "config.h"
 #include "core.h"
-#include "com.h"
-#include "timer.h"
-#include "storage.h"
 #include "display.h"
-#include "sleepManager.h"
 #include "encoder.h"
-#include "commands.h"
+#include "sleepManager.h"
+#include "storage.h"
+#include "timer.h"
 
 namespace core {
 
 PID pid;
 float temp, target, power;
 
-
 void setup() {
-	commands::setup();
+    commands::setup();
     storage::read();
     HAL::Tip::setHeating(0);
     HAL::Com::setCallback(com::rxCommandCallback);

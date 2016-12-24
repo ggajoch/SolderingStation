@@ -1,8 +1,8 @@
 #ifndef CORE_CORE_H_
 #define CORE_CORE_H_
 
-#include "tempSensor.h"
 #include "pid.h"
+#include "tempSensor.h"
 
 namespace core {
 

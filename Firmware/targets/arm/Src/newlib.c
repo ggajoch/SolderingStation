@@ -9,7 +9,6 @@
 #include <sys/times.h>
 #include <sys/unistd.h>
 
-
 #ifndef STDOUT_USART
 #define STDOUT_USART 2
 #endif
@@ -30,10 +29,10 @@ extern int errno;
  A pointer to a list of environment variables and their values.
  For a minimal environment, this empty list is adequate:
  */
-char *__env[1] = { 0 };
-char **environ = __env;
+char* __env[1] = {0};
+char** environ = __env;
 
-int _write(int file, char *ptr, int len);
+int _write(int file, char* ptr, int len);
 
 void _exit(int status) {
     _write(1, "exit", 4);
@@ -49,7 +48,7 @@ int _close(int file) {
  execve
  Transfer control to a new process. Minimal implementation (for a system without processes):
  */
-int _execve(char *name, char **argv, char **env) {
+int _execve(char* name, char** argv, char** env) {
     errno = ENOMEM;
     return -1;
 }
@@ -68,14 +67,15 @@ int _fork() {
  all files are regarded as character special devices.
  The `sys/stat.h' header file required is distributed in the `include' subdirectory for this C library.
  */
-int _fstat(int file, struct stat *st) {
+int _fstat(int file, struct stat* st) {
     st->st_mode = S_IFCHR;
     return 0;
 }
 
 /*
  getpid
- Process-ID; this is sometimes used to generate strings unlikely to conflict with other processes. Minimal implementation, for a system without processes:
+ Process-ID; this is sometimes used to generate strings unlikely to conflict with other processes. Minimal implementation, for a system
+ without processes:
  */
 
 int _getpid() {
@@ -87,18 +87,17 @@ int _getpid() {
  Query whether output stream is a terminal. For consistency with the other minimal implementations,
  */
 int _isatty(int file) {
-    switch (file){
-    case STDOUT_FILENO:
-    case STDERR_FILENO:
-    case STDIN_FILENO:
-        return 1;
-    default:
-        //errno = ENOTTY;
-        errno = EBADF;
-        return 0;
+    switch (file) {
+        case STDOUT_FILENO:
+        case STDERR_FILENO:
+        case STDIN_FILENO:
+            return 1;
+        default:
+            // errno = ENOTTY;
+            errno = EBADF;
+            return 0;
     }
 }
-
 
 /*
  kill
@@ -114,7 +113,7 @@ int _kill(int pid, int sig) {
  Establish a new name for an existing file. Minimal implementation:
  */
 
-int _link(char *old, char *new) {
+int _link(char* old, char* new) {
     errno = EMLINK;
     return -1;
 }
@@ -141,19 +140,18 @@ caddr_t _sbrk(int incr) {
  Returns -1 on error or blocks until the number of characters have been read.
  */
 
-
-int _read(int file, char *ptr, int len) {
+int _read(int file, char* ptr, int len) {
     int n;
     int num = 0;
     switch (file) {
-    case STDIN_FILENO:
-        for (n = 0; n < len; n++) {
-            num++;
-        }
-        break;
-    default:
-        errno = EBADF;
-        return -1;
+        case STDIN_FILENO:
+            for (n = 0; n < len; n++) {
+                num++;
+            }
+            break;
+        default:
+            errno = EBADF;
+            return -1;
     }
     return num;
 }
@@ -164,7 +162,7 @@ int _read(int file, char *ptr, int len) {
  int    _EXFUN(stat,( const char *__path, struct stat *__sbuf ));
  */
 
-int _stat(const char *filepath, struct stat *st) {
+int _stat(const char* filepath, struct stat* st) {
     st->st_mode = S_IFCHR;
     return 0;
 }
@@ -174,7 +172,7 @@ int _stat(const char *filepath, struct stat *st) {
  Timing information for current process. Minimal implementation:
  */
 
-clock_t _times(struct tms *buf) {
+clock_t _times(struct tms* buf) {
     return -1;
 }
 
@@ -182,7 +180,7 @@ clock_t _times(struct tms *buf) {
  unlink
  Remove a file's directory entry. Minimal implementation:
  */
-int _unlink(char *name) {
+int _unlink(char* name) {
     errno = ENOENT;
     return -1;
 }
@@ -191,7 +189,7 @@ int _unlink(char *name) {
  wait
  Wait for a child process. Minimal implementation:
  */
-int _wait(int *status) {
+int _wait(int* status) {
     errno = ECHILD;
     return -1;
 }
@@ -201,20 +199,20 @@ int _wait(int *status) {
  Write a character to a file. `libc' subroutines will use this system routine for output to all files, including stdout
  Returns -1 on error or number of bytes sent
  */
-int _write(int file, char *ptr, int len) {
+int _write(int file, char* ptr, int len) {
     int n;
     switch (file) {
-    case STDOUT_FILENO: /*stdout*/
-        for (n = 0; n < len; n++) {
-        }
-        break;
-    case STDERR_FILENO: /* stderr */
-        for (n = 0; n < len; n++) {
-        }
-        break;
-    default:
-        errno = EBADF;
-        return -1;
+        case STDOUT_FILENO: /*stdout*/
+            for (n = 0; n < len; n++) {
+            }
+            break;
+        case STDERR_FILENO: /* stderr */
+            for (n = 0; n < len; n++) {
+            }
+            break;
+        default:
+            errno = EBADF;
+            return -1;
     }
     return len;
 }

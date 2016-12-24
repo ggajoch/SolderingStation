@@ -1,7 +1,7 @@
-#include "Average.h"
 #include "tempSensor.h"
-#include "config.h"
+#include "Average.h"
 #include "HAL.h"
+#include "config.h"
 
 namespace core {
 namespace tempSensor {
@@ -9,7 +9,7 @@ namespace tempSensor {
 Params params;
 
 float calcTemperature(int raw_reading) {
-    return params.offset + params.gain*static_cast<float>(raw_reading);
+    return params.offset + params.gain * static_cast<float>(raw_reading);
 }
 
 float getAveragedTemperature() {

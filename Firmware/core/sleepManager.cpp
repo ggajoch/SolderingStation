@@ -1,5 +1,5 @@
-#include <cstdio>
 #include "sleepManager.h"
+#include <cstdio>
 #include "HAL.h"
 #include "core.h"
 
@@ -21,7 +21,6 @@ void encoderCallback() {
     std::printf("ENCODER\n");
     sleepState = !sleepState;
 }
-
 
 }  // namespace sleepManager
 }  // namespace core

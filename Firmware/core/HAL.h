@@ -20,8 +20,8 @@ bool inStand();
 };
 
 namespace Com {
-void puts(const char * data);
-void setCallback(void callback(char * data));
+void puts(const char* data);
+void setCallback(void callback(char* data));
 };
 
 namespace Encoder {

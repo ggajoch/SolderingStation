@@ -5,7 +5,7 @@
 
 namespace libs {
 
-template<typename Type, size_t elements>
+template <typename Type, size_t elements>
 class Average {
  private:
     std::array<Type, elements> history;
@@ -13,11 +13,11 @@ class Average {
 
  public:
     constexpr Average() : insertion_index(0) {
-        for (auto &elem : history)
+        for (auto& elem : history)
             elem = 0;
     }
 
-    void put(const Type &value) {
+    void put(const Type& value) {
         history[insertion_index++] = value;
         if (insertion_index == elements)
             insertion_index = 0;

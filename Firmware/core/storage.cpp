@@ -1,23 +1,20 @@
-#include "config.h"
 #include "storage.h"
-#include "timer.h"
-#include "tempSensor.h"
 #include "HAL.h"
+#include "config.h"
 #include "display.h"
+#include "tempSensor.h"
+#include "timer.h"
 
 namespace core {
 namespace storage {
 
 Elements actualState() {
-    return {
-            .targetTemperature = core::target,
-            .pidParams = core::pid.params,
-            .tipParams = core::tempSensor::params,
-            .contrast = core::display::contrast,
-            .backlight = core::display::backlight
-    };
+    return {.targetTemperature = core::target,
+        .pidParams = core::pid.params,
+        .tipParams = core::tempSensor::params,
+        .contrast = core::display::contrast,
+        .backlight = core::display::backlight};
 }
-
 
 Elements inMemory;
 
@@ -47,7 +44,6 @@ void tick() {
         HAL::Memory::store(inMemory.asArrayView());
     }
 }
-
 
 }  // namespace storage
 }  // namespace core

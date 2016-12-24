@@ -44,5 +44,5 @@ void setContrast(float percentage) {
 }
 
 
-};  // namespace display
-};  // namespace core
+}  // namespace display
+}  // namespace core

@@ -49,5 +49,5 @@ void tick() {
 }
 
 
-};  // namespace storage
-};  // namespace core
+}  // namespace storage
+}  // namespace core

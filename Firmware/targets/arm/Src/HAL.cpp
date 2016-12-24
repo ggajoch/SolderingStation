@@ -41,7 +41,7 @@ namespace Display {
         TM_HD44780_Puts(0, 0, line1);
         TM_HD44780_Puts(0, 1, line2);
     }
-};  // namespace Display
+}  // namespace Display
 
 namespace Tip {
     void setHeating(float percent) {
@@ -81,7 +81,7 @@ namespace Tip {
     bool inStand() {
         return false;
     }
-};  // namespace Tip
+}  // namespace Tip
 
 namespace Com {
     void puts(const char * data) {
@@ -92,12 +92,12 @@ namespace Com {
     void setCallback(void (*callback_)(char * data)) {
         callback = callback_;
     }
-};  // namespace Com
+}  // namespace Com
 
 namespace Encoder {
     int getCountAndReset() { return 0; }
     void setButtonCallback(void (*callback)()) {}
-};  // namespace Encoder
+}  // namespace Encoder
 
 namespace Memory {
     void store(libs::array_view<const uint8_t> data) {
@@ -121,6 +121,6 @@ namespace Memory {
 
         std::memcpy(data.data(), &elements, sizeof(core::storage::Elements));
     }
-};  // namespace Memory
+}  // namespace Memory
 
-};  // namespace HAL
+}  // namespace HAL

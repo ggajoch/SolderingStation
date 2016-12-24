@@ -23,5 +23,5 @@ float getAveragedTemperature() {
     return temperatureAverage.get();
 }
 
-};  // namespace tempSensor
-};  // namespace core
+}  // namespace tempSensor
+}  // namespace core

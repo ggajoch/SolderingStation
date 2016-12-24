@@ -35,7 +35,7 @@ class Command {
 void set_commands(libs::array_view<Command *> cmds);
 bool parse_line(char *line);
 
-};  // namespace CLI
-};  // namespace libs
+}  // namespace CLI
+}  // namespace libs
 
 #endif  // LIBS_CLI_H_

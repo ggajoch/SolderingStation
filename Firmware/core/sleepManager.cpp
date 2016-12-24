@@ -23,5 +23,5 @@ void encoderCallback() {
 }
 
 
-};  // namespace sleepManager
-};  // namespace core
+}  // namespace sleepManager
+}  // namespace core

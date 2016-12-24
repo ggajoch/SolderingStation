@@ -19,7 +19,7 @@ namespace Display {
     	contrast = percent;
     }
     void write(char array[2][16]) {}
-};  // namespace Display
+}  // namespace Display
 
 namespace Tip {
     float heatingPercentage;
@@ -40,7 +40,7 @@ namespace Tip {
     bool inStand() {
         return false;
     }
-};  // namespace Tip
+}  // namespace Tip
 
 namespace Com {
     char lastLine[100];
@@ -64,16 +64,16 @@ namespace Com {
     void setCallback(void (*callback_)(char * data)) {
         callback = callback_;
     }
-};  // namespace Com
+}  // namespace Com
 
 namespace Encoder {
     int getCountAndReset() { return 0; }
     void setButtonCallback(void (*callback)()) {}
-};  // namespace Encoder
+}  // namespace Encoder
 
 namespace Memory {
     void store(libs::array_view<const uint8_t> data) {}
     void get(libs::array_view<uint8_t> data) {}
-};  // namespace Memory
+}  // namespace Memory
 
-};  // namespace HAL
+}  // namespace HAL

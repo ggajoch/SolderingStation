@@ -107,5 +107,5 @@ void setup() {
 	libs::CLI::set_commands(libs::array_view<Command *>(commands));
 }
 
-};  // namespace commands
-};  // namespace core
+}  // namespace commands
+}  // namespace core

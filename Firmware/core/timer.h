@@ -9,7 +9,7 @@ namespace timer {
 void tick();
 std::chrono::milliseconds now();
 
-};  // namespace timer
-};  // namespace core
+}  // namespace timer
+}  // namespace core
 
 #endif  // CORE_TIMER_H_

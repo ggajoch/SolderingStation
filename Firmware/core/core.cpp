@@ -44,4 +44,4 @@ void tick() {
     storage::tick();
 }
 
-};  // namespace core
+}  // namespace core

@@ -45,6 +45,6 @@ class Average {
     }
 };
 
-};  // namespace libs
+}  // namespace libs
 
 #endif  // LIBS_AVERAGE_H_

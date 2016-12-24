@@ -32,7 +32,7 @@ namespace Display {
         line2[16] = '\0';
         core::com::printf("DISP |%s%s|\n", line1, line2);
     }
-};  // namespace Display
+}  // namespace Display
 
 namespace Tip {
     float heatingPercentage;
@@ -53,7 +53,7 @@ namespace Tip {
     bool inStand() {
         return inStandFlag;
     }
-};  // namespace Tip
+}  // namespace Tip
 
 namespace Com {
     void puts(const char * data) {
@@ -65,7 +65,7 @@ namespace Com {
     void setCallback(void (*callback_)(char * data)) {
         callback = callback_;
     }
-};  // namespace Com
+}  // namespace Com
 
 namespace Encoder {
     int count;
@@ -80,7 +80,7 @@ namespace Encoder {
     void setButtonCallback(void (*callback_)()) {
         callback = callback_;
     }
-};  // namespace Encoder
+}  // namespace Encoder
 
 namespace Memory {
     void store(libs::array_view<const uint8_t> data) {
@@ -105,6 +105,6 @@ namespace Memory {
 
         std::memcpy(data.data(), &elements, sizeof(core::storage::Elements));
     }
-};  // namespace Memory
+}  // namespace Memory
 
-};  // namespace HAL
+}  // namespace HAL

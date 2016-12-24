@@ -3,5 +3,5 @@ namespace commands {
 
 void setup();
 
-};  // namespace commands
-};  // namespace core
+}  // namespace commands
+}  // namespace core

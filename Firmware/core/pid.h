@@ -56,6 +56,6 @@ class PID {
     float integral;
 };
 
-};  // namespace core
+}  // namespace core
 
 #endif  // CORE_PID_H_

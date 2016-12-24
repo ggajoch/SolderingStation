@@ -8,24 +8,24 @@ namespace HAL {
 
 namespace Display {
 	extern float backlight, contrast;
-};  // namespace Display
+}  // namespace Display
 
 namespace Tip {
     extern float heatingPercentage;
     extern std::queue<uint16_t> rawTemperatureData;
-};  // namespace Tip
+}  // namespace Tip
 
 namespace Com {
     extern char lastLine[100];
     bool checkLastLine(const char * line);
-};  // namespace Com
+}  // namespace Com
 
 namespace Encoder {
-};  // namespace Encoder
+}  // namespace Encoder
 
 namespace Memory {
-};  // namespace Memory
+}  // namespace Memory
 
-};  // namespace HAL
+}  // namespace HAL
 
 #endif  // TARGETS_UNITTESTS_HALMOCK_H_

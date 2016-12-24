@@ -34,5 +34,5 @@ void tick() {
     HAL::Com::puts("*\n");
 }
 
-};  // namespace com
-};  // namespace core
+}  // namespace com
+}  // namespace core

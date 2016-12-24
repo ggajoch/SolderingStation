@@ -75,7 +75,7 @@ void tick() {
     }
     ticksSoFar++;
 }
-};  // namespace events
+}  // namespace events
 
 void simTick() {
     model.tick(HAL::Tip::heatingPercentage);

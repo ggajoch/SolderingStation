@@ -12,6 +12,6 @@ void tick();
 extern PID pid;
 extern float temp, target, power;
 
-};  // namespace core
+}  // namespace core
 
 #endif  // CORE_CORE_H_

@@ -56,5 +56,5 @@ bool parse_line(char *line) {
 	return false;
 }
 
-};  // namespace CLI
-};  // namespace libs
+}  // namespace CLI
+}  // namespace libs

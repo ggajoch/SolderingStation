@@ -11,7 +11,7 @@ constexpr static std::chrono::milliseconds tickDuration{100};
 
 constexpr static std::chrono::seconds timeToSaveDataToMemory{10};
 
-};  // namespace config
-};  // namespace core
+}  // namespace config
+}  // namespace core
 
 #endif  // CORE_CONFIG_H_

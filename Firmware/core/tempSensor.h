@@ -12,7 +12,7 @@ extern Params params;
 
 float getAveragedTemperature();
 
-};  // namespace tempSensor
-};  // namespace core
+}  // namespace tempSensor
+}  // namespace core
 
 #endif  // CORE_TEMPSENSOR_H_

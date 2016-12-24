@@ -34,6 +34,6 @@ void store(libs::array_view<const uint8_t> data);
 void get(libs::array_view<uint8_t> data);
 };
 
-};  // namespace HAL
+}  // namespace HAL
 
 #endif  // CORE_HAL_H_

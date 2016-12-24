@@ -1,18 +1,15 @@
 cmake_minimum_required(VERSION 3.1)
 
-include(toolchain.cmake)
+#include(toolchain.cmake)
 project(SolderingStation C CXX ASM)
 
 #set(CMAKE_BUILD_TYPE None)
 
-set(TARGET_PLATFORM "arm" CACHE STRING "Target platform")
+set(TARGET_PLATFORM "unitTests" CACHE STRING "Target platform")
 set(PLATFORM_PATH ${CMAKE_CURRENT_SOURCE_DIR}/targets/${TARGET_PLATFORM})
 if(NOT EXISTS ${PLATFORM_PATH})
   message(FATAL_ERROR "Target platform ${TARGET_PLATFORM} does not exist")
 endif()
-
-set(CMAKE_C_FLAGS "-std=gnu11 -Os ${CWARN} ${CTUNING} ${CMCU} ${RANDOM_DEFS}" CACHE STRING "compile flags" FORCE)
-set(CMAKE_CXX_FLAGS "-std=gnu++1z -Os -fno-exceptions -fno-rtti ${CXXWARN} ${CTUNING} ${CMCU} ${RANDOM_DEFS}" CACHE STRING "compile flags" FORCE)
 
 include(${PLATFORM_PATH}/settings.cmake)
 

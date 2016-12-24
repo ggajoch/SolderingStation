@@ -1,4 +1,4 @@
-#add_subdirectory(external)
+add_subdirectory(external)
 
 set(NAME libs)
 
@@ -7,13 +7,13 @@ set(SOURCES
 	CLI.h
     Average.h
 )
-set(CMAKE_C_FLAGS "-std=gnu11 -Os -fno-exceptions -fno-rtti -nostdlib ${CWARN} ${CTUNING} ${CMCU} ${RANDOM_DEFS}" CACHE STRING "compile flags" FORCE)
-set(CMAKE_CXX_FLAGS "-std=gnu++1z -Os -fno-exceptions -fno-rtti -nostdlib ${CXXWARN} ${CTUNING} ${CMCU} ${RANDOM_DEFS}" CACHE STRING "compile flags" FORCE)
 
-add_library(${NAME} STATIC ${SOURCES})
+add_library(${NAME} INTERFACE)
 
-target_link_libraries(${NAME}
-    
+set(LIBS_SRC ${SOURCES})
+target_sources(libs
+	INTERFACE
+		"${CMAKE_CURRENT_LIST_DIR}/CLI.cpp"
 )
 
-target_include_directories(${NAME} PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(${NAME} INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})

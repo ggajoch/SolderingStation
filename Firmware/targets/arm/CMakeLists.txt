@@ -33,25 +33,13 @@ set(SOURCES
 
 add_executable(${NAME} ${SOURCES})
 
-set_target_properties(${NAME} PROPERTIES LINK_FLAGS "-T ${PLATFORM_LINKER_SCRIPT} -specs=nosys.specs")
+set_target_properties(${NAME} PROPERTIES LINK_FLAGS "-T ${PLATFORM_LINKER_SCRIPT} -specs=nano.specs -Wl,--gc-sections")
 
 target_link_libraries(${NAME}
     core
 	libs
 )
 
-include(functions.cmake)
-
 target_generate_hex(${NAME})
-
 target_memory_report(${NAME})
-
 target_asm_listing(${NAME})
-#
-#target_jlink_flash(${NAME})
-#
-#target_format_sources(${NAME} "${SOURCES}")
-#
-#add_custom_target(swo_viewer
-#    COMMAND ${JLINKSWO} -cpufreq 14000000 -device ${DEVICE} -itmmask 0x3
-#)

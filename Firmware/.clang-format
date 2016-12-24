@@ -1,0 +1,66 @@
+BasedOnStyle: LLVM
+
+AccessModifierOffset: -3
+AlwaysBreakTemplateDeclarations: true
+AllowAllParametersOfDeclarationOnNextLine: true
+AlignAfterOpenBracket: false
+AllowShortBlocksOnASingleLine: false
+AllowShortCaseLabelsOnASingleLine: false
+AllowShortFunctionsOnASingleLine: false
+AllowShortIfStatementsOnASingleLine: false
+AllowShortLoopsOnASingleLine: false
+BinPackArguments: false
+BinPackParameters: false
+AlignOperands: false
+
+BreakBeforeBinaryOperators: false
+BreakBeforeBraces: Attach
+
+BreakBeforeTernaryOperators: false
+ColumnLimit: 140
+
+ContinuationIndentWidth: 4
+Cpp11BracedListStyle: true
+
+IndentCaseLabels: true
+IndentFunctionDeclarationAfterType: true
+IndentWidth: 4
+
+KeepEmptyLinesAtTheStartOfBlocks: false
+Language: Cpp
+
+MaxEmptyLinesToKeep: 1
+NamespaceIndentation: None
+PointerAlignment: Left
+SortIncludes: true
+SpaceAfterCStyleCast: false
+SpaceBeforeParens: ControlStatements
+SpacesBeforeTrailingComments: 2
+SpaceInEmptyParentheses: false
+SpacesInSquareBrackets: false
+SpacesInCStyleCastParentheses: false
+SpacesInParentheses: false
+Standard: Cpp11
+TabWidth: 4
+UseTab: Never
+
+IncludeCategories:
+  - Regex:           '^(<|")gtest/gtest.h'
+    Priority:        10
+  - Regex:           '^(<|")gtest'
+    Priority:        11
+  - Regex:           '^(<|")gmock/gmock.h'
+    Priority:        12
+  - Regex:           '^(<|")gmock'
+    Priority:        13
+  - Regex:           '^(<|")em_system.h'
+    Priority:        14
+  - Regex:           '^(<|")core_cm3.h'
+    Priority:        15
+  - Regex:           '^(<|")(assert|complex|ctype|errno|inttypes|iso646|limits|locale|math|setjmp|signal|std.+|string|tgmath|threads|time|uchar|wchar|wctype).h(>|")'
+    Priority:        1
+  - Regex:           '^<'
+    Priority:        2
+  - Regex:           '^"'
+    Priority:        20
+

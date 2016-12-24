@@ -10,10 +10,11 @@ set(SOURCES
 
 add_library(${NAME} INTERFACE)
 
-set(LIBS_SRC ${SOURCES})
 target_sources(libs
 	INTERFACE
 		"${CMAKE_CURRENT_LIST_DIR}/CLI.cpp"
 )
 
 target_include_directories(${NAME} INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
+
+target_format_sources(${NAME} "${SOURCES}")

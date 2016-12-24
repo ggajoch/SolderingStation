@@ -1,3 +1,9 @@
+#include<cctype>
+#include <cstdlib>
+#include <cstring>
+#include <cstdint>
+#include <array>
+
 #include "CLI.h"
 
 namespace libs {
@@ -15,7 +21,7 @@ bool parse_line(char *line) {
     static std::array<char*, 20> params;
 
     for (auto i = 0; i < len; ++i) {
-        if (isspace(line[i])) {
+        if (std::isspace(line[i])) {
             line[i] = '\0';
         }
     }
@@ -46,7 +52,7 @@ bool parse_line(char *line) {
             return cmd->callbackDispatcher(view);
         }
     }
-    printf("No such command: |%s|!\r\n", line);
+    //printf("No such command: |%s|!\r\n", line);
 	return false;
 }
 

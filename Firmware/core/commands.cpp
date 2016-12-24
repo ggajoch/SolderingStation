@@ -1,4 +1,3 @@
-#include <cstdio>
 #include <cstdlib>
 
 #include "CLI.h"
@@ -14,12 +13,11 @@ using libs::CLI::Command;
 class SetTemperature : public Command {
  public:
     SetTemperature() : Command("temp", 1) {
-		std::printf("TEMP command\n");
     }
 
     void callback(const libs::array_view<char *> parameters) override {
         core::target = static_cast<float>(std::atof(parameters[0]));
-        printf("temp %f\n", core::pid.target);
+        core::com::printf("temp %f\n", core::pid.target);
     }
 };
 
@@ -84,13 +82,12 @@ class Ping : public Command {
 
     void callback(const libs::array_view<char *> parameters) override {
         core::com::printf("ping\n");
-        std::printf("ping\n");
+        core::com::printf("ping\n");
     }
 };
 
 
 void setup() {
-	std::printf("DBG COMMAND SETUP\n");
 	static SetTemperature setTemperature;
 	static SetPIDCoefficients setPIDCoefficients;
 	static SetTipScaling setTipScaling;

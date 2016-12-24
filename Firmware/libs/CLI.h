@@ -1,15 +1,8 @@
 #ifndef LIBS_CLI_H_
 #define LIBS_CLI_H_
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <stdint.h>
-#include <array>
-
 #include "array_view.h"
-// #include "Com.h"
-#include <cstdio>
+
 namespace libs {
 namespace CLI {
 
@@ -17,7 +10,6 @@ class Command {
  public:
     explicit Command(const char * name) :
             name(name) {
-		std::printf("registering command %s\n", name);
         requiredArguments = -1;
     }
 

@@ -14,3 +14,5 @@ target_link_libraries(${NAME}
 	core
 	gtest
 )
+
+target_format_sources(${NAME} "${SOURCES}")

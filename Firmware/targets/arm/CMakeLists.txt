@@ -43,3 +43,5 @@ target_link_libraries(${NAME}
 target_generate_hex(${NAME})
 target_memory_report(${NAME})
 target_asm_listing(${NAME})
+
+target_format_sources(${NAME} "${SRC}")

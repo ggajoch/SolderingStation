@@ -17,3 +17,5 @@ target_sources(libs
 )
 
 target_include_directories(${NAME} INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
+
+target_format_sources(${NAME} "${SOURCES}")

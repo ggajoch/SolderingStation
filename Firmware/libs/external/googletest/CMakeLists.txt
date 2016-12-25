@@ -1,7 +1,5 @@
 include(ExternalProject)
 
-#set(OPTIONS "-std=gnu++1z -O2")
-
 ExternalProject_Add(gtest_source
   GIT_REPOSITORY https://github.com/google/googletest.git
   GIT_TAG master
@@ -26,7 +24,7 @@ ExternalProject_Get_Property(gtest_source binary_dir)
 function(addExternalLib name dependency source_location binary_location include_directory)
     add_library(${name} INTERFACE)
     add_dependencies(${name} ${dependency})
-    target_link_libraries(${name} INTERFACE "${binary_location}/${PRE_LIB}${name}${POST_LIB}")
+    target_link_libraries(${name} INTERFACE "${binary_location}/${CMAKE_FIND_LIBRARY_PREFIXES}${name}${CMAKE_STATIC_LIBRARY_SUFFIX}")
     target_include_directories(${name} INTERFACE "${include_directory}")
 endfunction(addExternalLib)
 

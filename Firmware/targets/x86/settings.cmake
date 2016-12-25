@@ -1,20 +1,10 @@
 set(CWARN "-Wall -Wstrict-prototypes -Wextra")
 set(CXXWARN "-Wall -Wextra")
 set(CTUNING "")
+set(RANDOM_DEFS "-D__weak=__attribute__((weak)) -D__packed=__attribute__((__packed__)) -DUNREFERENCED_PARAMETER(x)=(void)(x)")
 
-IF(UNIX)
-  set(CXXTHREADS "-lpthread")
-  set(PRE_LIB "lib")
-  set(POST_LIB ".a")
-else()
-  set(PRE_LIB "lib")
-  set(POST_LIB ".a")
-ENDIF(UNIX)
-
-
-set(RANDOM_DEFS "'-DUNREFERENCED_PARAMETER(x)=(void)(x)'")
 set(CMAKE_C_FLAGS "-std=gnu11 ${CWARN} ${CTUNING} ${CMCU}")
-set(CMAKE_CXX_FLAGS "-std=gnu++1z ${CXXWARN} ${CTUNING} ${CMCU} ${RANDOM_DEFS} ${CXXTHREADS}")
+set(CMAKE_CXX_FLAGS "-std=gnu++14 ${CXXWARN} ${CTUNING} ${CMCU} ${RANDOM_DEFS} ${CXXTHREADS}")
 set(CMAKE_CXX_STANDARD 14)
 
 set(DEBUG_COMP_OPTIONS "-DDEBUG -Og -g")

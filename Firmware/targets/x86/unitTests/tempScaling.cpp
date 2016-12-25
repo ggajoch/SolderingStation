@@ -1,7 +1,7 @@
 #include "gtest/gtest.h"
 
-#include "tempSensor.h"
 #include "HALmock.h"
+#include "tempSensor.h"
 
 constexpr float eps = 1e-4;
 
@@ -11,8 +11,9 @@ TEST(tempScaling, basic) {
 
 //    libs::Average<float, config::tempAverages> temperatureAverage;
 
-#define CLEAR()  while (!HAL::Tip::rawTemperatureData.empty()) \
-                       HAL::Tip::rawTemperatureData.pop()
+#define CLEAR()                                                                                                                            \
+    while (!HAL::Tip::rawTemperatureData.empty())                                                                                          \
+    HAL::Tip::rawTemperatureData.pop()
 
     CLEAR();
     for (int i = 0; i < 1000; ++i) {
@@ -26,7 +27,7 @@ TEST(tempScaling, basic) {
     CLEAR();
     for (int i = 0; i < 1000; ++i) {
         HAL::Tip::rawTemperatureData.push(i);
-        EXPECT_NEAR(core::tempSensor::getAveragedTemperature(), 1+2*i, eps);
+        EXPECT_NEAR(core::tempSensor::getAveragedTemperature(), 1 + 2 * i, eps);
         CLEAR();
     }
 
@@ -35,7 +36,7 @@ TEST(tempScaling, basic) {
     CLEAR();
     for (int i = 0; i < 1000; ++i) {
         HAL::Tip::rawTemperatureData.push(i);
-        EXPECT_NEAR(core::tempSensor::getAveragedTemperature(), 20.5+0.05*i, eps);
+        EXPECT_NEAR(core::tempSensor::getAveragedTemperature(), 20.5 + 0.05 * i, eps);
         CLEAR();
     }
 }

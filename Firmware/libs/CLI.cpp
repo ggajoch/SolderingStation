@@ -20,7 +20,7 @@ bool parse_line(char* line) {
     size_t len = strlen(line);
     static std::array<char*, 20> params;
 
-    for (auto i = 0; i < len; ++i) {
+    for (size_t i = 0; i < len; ++i) {
         if (std::isspace(line[i])) {
             line[i] = '\0';
         }

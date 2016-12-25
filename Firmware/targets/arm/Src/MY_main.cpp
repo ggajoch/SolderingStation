@@ -15,6 +15,9 @@ extern volatile uint8_t tickTimeElapsed;
 extern "C" void MY_main() {
     TM_HD44780_Init(16, 2);
 
+    TM_HD44780_Puts(4, 0, "station");
+    HAL::delay(1000);
+
     core::setup();
 
     float percent = 0;

@@ -1,6 +1,7 @@
 #ifndef CORE_STORAGE_H_
 #define CORE_STORAGE_H_
 
+#include <cstdint>
 #include <cstring>
 #include "array_view.h"
 #include "core.h"
@@ -17,8 +18,8 @@ struct Elements {
     float contrast;
     float backlight;
 
-    libs::array_view<uint8_t> asArrayView() {
-        return libs::make_array_view(reinterpret_cast<uint8_t*>(this), sizeof(*this));
+    libs::array_view<std::uint8_t> asArrayView() {
+        return libs::make_array_view(reinterpret_cast<std::uint8_t*>(this), sizeof(*this));
     }
 
     bool operator==(const Elements& rhs) {

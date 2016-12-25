@@ -43,3 +43,4 @@ Firmware/STM32F103/Debug
 
 build
 workspace
+unix

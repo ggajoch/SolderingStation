@@ -1,14 +1,16 @@
 #ifndef TARGETS_UNITTESTS_PLANTMODEL_H_
 #define TARGETS_UNITTESTS_PLANTMODEL_H_
 
+#include <cstdlib>
+#include <ctime>
+
 class TipModel {
  public:
-    double powerScaling = 1.25,            // 20 -> 380 deg in 5 sec
-           tipToJointConducance = 1.2,     // 20 -> 240 deg in 5 sec
-           jointToBoardConductance = 0.3;  // 210 -> 60 deg in 5 sec
+    double powerScaling = 1.25,         // 20 -> 380 deg in 5 sec
+        tipToJointConducance = 1.2,     // 20 -> 240 deg in 5 sec
+        jointToBoardConductance = 0.3;  // 210 -> 60 deg in 5 sec
 
-    const double tipThermalMass = 1.5,
-                 jointThermalMass = 2;
+    const double tipThermalMass = 1.5, jointThermalMass = 2;
 
     const double airLoss = 0.05;
 
@@ -34,17 +36,17 @@ class TipModel {
     }
 
     double airLossNow() {
-        return airLoss*(Ttip - Tboard) + (randomAir ? (std::rand() % 10 - 5) : 0);
+        return airLoss * (Ttip - Tboard) + (randomAir ? (std::rand() % 10 - 5) : 0);
     }
 
     void tick(float pwr) {
         // pwr in 0..100
 
         double dTtipdt = powerScaling * pwr - _tipToJointConducance * (Ttip - Tjoint) - airLossNow();
-        double dTjointdt = _tipToJointConducance*(Ttip - Tjoint) - jointToBoardConductance*(Tjoint - Tboard);
+        double dTjointdt = _tipToJointConducance * (Ttip - Tjoint) - jointToBoardConductance * (Tjoint - Tboard);
 
-        Ttip += dTtipdt/tipThermalMass * dt;
-        Tjoint += dTjointdt/jointThermalMass * dt;
+        Ttip += dTtipdt / tipThermalMass * dt;
+        Tjoint += dTjointdt / jointThermalMass * dt;
     }
 
     bool randomAir;

@@ -1,4 +1,4 @@
-#include <stdarg.h>
+#include <cstdarg>
 #include <cstdio>
 #include "CLI.h"
 #include "HAL.h"
@@ -12,7 +12,7 @@ int printf(const char* format, ...) {
     va_start(args, format);
 
     static char buf[100];
-    int n = vsprintf(buf, format, args);
+    int n = std::vsprintf(buf, format, args);
     HAL::Com::puts(buf);
 
     va_end(args);

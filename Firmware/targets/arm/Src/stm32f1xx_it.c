@@ -31,9 +31,9 @@
   ******************************************************************************
   */
 /* Includes ------------------------------------------------------------------*/
-#include "stm32f1xx_hal.h"
-#include "stm32f1xx.h"
 #include "stm32f1xx_it.h"
+#include "stm32f1xx.h"
+#include "stm32f1xx_hal.h"
 
 /* USER CODE BEGIN 0 */
 #include "stm32f1xx_hal_uart.h"
@@ -45,143 +45,130 @@ volatile uint8_t tickTimeElapsed = 0;
 extern UART_HandleTypeDef huart1;
 
 /******************************************************************************/
-/*            Cortex-M3 Processor Interruption and Exception Handlers         */ 
+/*            Cortex-M3 Processor Interruption and Exception Handlers         */
 /******************************************************************************/
 
 /**
 * @brief This function handles Non maskable interrupt.
 */
-void NMI_Handler(void)
-{
-  /* USER CODE BEGIN NonMaskableInt_IRQn 0 */
+void NMI_Handler(void) {
+    /* USER CODE BEGIN NonMaskableInt_IRQn 0 */
 
-  /* USER CODE END NonMaskableInt_IRQn 0 */
-  /* USER CODE BEGIN NonMaskableInt_IRQn 1 */
+    /* USER CODE END NonMaskableInt_IRQn 0 */
+    /* USER CODE BEGIN NonMaskableInt_IRQn 1 */
 
-  /* USER CODE END NonMaskableInt_IRQn 1 */
+    /* USER CODE END NonMaskableInt_IRQn 1 */
 }
 
 /**
 * @brief This function handles Hard fault interrupt.
 */
-void HardFault_Handler(void)
-{
-  /* USER CODE BEGIN HardFault_IRQn 0 */
+void HardFault_Handler(void) {
+    /* USER CODE BEGIN HardFault_IRQn 0 */
 
-  /* USER CODE END HardFault_IRQn 0 */
-  while (1)
-  {
-  }
-  /* USER CODE BEGIN HardFault_IRQn 1 */
+    /* USER CODE END HardFault_IRQn 0 */
+    while (1) {
+    }
+    /* USER CODE BEGIN HardFault_IRQn 1 */
 
-  /* USER CODE END HardFault_IRQn 1 */
+    /* USER CODE END HardFault_IRQn 1 */
 }
 
 /**
 * @brief This function handles Memory management fault.
 */
-void MemManage_Handler(void)
-{
-  /* USER CODE BEGIN MemoryManagement_IRQn 0 */
+void MemManage_Handler(void) {
+    /* USER CODE BEGIN MemoryManagement_IRQn 0 */
 
-  /* USER CODE END MemoryManagement_IRQn 0 */
-  while (1)
-  {
-  }
-  /* USER CODE BEGIN MemoryManagement_IRQn 1 */
+    /* USER CODE END MemoryManagement_IRQn 0 */
+    while (1) {
+    }
+    /* USER CODE BEGIN MemoryManagement_IRQn 1 */
 
-  /* USER CODE END MemoryManagement_IRQn 1 */
+    /* USER CODE END MemoryManagement_IRQn 1 */
 }
 
 /**
 * @brief This function handles Prefetch fault, memory access fault.
 */
-void BusFault_Handler(void)
-{
-  /* USER CODE BEGIN BusFault_IRQn 0 */
+void BusFault_Handler(void) {
+    /* USER CODE BEGIN BusFault_IRQn 0 */
 
-  /* USER CODE END BusFault_IRQn 0 */
-  while (1)
-  {
-  }
-  /* USER CODE BEGIN BusFault_IRQn 1 */
+    /* USER CODE END BusFault_IRQn 0 */
+    while (1) {
+    }
+    /* USER CODE BEGIN BusFault_IRQn 1 */
 
-  /* USER CODE END BusFault_IRQn 1 */
+    /* USER CODE END BusFault_IRQn 1 */
 }
 
 /**
 * @brief This function handles Undefined instruction or illegal state.
 */
-void UsageFault_Handler(void)
-{
-  /* USER CODE BEGIN UsageFault_IRQn 0 */
+void UsageFault_Handler(void) {
+    /* USER CODE BEGIN UsageFault_IRQn 0 */
 
-  /* USER CODE END UsageFault_IRQn 0 */
-  while (1)
-  {
-  }
-  /* USER CODE BEGIN UsageFault_IRQn 1 */
+    /* USER CODE END UsageFault_IRQn 0 */
+    while (1) {
+    }
+    /* USER CODE BEGIN UsageFault_IRQn 1 */
 
-  /* USER CODE END UsageFault_IRQn 1 */
+    /* USER CODE END UsageFault_IRQn 1 */
 }
 
 /**
 * @brief This function handles System service call via SWI instruction.
 */
-void SVC_Handler(void)
-{
-  /* USER CODE BEGIN SVCall_IRQn 0 */
+void SVC_Handler(void) {
+    /* USER CODE BEGIN SVCall_IRQn 0 */
 
-  /* USER CODE END SVCall_IRQn 0 */
-  /* USER CODE BEGIN SVCall_IRQn 1 */
+    /* USER CODE END SVCall_IRQn 0 */
+    /* USER CODE BEGIN SVCall_IRQn 1 */
 
-  /* USER CODE END SVCall_IRQn 1 */
+    /* USER CODE END SVCall_IRQn 1 */
 }
 
 /**
 * @brief This function handles Debug monitor.
 */
-void DebugMon_Handler(void)
-{
-  /* USER CODE BEGIN DebugMonitor_IRQn 0 */
+void DebugMon_Handler(void) {
+    /* USER CODE BEGIN DebugMonitor_IRQn 0 */
 
-  /* USER CODE END DebugMonitor_IRQn 0 */
-  /* USER CODE BEGIN DebugMonitor_IRQn 1 */
+    /* USER CODE END DebugMonitor_IRQn 0 */
+    /* USER CODE BEGIN DebugMonitor_IRQn 1 */
 
-  /* USER CODE END DebugMonitor_IRQn 1 */
+    /* USER CODE END DebugMonitor_IRQn 1 */
 }
 
 /**
 * @brief This function handles Pendable request for system service.
 */
-void PendSV_Handler(void)
-{
-  /* USER CODE BEGIN PendSV_IRQn 0 */
+void PendSV_Handler(void) {
+    /* USER CODE BEGIN PendSV_IRQn 0 */
 
-  /* USER CODE END PendSV_IRQn 0 */
-  /* USER CODE BEGIN PendSV_IRQn 1 */
+    /* USER CODE END PendSV_IRQn 0 */
+    /* USER CODE BEGIN PendSV_IRQn 1 */
 
-  /* USER CODE END PendSV_IRQn 1 */
+    /* USER CODE END PendSV_IRQn 1 */
 }
 
 /**
 * @brief This function handles System tick timer.
 */
-void SysTick_Handler(void)
-{
-  /* USER CODE BEGIN SysTick_IRQn 0 */
+void SysTick_Handler(void) {
+    /* USER CODE BEGIN SysTick_IRQn 0 */
 
-  /* USER CODE END SysTick_IRQn 0 */
-  HAL_IncTick();
-  HAL_SYSTICK_IRQHandler();
-  /* USER CODE BEGIN SysTick_IRQn 1 */
+    /* USER CODE END SysTick_IRQn 0 */
+    HAL_IncTick();
+    HAL_SYSTICK_IRQHandler();
+    /* USER CODE BEGIN SysTick_IRQn 1 */
 
-  static int cnt = 0;
-  if (cnt++ == 100) {
-	  cnt = 0;
-	  tickTimeElapsed = 1;
-  }
-  /* USER CODE END SysTick_IRQn 1 */
+    static int cnt = 0;
+    if (cnt++ == 100) {
+        cnt = 0;
+        tickTimeElapsed = 1;
+    }
+    /* USER CODE END SysTick_IRQn 1 */
 }
 
 /******************************************************************************/
@@ -194,33 +181,31 @@ void SysTick_Handler(void)
 /**
 * @brief This function handles USART1 global interrupt.
 */
-void USART1_IRQHandler(void)
-{
-  /* USER CODE BEGIN USART1_IRQn 0 */
-	static char USART1_buffer[100];
-	static uint8_t USART1_buffer_cnt = 0;
+void USART1_IRQHandler(void) {
+    /* USER CODE BEGIN USART1_IRQn 0 */
+    static char USART1_buffer[100];
+    static uint8_t USART1_buffer_cnt = 0;
 
-	uint32_t tmp_flag = 0, tmp_it_source = 0;
+    uint32_t tmp_flag = 0, tmp_it_source = 0;
 
-	tmp_flag = __HAL_UART_GET_FLAG(&huart1, UART_FLAG_RXNE);
-	tmp_it_source = __HAL_UART_GET_IT_SOURCE(&huart1, UART_IT_RXNE);
-	/* UART in mode Receiver ---------------------------------------------------*/
-	if((tmp_flag != RESET) && (tmp_it_source != RESET))
-	{
-		char now = USART1->DR;
+    tmp_flag = __HAL_UART_GET_FLAG(&huart1, UART_FLAG_RXNE);
+    tmp_it_source = __HAL_UART_GET_IT_SOURCE(&huart1, UART_IT_RXNE);
+    /* UART in mode Receiver ---------------------------------------------------*/
+    if ((tmp_flag != RESET) && (tmp_it_source != RESET)) {
+        char now = USART1->DR;
 
-		USART1_buffer[USART1_buffer_cnt++] = now;
-		if (now == '\n') {
-			USART1_buffer[USART1_buffer_cnt-1] = '\0';
-			USART1_buffer_cnt = 0;
-			void HAL_CmdCallback(char * buf);
-			HAL_CmdCallback(USART1_buffer);
-		}
-	}
-  /* USER CODE END USART1_IRQn 0 */
-  HAL_UART_IRQHandler(&huart1);
-  /* USER CODE BEGIN USART1_IRQn 1 */
-  /* USER CODE END USART1_IRQn 1 */
+        USART1_buffer[USART1_buffer_cnt++] = now;
+        if (now == '\n') {
+            USART1_buffer[USART1_buffer_cnt - 1] = '\0';
+            USART1_buffer_cnt = 0;
+            void HAL_CmdCallback(char* buf);
+            HAL_CmdCallback(USART1_buffer);
+        }
+    }
+    /* USER CODE END USART1_IRQn 0 */
+    HAL_UART_IRQHandler(&huart1);
+    /* USER CODE BEGIN USART1_IRQn 1 */
+    /* USER CODE END USART1_IRQn 1 */
 }
 
 /* USER CODE BEGIN 1 */

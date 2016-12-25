@@ -98,11 +98,13 @@ int getCountAndReset() {
     return 0;
 }
 void setButtonCallback(void (*callback)()) {
+    UNREFERENCED_PARAMETER(callback);
 }
 }  // namespace Encoder
 
 namespace Memory {
 void store(libs::array_view<const uint8_t> data) {
+    UNREFERENCED_PARAMETER(data);
     Com::puts("SAVING TO MEMORY\n");
 }
 void get(libs::array_view<uint8_t> data) {

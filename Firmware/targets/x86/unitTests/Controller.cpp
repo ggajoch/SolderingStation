@@ -1,7 +1,7 @@
 #include "gtest/gtest.h"
 
-#include "config.h"
 #include "HALmock.h"
+#include "config.h"
 #include "core.h"
 
 constexpr float eps = 1e-5;
@@ -30,5 +30,5 @@ TEST(Controller, averaging) {
     }
     core::tick();
 
-//    EXPECT_NEAR(core::temperatureAverage.get(), 100, eps);
+    //    EXPECT_NEAR(core::temperatureAverage.get(), 100, eps);
 }

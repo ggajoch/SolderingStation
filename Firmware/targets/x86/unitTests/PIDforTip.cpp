@@ -1,7 +1,7 @@
 #include <gtest/gtest.h>
 
-#include "plantModel.h"
 #include "pid.h"
+#include "plantModel.h"
 
 constexpr double eps = 1e-5;
 
@@ -20,7 +20,7 @@ TEST(plantTip, simplesoldering) {
         for (int tick = 0; tick < 10; tick++) {
             float pwr = pid.tick(model.Ttip);
             model.tick(pwr);
-//            std::printf("%f\t%f\t%f\n", model.Ttip, pwr, pid.integral);
+            //            std::printf("%f\t%f\t%f\n", model.Ttip, pwr, pid.integral);
         }
     }
 
@@ -32,7 +32,7 @@ TEST(plantTip, simplesoldering) {
         for (int tick = 0; tick < 10; tick++) {
             float pwr = pid.tick(model.Ttip);
             model.tick(pwr);
-//            std::printf("%f\t%f\t%f\n", model.Ttip, pwr, pid.integral);
+            //            std::printf("%f\t%f\t%f\n", model.Ttip, pwr, pid.integral);
         }
     }
 
@@ -44,7 +44,7 @@ TEST(plantTip, simplesoldering) {
         for (int tick = 0; tick < 20; tick++) {
             float pwr = pid.tick(model.Ttip);
             model.tick(pwr);
-//            std::printf("%f\t%f\t%f\n", model.Ttip, pwr, pid.integral);
+            //            std::printf("%f\t%f\t%f\n", model.Ttip, pwr, pid.integral);
         }
     }
 

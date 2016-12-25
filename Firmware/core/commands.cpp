@@ -51,6 +51,7 @@ class SendConfig : public Command {
     }
 
     void callback(const libs::array_view<char*> parameters) override {
+        UNREFERENCED_PARAMETER(parameters);
         core::com::printf("conf %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f\n",
             core::target,
             core::pid.params.Kp,
@@ -80,6 +81,7 @@ class Ping : public Command {
     }
 
     void callback(const libs::array_view<char*> parameters) override {
+        UNREFERENCED_PARAMETER(parameters);
         core::com::printf("ping\n");
         core::com::printf("ping\n");
     }

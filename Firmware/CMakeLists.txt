@@ -1,16 +1,15 @@
 cmake_minimum_required(VERSION 3.1)
 
-include(functions.cmake)
-include(toolchain.cmake)
-project(SolderingStation C CXX ASM)
-
 set(TARGET_PLATFORM "arm" CACHE STRING "Target platform")
-
 set(PLATFORM_PATH ${CMAKE_CURRENT_SOURCE_DIR}/targets/${TARGET_PLATFORM})
 if(NOT EXISTS ${PLATFORM_PATH})
   message(FATAL_ERROR "Target platform ${TARGET_PLATFORM} does not exist")
 endif()
 
+
+include(functions.cmake)
+include(${PLATFORM_PATH}/toolchain.cmake)
+project(SolderingStation C CXX ASM)
 include(${PLATFORM_PATH}/settings.cmake)
 
 set(OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR}/build/${TARGET_PLATFORM})

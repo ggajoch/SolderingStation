@@ -9,18 +9,6 @@
 #include <sys/times.h>
 #include <sys/unistd.h>
 
-#ifndef STDOUT_USART
-#define STDOUT_USART 2
-#endif
-
-#ifndef STDERR_USART
-#define STDERR_USART 2
-#endif
-
-#ifndef STDIN_USART
-#define STDIN_USART 2
-#endif
-
 #undef errno
 extern int errno;
 
@@ -35,6 +23,7 @@ char** environ = __env;
 int _write(int file, char* ptr, int len);
 
 void _exit(int status) {
+    (void)(status);
     _write(1, "exit", 4);
     while (1) {
         ;
@@ -42,6 +31,7 @@ void _exit(int status) {
 }
 
 int _close(int file) {
+    (void)(file);
     return -1;
 }
 /*
@@ -49,6 +39,9 @@ int _close(int file) {
  Transfer control to a new process. Minimal implementation (for a system without processes):
  */
 int _execve(char* name, char** argv, char** env) {
+    (void)(name);
+    (void)(argv);
+    (void)(env);
     errno = ENOMEM;
     return -1;
 }
@@ -68,6 +61,7 @@ int _fork() {
  The `sys/stat.h' header file required is distributed in the `include' subdirectory for this C library.
  */
 int _fstat(int file, struct stat* st) {
+    (void)(file);
     st->st_mode = S_IFCHR;
     return 0;
 }
@@ -104,6 +98,8 @@ int _isatty(int file) {
  Send a signal. Minimal implementation:
  */
 int _kill(int pid, int sig) {
+    (void)(pid);
+    (void)(sig);
     errno = EINVAL;
     return (-1);
 }
@@ -114,6 +110,8 @@ int _kill(int pid, int sig) {
  */
 
 int _link(char* old, char* new) {
+    (void)(old);
+    (void)(new);
     errno = EMLINK;
     return -1;
 }
@@ -123,6 +121,9 @@ int _link(char* old, char* new) {
  Set position in a file. Minimal implementation:
  */
 int _lseek(int file, int ptr, int dir) {
+    (void)(file);
+    (void)(ptr);
+    (void)(dir);
     return 0;
 }
 
@@ -132,6 +133,8 @@ int _lseek(int file, int ptr, int dir) {
  Malloc and related functions depend on this
  */
 caddr_t _sbrk(int incr) {
+    (void)(incr);
+    return 0;
 }
 
 /*
@@ -141,6 +144,7 @@ caddr_t _sbrk(int incr) {
  */
 
 int _read(int file, char* ptr, int len) {
+    (void)(ptr);
     int n;
     int num = 0;
     switch (file) {
@@ -163,6 +167,7 @@ int _read(int file, char* ptr, int len) {
  */
 
 int _stat(const char* filepath, struct stat* st) {
+    (void)(filepath);
     st->st_mode = S_IFCHR;
     return 0;
 }
@@ -173,6 +178,7 @@ int _stat(const char* filepath, struct stat* st) {
  */
 
 clock_t _times(struct tms* buf) {
+    (void)(buf);
     return -1;
 }
 
@@ -181,6 +187,7 @@ clock_t _times(struct tms* buf) {
  Remove a file's directory entry. Minimal implementation:
  */
 int _unlink(char* name) {
+    (void)(name);
     errno = ENOENT;
     return -1;
 }
@@ -190,6 +197,7 @@ int _unlink(char* name) {
  Wait for a child process. Minimal implementation:
  */
 int _wait(int* status) {
+    (void)(status);
     errno = ECHILD;
     return -1;
 }
@@ -200,6 +208,7 @@ int _wait(int* status) {
  Returns -1 on error or number of bytes sent
  */
 int _write(int file, char* ptr, int len) {
+    (void)(ptr);
     int n;
     switch (file) {
         case STDOUT_FILENO: /*stdout*/

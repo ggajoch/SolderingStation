@@ -1,5 +1,5 @@
-#include "gtest/gtest.h"
 #include "Average.h"
+#include "gtest/gtest.h"
 
 constexpr float eps = 1e-4;
 
@@ -34,7 +34,7 @@ TEST(AverageTest, oneHundredPoints) {
     EXPECT_NEAR(average.get(), 0, eps);
     for (int i = 1; i < 1000; ++i) {
         average.put(1570);
-        EXPECT_NEAR(average.get(), std::min(1570.0*i/100.0, 1570.0), eps);
+        EXPECT_NEAR(average.get(), std::min(1570.0 * i / 100.0, 1570.0), eps);
     }
 }
 

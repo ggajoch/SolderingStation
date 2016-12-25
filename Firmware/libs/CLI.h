@@ -6,17 +6,19 @@
 namespace libs {
 namespace CLI {
 
+constexpr int maximumRequiredArguments = 1001;
+
 class Command {
  public:
     explicit Command(const char* name) : name(name) {
-        requiredArguments = -1;
+        requiredArguments = maximumRequiredArguments;
     }
 
-    Command(const char* name, int requiredArguments) : name(name), requiredArguments(requiredArguments) {
+    Command(const char* name, unsigned int requiredArguments) : name(name), requiredArguments(requiredArguments) {
     }
 
     bool callbackDispatcher(const array_view<char*> parameters) {
-        if (requiredArguments > -1 && parameters.size() != requiredArguments) {
+        if (requiredArguments < maximumRequiredArguments && parameters.size() != requiredArguments) {
             return false;
         }
         callback(parameters);
@@ -24,10 +26,11 @@ class Command {
     }
 
     virtual void callback(const libs::array_view<char*> parameters) {
+        UNREFERENCED_PARAMETER(parameters);
     }
 
     const char* name;
-    int requiredArguments;
+    unsigned int requiredArguments;
 };
 
 void set_commands(libs::array_view<Command*> cmds);

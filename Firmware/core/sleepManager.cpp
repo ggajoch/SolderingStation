@@ -1,5 +1,6 @@
-#include "sleepManager.h"
 #include <cstdio>
+
+#include "sleepManager.h"
 #include "HAL.h"
 #include "core.h"
 

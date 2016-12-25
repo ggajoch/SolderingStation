@@ -1,7 +1,7 @@
 #ifndef CORE_PID_H_
 #define CORE_PID_H_
 
-#include <math.h>
+#include <cmath>
 
 namespace core {
 

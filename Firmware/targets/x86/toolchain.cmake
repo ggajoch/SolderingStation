@@ -1,0 +1,1 @@
+find_program(CLANG_FORMAT NAMES clang-format HINTS $ENV{CLANG_PATH})

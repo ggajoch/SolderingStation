@@ -1,5 +1,5 @@
-#include "gtest/gtest.h"
 #include "array_view.h"
+#include "gtest/gtest.h"
 
 TEST(array_view, check_values) {
     constexpr int size = 10;
@@ -32,11 +32,11 @@ TEST(array_view, check_values) {
     EXPECT_EQ(carv.size_bytes(), 40);
 
     int i = 0;
-    for (auto &x : arv) {
+    for (auto& x : arv) {
         EXPECT_EQ(x, i++);
     }
     i = 0;
-    for (const auto &x : carv) {
+    for (const auto& x : carv) {
         EXPECT_EQ(x, i++);
     }
 
@@ -84,7 +84,7 @@ TEST(array_view, reset) {
     for (int i = 0; i < size; ++i) {
         tab[i] = i;
     }
-    libs::array_view<int32_t> arv(tab);
+    libs::array_view<int> arv(tab);
 
     for (int i = 0; i < size; ++i) {
         EXPECT_EQ(arv[i], i);
@@ -105,12 +105,12 @@ TEST(array_view, pointers) {
     for (int i = 0; i < size; ++i) {
         tab[i] = i;
     }
-    libs::array_view<int32_t> arv(tab);
-    const libs::array_view<int32_t> carv(arv);
+    libs::array_view<int> arv(tab);
+    const libs::array_view<int> carv(arv);
 
-    int32_t * ptr = arv.data();
+    int* ptr = arv.data();
     EXPECT_EQ(ptr, arv.data());
-    const int32_t * cptr = carv.data();
+    const int* cptr = carv.data();
     EXPECT_EQ(cptr, carv.data());
 }
 
@@ -120,13 +120,13 @@ TEST(array_view, references) {
     for (int i = 0; i < size; ++i) {
         tab[i] = i;
     }
-    libs::array_view<int32_t> arv(tab);
-    const libs::array_view<int32_t> carv(tab);
+    libs::array_view<int> arv(tab);
+    const libs::array_view<int> carv(tab);
 
     EXPECT_EQ(&arv[0], arv.begin());
-    EXPECT_EQ(&arv[0]+10, arv.end());
+    EXPECT_EQ(&arv[0] + 10, arv.end());
     EXPECT_EQ(&carv[0], carv.begin());
-    EXPECT_EQ(&carv[0]+10, carv.end());
+    EXPECT_EQ(&carv[0] + 10, carv.end());
 
     EXPECT_EQ(arv[0], arv.front());
     EXPECT_EQ(arv[9], arv.back());
@@ -140,20 +140,20 @@ TEST(array_view, slice) {
     for (int i = 0; i < size; ++i) {
         tab[i] = i;
     }
-    int * const tab_ptr = tab;
-    libs::array_view<int32_t> arv(tab_ptr, 100);
+    int* const tab_ptr = tab;
+    libs::array_view<int> arv(tab_ptr, 100);
 
-    libs::array_view<int32_t> arv2(arv.slice(50));
+    libs::array_view<int> arv2(arv.slice(50));
 
     EXPECT_EQ(arv2.size(), 50);
     for (int i = 0; i < arv2.size(); ++i) {
-        EXPECT_EQ(arv2[i], i+50);
+        EXPECT_EQ(arv2[i], i + 50);
     }
 
     arv2 = arv.slice(20, 30);
 
     EXPECT_EQ(arv2.size(), 10);
     for (int i = 0; i < arv2.size(); ++i) {
-        EXPECT_EQ(arv2[i], i+20);
+        EXPECT_EQ(arv2[i], i + 20);
     }
 }

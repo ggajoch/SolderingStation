@@ -157,7 +157,7 @@ void TM_HD44780_Clear(void) {
     HD44780_Delay(3000);
 }
 
-void TM_HD44780_Puts(uint8_t x, uint8_t y, char* str) {
+void TM_HD44780_Puts(uint8_t x, uint8_t y, const char* str) {
     TM_HD44780_CursorSet(x, y);
     while (*str) {
         if (HD44780_Opts.currentX >= HD44780_Opts.Cols) {

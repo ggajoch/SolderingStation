@@ -21,7 +21,6 @@ TEST(PID, noOutput) {
     EXPECT_NEAR(pid.tick(100), 0, eps);
 }
 
-
 TEST(PID, proportional) {
     core::PID pid;
     pid.params.Kp = -1;
@@ -33,12 +32,11 @@ TEST(PID, proportional) {
         EXPECT_NEAR(pid.tick(i), i, eps);
     }
 
-
     pid.params.Kp = 1.5f;
     pid.target = 10.0f;
     EXPECT_NEAR(pid.tick(10), 0, eps);
     for (float i = -500; i <= 500; i += 0.7) {
-        EXPECT_NEAR(pid.tick(i), -1.5*(i-10), eps);
+        EXPECT_NEAR(pid.tick(i), -1.5 * (i - 10), eps);
     }
 }
 
@@ -59,8 +57,8 @@ TEST(PID, integral) {
     EXPECT_NEAR(pid.tick(10), 0, eps);
     float sum = 0;
     for (float i = -500; i <= 500; i += 0.7) {
-        sum += (i-10.0f);
-        EXPECT_NEAR(pid.tick(i), -1.5*sum, 10*eps);
+        sum += (i - 10.0f);
+        EXPECT_NEAR(pid.tick(i), -1.5 * sum, 10 * eps);
     }
 }
 
@@ -73,7 +71,7 @@ TEST(PID, derivative) {
     EXPECT_NEAR(pid.tick(0), 0, eps);
 
     for (int i = 1; i <= 500; ++i) {
-        EXPECT_NEAR(pid.tick(0), -(i-1), eps);
+        EXPECT_NEAR(pid.tick(0), -(i - 1), eps);
         EXPECT_NEAR(pid.tick(i), i, eps);
     }
 
@@ -83,7 +81,7 @@ TEST(PID, derivative) {
     EXPECT_NEAR(pid.tick(10), 0, eps);
 
     for (float i = 10.7; i <= 500; i += 0.7) {
-        EXPECT_NEAR(pid.tick(i), -1.5f*0.7f, eps);
+        EXPECT_NEAR(pid.tick(i), -1.5f * 0.7f, eps);
     }
 }
 
@@ -123,7 +121,7 @@ TEST(PID, antiWindup) {
     }
     for (int i = 1; i <= 100; ++i) {
         float pwr = pid.tick(temp);
-//        printf("%f\t%f\t%f\n", pwr, temp, pid.integral);
+        //        printf("%f\t%f\t%f\n", pwr, temp, pid.integral);
         EXPECT_GT(pwr, 99.0f);
         EXPECT_LT(pid.integral, pid.upperLimit);
         EXPECT_GT(pid.integral, pid.lowerLimit);

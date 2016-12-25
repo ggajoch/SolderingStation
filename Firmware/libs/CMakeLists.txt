@@ -2,17 +2,16 @@ add_subdirectory(external)
 
 set(NAME libs)
 
-set(SOURCES
-	CLI.cpp
-	CLI.h
-    Average.h
+file(GLOB SOURCES
+	"*.h"
+	"*.cpp"
 )
 
 add_library(${NAME} INTERFACE)
 
 target_sources(libs
 	INTERFACE
-		"${CMAKE_CURRENT_LIST_DIR}/CLI.cpp"
+		"${SOURCES}"
 )
 
 target_include_directories(${NAME} INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})

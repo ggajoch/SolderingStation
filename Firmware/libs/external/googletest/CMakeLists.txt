@@ -3,8 +3,8 @@ include(ExternalProject)
 set(OPTIONS "${CMAKE_CXX_FLAGS}")
 
 ExternalProject_Add(gtest_source
-  GIT_REPOSITORY https://github.com/PW-Sat2/googletest.git
-  GIT_TAG newlib
+  GIT_REPOSITORY https://github.com/google/googletest.git
+  GIT_TAG master
   PREFIX ${CMAKE_CURRENT_BINARY_DIR}/gtest
   UPDATE_DISCONNECTED 1
   INSTALL_COMMAND ""

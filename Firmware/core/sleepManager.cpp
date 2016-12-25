@@ -1,8 +1,8 @@
 #include <cstdio>
 
-#include "sleepManager.h"
 #include "HAL.h"
 #include "core.h"
+#include "sleepManager.h"
 
 namespace core {
 namespace sleepManager {

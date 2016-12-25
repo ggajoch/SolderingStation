@@ -1,6 +1,6 @@
 include(ExternalProject)
 
-set(OPTIONS "${CMAKE_CXX_FLAGS}")
+#set(OPTIONS "-std=gnu++1z -O2")
 
 ExternalProject_Add(gtest_source
   GIT_REPOSITORY https://github.com/google/googletest.git
@@ -12,7 +12,7 @@ ExternalProject_Add(gtest_source
     -DBUILD_GMOCK=ON
     -DBUILD_GTEST=ON
     #-DCMAKE_TOOLCHAIN_FILE=${PROJECT_SOURCE_DIR}/toolchain.cmake
-    -DCMAKE_CXX_FLAGS=${OPTIONS}
+    #-DCMAKE_CXX_FLAGS=${OPTIONS}
     -DCMAKE_MAKE_PROGRAM=${CMAKE_MAKE_PROGRAM}
     -DCMAKE_BUILD_TYPE:STRING=$<CONFIG>
   LOG_CONFIGURE ON
@@ -26,7 +26,7 @@ ExternalProject_Get_Property(gtest_source binary_dir)
 function(addExternalLib name dependency source_location binary_location include_directory)
     add_library(${name} INTERFACE)
     add_dependencies(${name} ${dependency})
-    target_link_libraries(${name} INTERFACE "${binary_location}/lib${name}.a")
+    target_link_libraries(${name} INTERFACE "${binary_location}/${PRE_LIB}${name}${POST_LIB}")
     target_include_directories(${name} INTERFACE "${include_directory}")
 endfunction(addExternalLib)
 

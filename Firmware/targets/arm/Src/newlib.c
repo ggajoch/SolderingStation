@@ -133,27 +133,25 @@ int _lseek(int file, int ptr, int dir) {
  Malloc and related functions depend on this
  */
 caddr_t _sbrk(int incr) {
-	extern char __heap_start;//set by linker
-	extern char __heap_end;//set by linker
+    extern char __heap_start;  // set by linker
+    extern char __heap_end;    // set by linker
 
-	static char *heap_end;		/* Previous end of heap or 0 if none */
-	char        *prev_heap_end;
+    static char* heap_end; /* Previous end of heap or 0 if none */
+    char* prev_heap_end;
 
-	if (0 == heap_end) {
-		heap_end = &__heap_start;			/* Initialize first time round */
-	}
+    if (0 == heap_end) {
+        heap_end = &__heap_start; /* Initialize first time round */
+    }
 
-	prev_heap_end  = heap_end;
-	heap_end      += incr;
-	//check
-	if( heap_end < (&__heap_end)) {
-
-	} else {
-		errno = ENOMEM;
-		return (char*)-1;
-	}
-	return (void *) prev_heap_end;
-
+    prev_heap_end = heap_end;
+    heap_end += incr;
+    // check
+    if (heap_end < (&__heap_end)) {
+    } else {
+        errno = ENOMEM;
+        return (char*)-1;
+    }
+    return (void*)prev_heap_end;
 }
 
 /*

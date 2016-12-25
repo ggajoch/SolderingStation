@@ -3,12 +3,17 @@ set(CXXWARN "-Wall -Wextra")
 set(CTUNING "")
 
 IF(UNIX)
-  set(CXXTHREADS "-lpthreads")
+  set(CXXTHREADS "-lpthread")
+  set(PRE_LIB "lib")
+  set(POST_LIB ".a")
+else()
+  set(PRE_LIB "lib")
+  set(POST_LIB ".a")
 ENDIF(UNIX)
 
 
-set(RANDOM_DEFS "-D'UNREFERENCED_PARAMETER(x)=(void)(x)'")
-set(CMAKE_C_FLAGS "-std=gnu11 ${CWARN} ${CTUNING} ${CMCU} ${RANDOM_DEFS}")
+set(RANDOM_DEFS "'-DUNREFERENCED_PARAMETER(x)=(void)(x)'")
+set(CMAKE_C_FLAGS "-std=gnu11 ${CWARN} ${CTUNING} ${CMCU}")
 set(CMAKE_CXX_FLAGS "-std=gnu++1z ${CXXWARN} ${CTUNING} ${CMCU} ${RANDOM_DEFS} ${CXXTHREADS}")
 set(CMAKE_CXX_STANDARD 14)
 

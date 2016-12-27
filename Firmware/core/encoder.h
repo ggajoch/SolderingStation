@@ -10,7 +10,8 @@ namespace encoder {
 void tick() {
     auto encoder = HAL::Encoder::getCountAndReset();
     core::target += encoder * 5;
-    if(core::target < 0) core::target = 0;
+    if (core::target < 0)
+        core::target = 0;
 }
 
 }  // namespace encoder

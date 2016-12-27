@@ -96,12 +96,12 @@ void setCallback(void (*callback_)(char* data)) {
 }  // namespace Com
 
 namespace Encoder {
-    int getCountAndReset() {
-    	return encoderGetAndReset();
-    }
-    void setButtonCallback(void (*callback)()) {
-    	encoderSetCallback(callback);
-    }
+int getCountAndReset() {
+    return encoderGetAndReset();
+}
+void setButtonCallback(void (*callback)()) {
+    encoderSetCallback(callback);
+}
 };  // namespace Encoder
 
 namespace Memory {

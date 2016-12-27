@@ -90,13 +90,12 @@ void encoderSetCallback(void (*callback)()){
 	encoderCallback = callback;
 }
 
-LineDebounce LineP, LineN;
+LineDebounce LineP, LineN, LineB;
 
 void encoderTimCallback(void){
 	State now;
 	now.p = HAL_GPIO_ReadPin(ENC_P_GPIO_Port, ENC_P_Pin) == GPIO_PIN_SET;
 	now.n = HAL_GPIO_ReadPin(ENC_N_GPIO_Port, ENC_N_Pin) == GPIO_PIN_SET;
-
 	LineP.tick(now.p);
 	LineN.tick(now.n);
 
@@ -113,6 +112,17 @@ void encoderTimCallback(void){
 			encoderCount--;
 		} else {
 			encoderCount++;
+		}
+	}
+
+	bool btn = HAL_GPIO_ReadPin(ENC_B_GPIO_Port, ENC_B_Pin) == GPIO_PIN_SET;
+
+	LineB.tick(btn);
+
+	if( LineB.getState() == LineDebounce::TRANSITION &&
+		LineB.getValue() == false ) {
+		if( encoderCallback != NULL ) {
+			encoderCallback();
 		}
 	}
 }

@@ -11,7 +11,7 @@ extern float backlight, contrast;
 void setBacklight(float percentage);
 void setContrast(float percentage);
 
-};  // namespace display
-};  // namespace core
+}  // namespace display
+}  // namespace core
 
 #endif  // CORE_DISPLAY_H_

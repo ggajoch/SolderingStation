@@ -1,7 +1,7 @@
 #ifndef CORE_PID_H_
 #define CORE_PID_H_
 
-#include <math.h>
+#include <cmath>
 
 namespace core {
 
@@ -24,10 +24,10 @@ class PID {
     }
 
     float tick(float temp) {
-        error = target-temp;
+        error = target - temp;
 
         float diff = error - prevError;
-        float pwr = params.Kp * error + params.Ki * (integral+error) + params.Kd * diff;
+        float pwr = params.Kp * error + params.Ki * (integral + error) + params.Kd * diff;
 
         if (lowerLimit < pwr && pwr < upperLimit) {
             integral += error;
@@ -56,6 +56,6 @@ class PID {
     float integral;
 };
 
-};  // namespace core
+}  // namespace core
 
 #endif  // CORE_PID_H_

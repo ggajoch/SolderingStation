@@ -45,37 +45,33 @@
 
 /* USER CODE END 1 */
 
-/** Configure pins as 
-        * Analog 
-        * Input 
+/** Configure pins as
+        * Analog
+        * Input
         * Output
         * EVENT_OUT
         * EXTI
 */
-void MX_GPIO_Init(void)
-{
+void MX_GPIO_Init(void) {
+    GPIO_InitTypeDef GPIO_InitStruct;
 
-  GPIO_InitTypeDef GPIO_InitStruct;
+    /* GPIO Ports Clock Enable */
+    __HAL_RCC_GPIOA_CLK_ENABLE();
+    __HAL_RCC_GPIOB_CLK_ENABLE();
 
-  /* GPIO Ports Clock Enable */
-  __HAL_RCC_GPIOA_CLK_ENABLE();
-  __HAL_RCC_GPIOB_CLK_ENABLE();
+    /*Configure GPIO pin Output Level */
+    HAL_GPIO_WritePin(GPIOB,
+        LCD_D7_Pin | LCD_D6_Pin | LCD_D5_Pin | LCD_D4_Pin | LCD_D3_Pin | LCD_D2_Pin | LCD_D1_Pin | LCD_D0_Pin | LCD_EN_Pin | LCD_RS_Pin,
+        GPIO_PIN_RESET);
 
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, LCD_D7_Pin|LCD_D6_Pin|LCD_D5_Pin|LCD_D4_Pin 
-                          |LCD_D3_Pin|LCD_D2_Pin|LCD_D1_Pin|LCD_D0_Pin 
-                          |LCD_EN_Pin|LCD_RS_Pin, GPIO_PIN_RESET);
-
-  /*Configure GPIO pins : PBPin PBPin PBPin PBPin 
-                           PBPin PBPin PBPin PBPin 
-                           PBPin PBPin */
-  GPIO_InitStruct.Pin = LCD_D7_Pin|LCD_D6_Pin|LCD_D5_Pin|LCD_D4_Pin 
-                          |LCD_D3_Pin|LCD_D2_Pin|LCD_D1_Pin|LCD_D0_Pin 
-                          |LCD_EN_Pin|LCD_RS_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-
+    /*Configure GPIO pins : PBPin PBPin PBPin PBPin
+                             PBPin PBPin PBPin PBPin
+                             PBPin PBPin */
+    GPIO_InitStruct.Pin =
+        LCD_D7_Pin | LCD_D6_Pin | LCD_D5_Pin | LCD_D4_Pin | LCD_D3_Pin | LCD_D2_Pin | LCD_D1_Pin | LCD_D0_Pin | LCD_EN_Pin | LCD_RS_Pin;
+    GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 }
 
 /* USER CODE BEGIN 2 */

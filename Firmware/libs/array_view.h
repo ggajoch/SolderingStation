@@ -1,12 +1,12 @@
 #ifndef LIBS_ARRAY_VIEW_H_
 #define LIBS_ARRAY_VIEW_H_
 
-#include <stddef.h>
 #include <cassert>
+#include <cstddef>
 
 namespace libs {
 
-template<typename T>
+template <typename T>
 class array_view final {
  public:
     //
@@ -17,48 +17,42 @@ class array_view final {
     using size_type = size_t;
     using difference_type = ptrdiff_t;
 
-    using pointer = T *;
-    using reference = T &;
-    using const_pointer = const T *;
-    using const_reference = const T &;
+    using pointer = T*;
+    using reference = T&;
+    using const_pointer = const T*;
+    using const_reference = const T&;
 
     //
     // Constructors / assignment:
     //
 
-    constexpr array_view() :
-            m_pointer { nullptr }, m_size_in_items { 0 } {
+    constexpr array_view() : m_pointer{nullptr}, m_size_in_items{0} {
     }
 
-    template<typename ArrayType, size_t ArraySize>
-    constexpr explicit array_view(ArrayType (&arr)[ArraySize]) :
-            m_pointer { arr }, m_size_in_items { ArraySize } {
+    template <typename ArrayType, size_t ArraySize>
+    constexpr explicit array_view(ArrayType (&arr)[ArraySize]) : m_pointer{arr}, m_size_in_items{ArraySize} {
     }
 
-    template<typename ArrayType, size_t ArraySize>
-    constexpr explicit array_view(ArrayType (&&arr)[ArraySize]) = delete;
+    template <typename ArrayType, size_t ArraySize>
+    constexpr explicit array_view(ArrayType(&&arr)[ArraySize]) = delete;
 
-    template<typename ContainerType>
-    constexpr explicit array_view(const ContainerType & container) :
-            m_pointer { container.data() }, m_size_in_items { container.size() } {
+    template <typename ContainerType>
+    constexpr explicit array_view(const ContainerType& container) : m_pointer{container.data()}, m_size_in_items{container.size()} {
     }
 
-    template<typename ContainerType>
-    constexpr explicit array_view(const ContainerType && container) = delete;
+    template <typename ContainerType>
+    constexpr explicit array_view(const ContainerType&& container) = delete;
 
-    template<typename ConvertibleType>
-    constexpr array_view(ConvertibleType * array_ptr,
-            size_type size_in_items) :
-            m_pointer { array_ptr }, m_size_in_items { size_in_items } {
+    template <typename ConvertibleType>
+    constexpr array_view(ConvertibleType* array_ptr, size_type size_in_items) : m_pointer{array_ptr}, m_size_in_items{size_in_items} {
     }
 
-    template<typename ConvertibleType>
-    constexpr array_view(array_view<ConvertibleType> other) :
-            m_pointer { other.data() }, m_size_in_items { other.size() } {
+    template <typename ConvertibleType>
+    constexpr array_view(array_view<ConvertibleType> other) : m_pointer{other.data()}, m_size_in_items{other.size()} {
     }
 
-    template<typename ConvertibleType>
-    constexpr array_view & operator =(array_view<ConvertibleType> other) {
+    template <typename ConvertibleType>
+    constexpr array_view& operator=(array_view<ConvertibleType> other) {
         m_pointer = other.data();
         m_size_in_items = other.size();
         return *this;
@@ -77,8 +71,7 @@ class array_view final {
         return slice(offset_in_items, size());
     }
 
-    array_view slice(const size_type start_offset,
-            const size_type end_offset) const {
+    array_view slice(const size_type start_offset, const size_type end_offset) const {
         check_not_null();
 
         assert(end_offset != start_offset);
@@ -153,10 +146,10 @@ class array_view final {
     // Compare against nullptr (test for a null array_view):
     //
 
-    constexpr bool operator ==(nullptr_t) const {
+    constexpr bool operator==(std::nullptr_t) const {
         return this->data() == nullptr;
     }
-    constexpr bool operator !=(nullptr_t) const {
+    constexpr bool operator!=(std::nullptr_t) const {
         return !(*this == nullptr);
     }
 
@@ -164,10 +157,10 @@ class array_view final {
     // Compare for same array pointer and size:
     //
 
-    constexpr bool operator ==(const array_view & other) const {
+    constexpr bool operator==(const array_view& other) const {
         return data() == other.data() && size() == other.size();
     }
-    constexpr bool operator !=(const array_view & other) const {
+    constexpr bool operator!=(const array_view& other) const {
         return !(*this == other);
     }
 
@@ -186,18 +179,17 @@ class array_view final {
 // make_array_view() helpers:
 //
 
-template<typename ArrayType, size_t ArraySize>
+template <typename ArrayType, size_t ArraySize>
 constexpr auto make_array_view(ArrayType (&arr)[ArraySize]) {
-    return array_view<ArrayType> { arr, ArraySize };
+    return array_view<ArrayType>{arr, ArraySize};
 }
-template<typename ArrayType>
-constexpr auto make_array_view(ArrayType * array_ptr,
-        const size_t size_in_items) {
-    return array_view<ArrayType> { array_ptr, size_in_items };
+template <typename ArrayType>
+constexpr auto make_array_view(ArrayType* array_ptr, const size_t size_in_items) {
+    return array_view<ArrayType>{array_ptr, size_in_items};
 }
-template<typename ContainerType>
-constexpr auto make_array_view(const ContainerType & container) {
-    return array_view<typename ContainerType::value_type> { container };
+template <typename ContainerType>
+constexpr auto make_array_view(const ContainerType& container) {
+    return array_view<typename ContainerType::value_type>{container};
 }
 
 }  // namespace libs

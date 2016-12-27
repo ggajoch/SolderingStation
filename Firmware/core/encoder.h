@@ -12,7 +12,7 @@ void tick() {
     core::target += encoder * 5;
 }
 
-};  // namespace encoder
-};  // namespace core
+}  // namespace encoder
+}  // namespace core
 
 #endif  // CORE_ENCODER_H_

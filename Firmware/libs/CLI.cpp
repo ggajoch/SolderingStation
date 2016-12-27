@@ -1,54 +1,60 @@
+#include <array>
+#include <cctype>
+#include <cstdint>
+#include <cstdlib>
+#include <cstring>
+
 #include "CLI.h"
 
 namespace libs {
 namespace CLI {
 
-size_t nrOfCommands = 0;
-std::array<Command *, 50> commands;
+libs::array_view<Command*> commands;
 
-void parse_line(char *line) {
-//    printf("parse: %s\n", line);
+void set_commands(libs::array_view<Command*> cmds) {
+    commands = cmds;
+}
+
+bool parse_line(char* line) {
+    //    printf("parse: %s\n", line);
     size_t len = strlen(line);
     static std::array<char*, 20> params;
 
-    for (auto i = 0; i < len; ++i) {
-        if (isspace(line[i])) {
+    for (size_t i = 0; i < len; ++i) {
+        if (std::isspace(line[i])) {
             line[i] = '\0';
         }
     }
 
-
-
-    for (int i = 0; i < nrOfCommands; ++i) {
-        auto cmd = commands[i];
-//        printf("now: %s\n", cmd->name);
+    for (auto cmd : commands) {
+        //        printf("now: %s\n", cmd->name);
         if (strcmp(cmd->name, line) == 0) {
             // found command
-//            printf("cmd: %s\n", cmd->name);
+            //            printf("cmd: %s\n", cmd->name);
 
-            char * iter = line;
+            char* iter = line;
             uint8_t param_nr = 0;
 
-            while (iter < line+len) {
-                while (iter < line+len && *iter != '\0')
+            while (iter < line + len) {
+                while (iter < line + len && *iter != '\0')
                     iter++;
 
-                while (iter < line+len && *iter == '\0')
+                while (iter < line + len && *iter == '\0')
                     iter++;
 
-                if (iter < line+len) {
+                if (iter < line + len) {
                     params[param_nr++] = iter;
-//                    printf("param: |%s|\n", iter);
+                    //                    printf("param: |%s|\n", iter);
                 }
             }
 
-            libs::array_view<char *> view(params.data(), param_nr);
-            cmd->callbackDispatcher(view);
-            return;
+            libs::array_view<char*> view(params.data(), param_nr);
+            return cmd->callbackDispatcher(view);
         }
     }
-    printf("No such command: |%s|!\r\n", line);
+    // printf("No such command: |%s|!\r\n", line);
+    return false;
 }
 
-};  // namespace CLI
-};  // namespace libs
+}  // namespace CLI
+}  // namespace libs

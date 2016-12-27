@@ -13,7 +13,7 @@ void tick() {
     if(core::target < 0) core::target = 0;
 }
 
-};  // namespace encoder
-};  // namespace core
+}  // namespace encoder
+}  // namespace core
 
 #endif  // CORE_ENCODER_H_

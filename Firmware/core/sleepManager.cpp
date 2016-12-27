@@ -1,7 +1,8 @@
 #include <cstdio>
-#include "sleepManager.h"
+
 #include "HAL.h"
 #include "core.h"
+#include "sleepManager.h"
 
 namespace core {
 namespace sleepManager {
@@ -22,6 +23,5 @@ void encoderCallback() {
     sleepState = !sleepState;
 }
 
-
-};  // namespace sleepManager
-};  // namespace core
+}  // namespace sleepManager
+}  // namespace core

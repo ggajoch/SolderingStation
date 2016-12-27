@@ -1,50 +1,31 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.1)
 
-project(SolderingStation)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++1z")
-
-add_subdirectory(external/googletest)
-
-include_directories(libs)
-file(GLOB LIBS_FILES
-        "libs/*.h"
-        "libs/*.cpp"
-)
-
-include_directories(core)
-file(GLOB CORE_FILES
-        "core/*.h"
-        "core/*.cpp"
-)
+set(TARGET_PLATFORM "arm" CACHE STRING "Target platform")
+set(PLATFORM_PATH ${CMAKE_CURRENT_SOURCE_DIR}/targets/${TARGET_PLATFORM})
+if(NOT EXISTS ${PLATFORM_PATH})
+  message(FATAL_ERROR "Target platform ${TARGET_PLATFORM} does not exist")
+endif()
 
 
-# -------------------------- EVENT BASED SIMULATION -----------------------------------------------
+include(functions.cmake)
+include(${PLATFORM_PATH}/toolchain.cmake)
+project(SolderingStation C CXX ASM)
+include(${PLATFORM_PATH}/settings.cmake)
 
-file(GLOB SIMULATION_EVENTS_FILES
-        "targets/simulation-events/*.h"
-        "targets/simulation-events/*.cpp"
-)
+set(OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR}/build/${TARGET_PLATFORM})
+set(REPORTS_PATH ${OUTPUT_PATH}/reports)
 
-add_executable(simulation_events ${SIMULATION_EVENTS_FILES} ${CORE_FILES} ${LIBS_FILES})
-target_link_libraries(simulation_events gtest)
+file(MAKE_DIRECTORY ${OUTPUT_PATH})
 
-# -------------------------- FULL SIMULATION ------------------------------------------------------
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
-file(GLOB SIMULATION_FILES
-        "targets/simulation/*.h"
-        "targets/simulation/*.cpp"
-)
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${OUTPUT_PATH}/lib)
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${OUTPUT_PATH}/lib)
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${OUTPUT_PATH}/bin)
 
-IF (WIN32)
-    add_executable(simulation ${SIMULATION_FILES} ${CORE_FILES} ${LIBS_FILES})
-    target_link_libraries(simulation gtest)
-ENDIF()
+message(STATUS "Using C compiler from ${CMAKE_C_COMPILER}")
+message(STATUS "Target platform ${TARGET_PLATFORM}")
 
-# -------------------------- UNIT TESTS -----------------------------------------------------------
-file(GLOB UNITTESTS_FILES
-        "targets/unitTests/*.h"
-        "targets/unitTests/*.cpp"
-)
-
-add_executable(unitTests ${CORE_FILES} ${UNITTESTS_FILES} ${LIBS_FILES})
-target_link_libraries(unitTests gtest gtest_main)
+add_subdirectory(libs)
+add_subdirectory(core)
+add_subdirectory(${PLATFORM_PATH})

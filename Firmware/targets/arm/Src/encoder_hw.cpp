@@ -12,7 +12,7 @@ void (*encoderCallback)() = NULL;
 
 volatile int encoderCount = 0;
 
-struct State { __attribute__((packed))
+struct State {
         bool p, n;
     };
 

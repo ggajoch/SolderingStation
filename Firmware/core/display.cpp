@@ -1,9 +1,9 @@
 #include <cstdio>
 #include <cstring>
 
+#include "HAL.h"
 #include "core.h"
 #include "sleepManager.h"
-#include "HAL.h"
 
 namespace core {
 namespace display {
@@ -11,11 +11,7 @@ namespace display {
 void tick() {
     char display[2][16];
 
-    std::sprintf(display[0], "%3d/%3d     %3d%%",
-            static_cast<int>(temp),
-            static_cast<int>(target),
-            static_cast<int>(power));
-
+    std::sprintf(display[0], "%3d/%3d     %3d%%", static_cast<int>(temp), static_cast<int>(target), static_cast<int>(power));
 
     if (sleepManager::sleepState) {
         std::memcpy(display[1], "     SLEEP      ", 16);
@@ -43,6 +39,5 @@ void setContrast(float percentage) {
     HAL::Display::setContrast(contrast);
 }
 
-
-};  // namespace display
-};  // namespace core
+}  // namespace display
+}  // namespace core

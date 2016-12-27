@@ -14,5 +14,5 @@ std::chrono::milliseconds now() {
     return actual;
 }
 
-};  // namespace timer
-};  // namespace core
+}  // namespace timer
+}  // namespace core

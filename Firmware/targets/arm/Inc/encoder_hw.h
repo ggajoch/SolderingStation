@@ -11,7 +11,7 @@ extern "C" {
 
 void encoderInit();
 int encoderGetCountAndReset();
-void encoderSetCallback(void (*callback)());
+void encoderSetButtonCallback(void (*callback)());
 
 void encoder10kHzTickISR();
 void encoderCallbackTick();

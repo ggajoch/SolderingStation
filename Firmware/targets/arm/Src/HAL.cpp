@@ -100,7 +100,7 @@ int getCountAndReset() {
     return encoderGetCountAndReset();
 }
 void setButtonCallback(void (*callback)()) {
-    encoderSetCallback(callback);
+    encoderSetButtonCallback(callback);
 }
 void callbackTick(){
 	encoderCallbackTick();

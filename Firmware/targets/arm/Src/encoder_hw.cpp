@@ -4,8 +4,7 @@
 #include "stm32f1xx_hal_tim.h"
 #include "tim.h"
 
-#define DEBOUNCE_STABLE 5
-#define ENCODER_PRESC 4
+#include "hardwareConfig.h"
 
 void (*encoderCallback)() = NULL;
 
@@ -56,7 +55,7 @@ class LineDebounce {
         } else {
             times_stable = 0;
         }
-        if (times_stable == DEBOUNCE_STABLE) {
+        if (times_stable == ENCODER_DEBOUNCE_STABLE) {
             this->state = TRANSITION;
         }
     }
@@ -82,7 +81,7 @@ int encoderGetCountAndReset() {
     return toReturn;
 }
 
-void encoderSetCallback(void (*callback)()) {
+void encoderSetButtonCallback(void (*callback)()) {
     encoderCallback = callback;
 }
 
@@ -96,23 +95,26 @@ void encoderCallbackTick(){
 	}
 	__enable_irq();
 }
-LineDebounce LineP, LineN, LineB;
+
+LineDebounce EncoderDebouncedLineP;
+LineDebounce EncoderDebouncedLineN;
+LineDebounce ButtonDebouncedLine;
 
 void encoder10kHzTickISR() {
     State now;
     now.p = HAL_GPIO_ReadPin(ENC_P_GPIO_Port, ENC_P_Pin) == GPIO_PIN_SET;
     now.n = HAL_GPIO_ReadPin(ENC_N_GPIO_Port, ENC_N_Pin) == GPIO_PIN_SET;
-    LineP.tick(now.p);
-    LineN.tick(now.n);
+    EncoderDebouncedLineP.tick(now.p);
+    EncoderDebouncedLineN.tick(now.n);
 
-    if (LineP.getState() == LineDebounce::TRANSITION && LineN.getState() == LineDebounce::STABLE) {
-        if (LineP.getValue() == LineN.getValue()) {
+    if (EncoderDebouncedLineP.getState() == LineDebounce::TRANSITION && EncoderDebouncedLineN.getState() == LineDebounce::STABLE) {
+        if (EncoderDebouncedLineP.getValue() == EncoderDebouncedLineN.getValue()) {
             encoderCount++;
         } else {
             encoderCount--;
         }
-    } else if (LineP.getState() == LineDebounce::STABLE && LineN.getState() == LineDebounce::TRANSITION) {
-        if (LineP.getValue() == LineN.getValue()) {
+    } else if (EncoderDebouncedLineP.getState() == LineDebounce::STABLE && EncoderDebouncedLineN.getState() == LineDebounce::TRANSITION) {
+        if (EncoderDebouncedLineP.getValue() == EncoderDebouncedLineN.getValue()) {
             encoderCount--;
         } else {
             encoderCount++;
@@ -121,9 +123,9 @@ void encoder10kHzTickISR() {
 
     bool btn = HAL_GPIO_ReadPin(ENC_B_GPIO_Port, ENC_B_Pin) == GPIO_PIN_SET;
 
-    LineB.tick(btn);
+    ButtonDebouncedLine.tick(btn);
 
-    if (LineB.getState() == LineDebounce::TRANSITION && LineB.getValue() == false) {
+    if (ButtonDebouncedLine.getState() == LineDebounce::TRANSITION && ButtonDebouncedLine.getValue() == false) {
     	buttonCount++;
     }
 }

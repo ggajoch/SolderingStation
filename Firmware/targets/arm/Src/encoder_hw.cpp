@@ -4,6 +4,8 @@
 #include "stm32f1xx_hal_tim.h"
 #include "tim.h"
 
+#include "LineDebounce.h"
+
 #include "hardwareConfig.h"
 
 void (*encoderCallback)() = NULL;
@@ -12,60 +14,6 @@ volatile int encoderCount = 0, buttonCount = 0;
 
 struct State {
     bool p, n;
-};
-
-class LineDebounce {
- public:
-    LineDebounce() {
-        state = UNSTABLE;
-        last_value = false;
-        times_stable = 0;
-    }
-    enum LineState { UNSTABLE, TRANSITION, STABLE };
-
-    void tick(bool now) {
-        switch (state) {
-            case UNSTABLE:
-                tickUnstable(now);
-                break;
-            case TRANSITION:
-                this->state = STABLE;
-                break;
-            case STABLE:
-                tickStable(now);
-                break;
-        }
-        last_value = now;
-    }
-    LineState getState() {
-        return state;
-    }
-    bool getValue() {
-        return last_value;
-    }
-
- private:
-    LineState state;
-    bool last_value;
-    uint32_t times_stable;
-
-    void tickUnstable(bool now) {
-        if (now == last_value) {
-            ++times_stable;
-        } else {
-            times_stable = 0;
-        }
-        if (times_stable == ENCODER_DEBOUNCE_STABLE) {
-            this->state = TRANSITION;
-        }
-    }
-
-    void tickStable(bool now) {
-        if (now != last_value) {
-            times_stable = 0;
-            this->state = UNSTABLE;
-        }
-    }
 };
 
 void encoderInit() {
@@ -96,9 +44,9 @@ void encoderCallbackTick(){
 	__enable_irq();
 }
 
-LineDebounce EncoderDebouncedLineP;
-LineDebounce EncoderDebouncedLineN;
-LineDebounce ButtonDebouncedLine;
+LineDebounce<ENCODER_DEBOUNCE_STABLE> EncoderDebouncedLineP;
+LineDebounce<ENCODER_DEBOUNCE_STABLE> EncoderDebouncedLineN;
+LineDebounce<BUTTON_DEBOUNCE_STABLE> ButtonDebouncedLine;
 
 void encoder10kHzTickISR() {
     State now;
@@ -107,13 +55,13 @@ void encoder10kHzTickISR() {
     EncoderDebouncedLineP.tick(now.p);
     EncoderDebouncedLineN.tick(now.n);
 
-    if (EncoderDebouncedLineP.getState() == LineDebounce::TRANSITION && EncoderDebouncedLineN.getState() == LineDebounce::STABLE) {
+    if (EncoderDebouncedLineP.getState() == LineDebounce<ENCODER_DEBOUNCE_STABLE>::TRANSITION && EncoderDebouncedLineN.getState() == LineDebounce<ENCODER_DEBOUNCE_STABLE>::STABLE) {
         if (EncoderDebouncedLineP.getValue() == EncoderDebouncedLineN.getValue()) {
             encoderCount++;
         } else {
             encoderCount--;
         }
-    } else if (EncoderDebouncedLineP.getState() == LineDebounce::STABLE && EncoderDebouncedLineN.getState() == LineDebounce::TRANSITION) {
+    } else if (EncoderDebouncedLineP.getState() == LineDebounce<ENCODER_DEBOUNCE_STABLE>::STABLE && EncoderDebouncedLineN.getState() == LineDebounce<ENCODER_DEBOUNCE_STABLE>::TRANSITION) {
         if (EncoderDebouncedLineP.getValue() == EncoderDebouncedLineN.getValue()) {
             encoderCount--;
         } else {
@@ -125,7 +73,7 @@ void encoder10kHzTickISR() {
 
     ButtonDebouncedLine.tick(btn);
 
-    if (ButtonDebouncedLine.getState() == LineDebounce::TRANSITION && ButtonDebouncedLine.getValue() == false) {
+    if (ButtonDebouncedLine.getState() == LineDebounce<BUTTON_DEBOUNCE_STABLE>::TRANSITION && ButtonDebouncedLine.getValue() == false) {
     	buttonCount++;
     }
 }

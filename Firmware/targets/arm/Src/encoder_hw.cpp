@@ -3,7 +3,6 @@
 #include "stm32f1xx_hal_gpio.h"
 #include "stm32f1xx_hal_tim.h"
 #include "tim.h"
-//#include "EncoderLogic.h"
 
 #define DEBOUNCE_STABLE 5
 #define ENCODER_PRESC 4
@@ -74,7 +73,7 @@ void encoderInit() {
     HAL_TIM_Base_Start_IT(&htim2);
 }
 
-int encoderGetAndReset() {
+int encoderGetCountAndReset() {
     __disable_irq();
     int toReturn = encoderCount / ENCODER_PRESC;
     if (toReturn != 0)

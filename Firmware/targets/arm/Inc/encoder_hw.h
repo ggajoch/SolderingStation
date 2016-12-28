@@ -10,7 +10,7 @@ extern "C" {
 #include "main.h"
 
 void encoderInit();
-int encoderGetAndReset();
+int encoderGetCountAndReset();
 void encoderSetCallback(void (*callback)());
 
 void encoder10kHzTickISR();

@@ -97,7 +97,7 @@ void setCallback(void (*callback_)(char* data)) {
 
 namespace Encoder {
 int getCountAndReset() {
-    return encoderGetAndReset();
+    return encoderGetCountAndReset();
 }
 void setButtonCallback(void (*callback)()) {
     encoderSetCallback(callback);

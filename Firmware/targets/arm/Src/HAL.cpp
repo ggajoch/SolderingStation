@@ -105,7 +105,7 @@ void setButtonCallback(void (*callback)()) {
 void callbackTick(){
 	encoderCallbackTick();
 }
-};  // namespace Encoder
+}  // namespace Encoder
 
 namespace Memory {
 void store(libs::array_view<const uint8_t> data) {

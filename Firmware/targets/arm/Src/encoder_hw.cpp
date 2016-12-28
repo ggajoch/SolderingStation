@@ -33,15 +33,15 @@ void encoderSetButtonCallback(void (*callback)()) {
     encoderCallback = callback;
 }
 
-void encoderCallbackTick(){
-	__disable_irq();
-	if (buttonCount > 0){
-		buttonCount--;
-		if (encoderCallback != NULL) {
-			encoderCallback();
-		}
-	}
-	__enable_irq();
+void encoderCallbackTick() {
+    __disable_irq();
+    if (buttonCount > 0) {
+        buttonCount--;
+        if (encoderCallback != NULL) {
+            encoderCallback();
+        }
+    }
+    __enable_irq();
 }
 
 Debouncer::LineDebounce<ENCODER_DEBOUNCE_STABLE> EncoderDebouncedLineP;
@@ -74,6 +74,6 @@ void encoder10kHzTickISR() {
     ButtonDebouncedLine.tick(btn);
 
     if (ButtonDebouncedLine.getState() == Debouncer::TRANSITION && ButtonDebouncedLine.getValue() == false) {
-    	buttonCount++;
+        buttonCount++;
     }
 }

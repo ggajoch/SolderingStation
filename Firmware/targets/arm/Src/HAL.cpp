@@ -102,8 +102,8 @@ int getCountAndReset() {
 void setButtonCallback(void (*callback)()) {
     encoderSetButtonCallback(callback);
 }
-void callbackTick(){
-	encoderCallbackTick();
+void callbackTick() {
+    encoderCallbackTick();
 }
 }  // namespace Encoder
 

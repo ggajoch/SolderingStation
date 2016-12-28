@@ -10,7 +10,7 @@
 
 void (*encoderCallback)() = NULL;
 
-volatile int encoderCount = 0;
+volatile int encoderCount = 0, buttonCount = 0;
 
 struct State {
     bool p, n;
@@ -87,6 +87,16 @@ void encoderSetCallback(void (*callback)()) {
     encoderCallback = callback;
 }
 
+void encoderCallbackTick(void){
+	__disable_irq();
+	if (buttonCount > 0){
+		buttonCount--;
+		if (encoderCallback != NULL) {
+			encoderCallback();
+		}
+	}
+	__enable_irq();
+}
 LineDebounce LineP, LineN, LineB;
 
 void encoderTimCallback(void) {
@@ -115,8 +125,6 @@ void encoderTimCallback(void) {
     LineB.tick(btn);
 
     if (LineB.getState() == LineDebounce::TRANSITION && LineB.getValue() == false) {
-        if (encoderCallback != NULL) {
-            encoderCallback();
-        }
+    	buttonCount++;
     }
 }

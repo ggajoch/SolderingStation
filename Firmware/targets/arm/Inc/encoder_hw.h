@@ -14,6 +14,7 @@ int encoderGetAndReset(void);
 void encoderSetCallback(void (*callback)());
 
 void encoderTimCallback(void);
+void encoderCallbackTick(void);
 
 #ifdef __cplusplus
 }

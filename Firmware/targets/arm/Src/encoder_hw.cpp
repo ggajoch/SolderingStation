@@ -39,17 +39,17 @@ class LineDebounce {
         }
         last_value = now;
     }
-    inline LineState getState() {
+    LineState getState() {
         return state;
     }
-    inline bool getValue() {
+    bool getValue() {
         return last_value;
     }
 
  private:
     LineState state;
     bool last_value;
-    uint8_t times_stable;
+    uint32_t times_stable;
 
     void tickUnstable(bool now) {
         if (now == last_value) {
@@ -70,11 +70,11 @@ class LineDebounce {
     }
 };
 
-void encoderInit(void) {
+void encoderInit() {
     HAL_TIM_Base_Start_IT(&htim2);
 }
 
-int encoderGetAndReset(void) {
+int encoderGetAndReset() {
     __disable_irq();
     int toReturn = encoderCount / ENCODER_PRESC;
     if (toReturn != 0)
@@ -87,7 +87,7 @@ void encoderSetCallback(void (*callback)()) {
     encoderCallback = callback;
 }
 
-void encoderCallbackTick(void){
+void encoderCallbackTick(){
 	__disable_irq();
 	if (buttonCount > 0){
 		buttonCount--;
@@ -99,7 +99,7 @@ void encoderCallbackTick(void){
 }
 LineDebounce LineP, LineN, LineB;
 
-void encoderTimCallback(void) {
+void encoder10kHzTickISR() {
     State now;
     now.p = HAL_GPIO_ReadPin(ENC_P_GPIO_Port, ENC_P_Pin) == GPIO_PIN_SET;
     now.n = HAL_GPIO_ReadPin(ENC_N_GPIO_Port, ENC_N_Pin) == GPIO_PIN_SET;

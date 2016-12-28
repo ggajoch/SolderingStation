@@ -9,12 +9,12 @@ extern "C" {
 #include "stm32f1xx_hal.h"
 #include "main.h"
 
-void encoderInit(void);
-int encoderGetAndReset(void);
+void encoderInit();
+int encoderGetAndReset();
 void encoderSetCallback(void (*callback)());
 
-void encoderTimCallback(void);
-void encoderCallbackTick(void);
+void encoder10kHzTickISR();
+void encoderCallbackTick();
 
 #ifdef __cplusplus
 }

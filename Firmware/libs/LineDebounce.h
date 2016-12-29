@@ -1,33 +1,38 @@
 #ifndef LIBS_LINEDEBOUNCE_H_
 #define LIBS_LINEDEBOUNCE_H_
 
+#include <cstdint>
+
+using std::uint32_t;
+
+namespace libs {
 namespace debouncer {
-enum LineState { UNSTABLE, TRANSITION, STABLE };
+enum class State { UNSTABLE, TRANSITION, STABLE };
 
 template <uint32_t debounceTime>
 class LineDebounce {
  public:
     LineDebounce() {
-        state = UNSTABLE;
+        state = State::UNSTABLE;
         last_value = false;
         times_stable = 0;
     }
 
     void tick(bool now) {
         switch (state) {
-            case UNSTABLE:
+            case State::UNSTABLE:
                 tickUnstable(now);
                 break;
-            case TRANSITION:
-                this->state = STABLE;
+            case State::TRANSITION:
+                this->state = State::STABLE;
                 break;
-            case STABLE:
+            case State::STABLE:
                 tickStable(now);
                 break;
         }
         last_value = now;
     }
-    LineState getState() {
+    State getState() {
         return state;
     }
     bool getValue() {
@@ -35,7 +40,7 @@ class LineDebounce {
     }
 
  private:
-    LineState state;
+    State state;
     bool last_value;
     uint32_t times_stable;
 
@@ -46,16 +51,18 @@ class LineDebounce {
             times_stable = 0;
         }
         if (times_stable == debounceTime) {
-            this->state = TRANSITION;
+            this->state = State::TRANSITION;
         }
     }
 
     void tickStable(bool now) {
         if (now != last_value) {
             times_stable = 0;
-            this->state = UNSTABLE;
+            this->state = State::UNSTABLE;
         }
     }
 };
 }
+}
+
 #endif  // LIBS_LINEDEBOUNCE_H_

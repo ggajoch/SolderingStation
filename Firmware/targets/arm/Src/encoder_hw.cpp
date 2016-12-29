@@ -44,9 +44,9 @@ void encoderCallbackTick() {
     __enable_irq();
 }
 
-debouncer::LineDebounce<ENCODER_DEBOUNCE_STABLE> EncoderDebouncedLineP;
-debouncer::LineDebounce<ENCODER_DEBOUNCE_STABLE> EncoderDebouncedLineN;
-debouncer::LineDebounce<BUTTON_DEBOUNCE_STABLE> ButtonDebouncedLine;
+libs::debouncer::LineDebounce<ENCODER_DEBOUNCE_STABLE> EncoderDebouncedLineP;
+libs::debouncer::LineDebounce<ENCODER_DEBOUNCE_STABLE> EncoderDebouncedLineN;
+libs::debouncer::LineDebounce<BUTTON_DEBOUNCE_STABLE> ButtonDebouncedLine;
 
 void encoder10kHzTickISR() {
     State now;
@@ -55,13 +55,15 @@ void encoder10kHzTickISR() {
     EncoderDebouncedLineP.tick(now.p);
     EncoderDebouncedLineN.tick(now.n);
 
-    if (EncoderDebouncedLineP.getState() == debouncer::TRANSITION && EncoderDebouncedLineN.getState() == debouncer::STABLE) {
+    if (EncoderDebouncedLineP.getState() == libs::debouncer::State::TRANSITION &&
+        EncoderDebouncedLineN.getState() == libs::debouncer::State::STABLE) {
         if (EncoderDebouncedLineP.getValue() == EncoderDebouncedLineN.getValue()) {
             encoderCount++;
         } else {
             encoderCount--;
         }
-    } else if (EncoderDebouncedLineP.getState() == debouncer::STABLE && EncoderDebouncedLineN.getState() == debouncer::TRANSITION) {
+    } else if (EncoderDebouncedLineP.getState() == libs::debouncer::State::STABLE &&
+        EncoderDebouncedLineN.getState() == libs::debouncer::State::TRANSITION) {
         if (EncoderDebouncedLineP.getValue() == EncoderDebouncedLineN.getValue()) {
             encoderCount--;
         } else {
@@ -73,7 +75,7 @@ void encoder10kHzTickISR() {
 
     ButtonDebouncedLine.tick(btn);
 
-    if (ButtonDebouncedLine.getState() == debouncer::TRANSITION && ButtonDebouncedLine.getValue() == false) {
+    if (ButtonDebouncedLine.getState() == libs::debouncer::State::TRANSITION && ButtonDebouncedLine.getValue() == false) {
         buttonCount++;
     }
 }

@@ -1,7 +1,7 @@
 #ifndef LIBS_LINEDEBOUNCE_H_
 #define LIBS_LINEDEBOUNCE_H_
 
-namespace Debouncer {
+namespace debouncer {
 enum LineState { UNSTABLE, TRANSITION, STABLE };
 
 template <uint32_t debounceTime>

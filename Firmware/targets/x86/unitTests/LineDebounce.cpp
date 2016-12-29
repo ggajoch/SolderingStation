@@ -15,7 +15,4 @@ TEST(LineDebounceTest, basic) {
 		EXPECT_EQ(State::UNSTABLE, debounce.getState());
 	}
 
-	debounce.tick(false);
-	EXPECT_EQ(false, debounce.getValue());
-	EXPECT_EQ(State::STABLE, debounce.getState());
 }

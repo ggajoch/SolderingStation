@@ -12,6 +12,8 @@
 
 #include "hd44780.h"
 
+#include "encoder_hw.h"
+
 namespace HAL {
 
 void delay(uint32_t ms) {
@@ -95,10 +97,13 @@ void setCallback(void (*callback_)(char* data)) {
 
 namespace Encoder {
 int getCountAndReset() {
-    return 0;
+    return encoderGetCountAndReset();
 }
 void setButtonCallback(void (*callback)()) {
-    UNREFERENCED_PARAMETER(callback);
+    encoderSetButtonCallback(callback);
+}
+void callbackTick() {
+    encoderCallbackTick();
 }
 }  // namespace Encoder
 

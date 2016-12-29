@@ -33,6 +33,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "adc.h"
+#include "i2c.h"
 #include "gpio.h"
 #include "stm32f1xx_hal.h"
 #include "tim.h"
@@ -74,13 +75,15 @@ int main(void) {
     /* Configure the system clock */
     SystemClock_Config();
 
-    /* Initialize all configured peripherals */
-    MX_GPIO_Init();
-    MX_ADC1_Init();
-    MX_TIM1_Init();
-    MX_USART1_UART_Init();
-    MX_TIM3_Init();
-    MX_TIM4_Init();
+	/* Initialize all configured peripherals */
+	MX_GPIO_Init();
+	MX_ADC1_Init();
+	MX_TIM1_Init();
+	MX_USART1_UART_Init();
+	MX_TIM3_Init();
+	MX_TIM4_Init();
+	MX_I2C1_Init();
+	MX_TIM2_Init();
 
     /* USER CODE BEGIN 2 */
     HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);

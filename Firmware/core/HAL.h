@@ -27,6 +27,7 @@ void setCallback(void callback(char* data));
 namespace Encoder {
 int getCountAndReset();
 void setButtonCallback(void (*callback)());
+void callbackTick();
 }
 
 namespace Memory {

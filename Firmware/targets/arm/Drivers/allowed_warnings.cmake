@@ -4,4 +4,4 @@ file(GLOB_RECURSE allDriversFiles
 
 foreach(file ${allDriversFiles})
 	set_source_files_properties(${file} PROPERTIES COMPILE_FLAGS "-w")
-endforeach(x)
+endforeach(file)

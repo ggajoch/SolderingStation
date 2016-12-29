@@ -14,6 +14,7 @@ set(SOURCES_GENERATED
 	Src/stm32f1xx_it.c
 	Src/tim.c
 	Src/usart.c
+	Src/i2c.c
 )
 
 set(SOURCES_PROJECT
@@ -22,6 +23,7 @@ set(SOURCES_PROJECT
 	Src/hd44780.c
 	Src/MY_main.cpp
 	Src/newlib.c
+	Src/encoder_hw.cpp
 )
 
 include_directories(
@@ -47,6 +49,7 @@ target_link_libraries(${NAME}
 )
 
 target_generate_hex(${NAME})
+
 target_memory_report(${NAME})
 target_asm_listing(${NAME})
 

@@ -15,6 +15,7 @@ set(SOURCES_GENERATED
 	Src/tim.c
 	Src/usart.c
 	Src/i2c.c
+	Src/iwdg.c
 )
 
 set(SOURCES_PROJECT

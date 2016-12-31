@@ -1,8 +1,8 @@
 /**
   ******************************************************************************
-  * File Name          : ADC.c
+  * File Name          : IWDG.h
   * Description        : This file provides code for the configuration
-  *                      of the ADC instances.
+  *                      of the IWDG instances.
   ******************************************************************************
   *
   * COPYRIGHT(c) 2016 STMicroelectronics
@@ -31,99 +31,39 @@
   *
   ******************************************************************************
   */
+/* Define to prevent recursive inclusion -------------------------------------*/
+#ifndef __iwdg_H
+#define __iwdg_H
+#ifdef __cplusplus
+ extern "C" {
+#endif
 
 /* Includes ------------------------------------------------------------------*/
-#include "adc.h"
+#include "stm32f1xx_hal.h"
+#include "main.h"
 
-#include "gpio.h"
+/* USER CODE BEGIN Includes */
 
-/* USER CODE BEGIN 0 */
+/* USER CODE END Includes */
 
-/* USER CODE END 0 */
+extern IWDG_HandleTypeDef hiwdg;
 
-ADC_HandleTypeDef hadc1;
+/* USER CODE BEGIN Private defines */
 
-/* ADC1 init function */
-void MX_ADC1_Init(void)
-{
-  ADC_ChannelConfTypeDef sConfig;
+/* USER CODE END Private defines */
 
-    /**Common config 
-    */
-  hadc1.Instance = ADC1;
-  hadc1.Init.ScanConvMode = ADC_SCAN_DISABLE;
-  hadc1.Init.ContinuousConvMode = DISABLE;
-  hadc1.Init.DiscontinuousConvMode = DISABLE;
-  hadc1.Init.ExternalTrigConv = ADC_SOFTWARE_START;
-  hadc1.Init.DataAlign = ADC_DATAALIGN_RIGHT;
-  hadc1.Init.NbrOfConversion = 1;
-  if (HAL_ADC_Init(&hadc1) != HAL_OK)
-  {
-    Error_Handler();
-  }
+extern void Error_Handler(void);
 
-    /**Configure Regular Channel 
-    */
-  sConfig.Channel = ADC_CHANNEL_0;
-  sConfig.Rank = 1;
-  sConfig.SamplingTime = ADC_SAMPLETIME_1CYCLE_5;
-  if (HAL_ADC_ConfigChannel(&hadc1, &sConfig) != HAL_OK)
-  {
-    Error_Handler();
-  }
+void MX_IWDG_Init(void);
 
+/* USER CODE BEGIN Prototypes */
+
+/* USER CODE END Prototypes */
+
+#ifdef __cplusplus
 }
-
-void HAL_ADC_MspInit(ADC_HandleTypeDef* adcHandle)
-{
-
-  GPIO_InitTypeDef GPIO_InitStruct;
-  if(adcHandle->Instance==ADC1)
-  {
-  /* USER CODE BEGIN ADC1_MspInit 0 */
-
-  /* USER CODE END ADC1_MspInit 0 */
-    /* Peripheral clock enable */
-    __HAL_RCC_ADC1_CLK_ENABLE();
-  
-    /**ADC1 GPIO Configuration    
-    PA0-WKUP     ------> ADC1_IN0 
-    */
-    GPIO_InitStruct.Pin = ADC1_IN0_Pin;
-    GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
-    HAL_GPIO_Init(ADC1_IN0_GPIO_Port, &GPIO_InitStruct);
-
-  /* USER CODE BEGIN ADC1_MspInit 1 */
-
-  /* USER CODE END ADC1_MspInit 1 */
-  }
-}
-
-void HAL_ADC_MspDeInit(ADC_HandleTypeDef* adcHandle)
-{
-
-  if(adcHandle->Instance==ADC1)
-  {
-  /* USER CODE BEGIN ADC1_MspDeInit 0 */
-
-  /* USER CODE END ADC1_MspDeInit 0 */
-    /* Peripheral clock disable */
-    __HAL_RCC_ADC1_CLK_DISABLE();
-  
-    /**ADC1 GPIO Configuration    
-    PA0-WKUP     ------> ADC1_IN0 
-    */
-    HAL_GPIO_DeInit(ADC1_IN0_GPIO_Port, ADC1_IN0_Pin);
-
-  }
-  /* USER CODE BEGIN ADC1_MspDeInit 1 */
-
-  /* USER CODE END ADC1_MspDeInit 1 */
-} 
-
-/* USER CODE BEGIN 1 */
-
-/* USER CODE END 1 */
+#endif
+#endif /*__ iwdg_H */
 
 /**
   * @}

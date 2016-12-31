@@ -19,7 +19,10 @@ extern "C" void MY_main() {
     encoderInit();
 
     TM_HD44780_Puts(4, 0, "station");
-    HAL::delay(1000);
+    for (int i = 0; i < 10; i++) {
+        HAL::delay(100);
+        HAL::wdgTick();
+    }
 
     core::setup();
 
@@ -29,6 +32,7 @@ extern "C" void MY_main() {
     while (1) {
         if (tickTimeElapsed) {
             tickTimeElapsed = 0;
+            HAL::wdgTick();
             core::tick();
         }
     }

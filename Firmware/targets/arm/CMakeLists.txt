@@ -25,6 +25,7 @@ set(SOURCES_PROJECT
 	Src/MY_main.cpp
 	Src/newlib.c
 	Src/encoder_hw.cpp
+	Src/i2c_memory.cpp
 )
 
 include_directories(

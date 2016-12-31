@@ -85,7 +85,7 @@ uint16_t readRaw() {
 }
 
 bool inStand() {
-    return false;
+    return HAL_GPIO_ReadPin(DETECTOR_GPIO_Port, DETECTOR_Pin) == GPIO_PIN_RESET;
 }
 }  // namespace Tip
 

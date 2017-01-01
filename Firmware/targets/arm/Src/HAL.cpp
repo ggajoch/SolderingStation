@@ -7,7 +7,6 @@
 #include "storage.h"
 
 #include "adc.h"
-#include "iwdg.h"
 #include "tim.h"
 #include "usart.h"
 
@@ -19,10 +18,6 @@ namespace HAL {
 
 void delay(uint32_t ms) {
     HAL_Delay(ms);
-}
-
-void wdgTick() {
-    HAL_IWDG_Refresh(&hiwdg);
 }
 
 namespace Display {

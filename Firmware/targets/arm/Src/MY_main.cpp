@@ -4,6 +4,7 @@
 #include "STM32_HAL.h"
 #include "com.h"
 #include "core.h"
+#include "iwdg.h"
 
 #include "adc.h"
 #include "hd44780.h"
@@ -18,11 +19,7 @@ extern "C" void MY_main() {
     TM_HD44780_Init(16, 2);
     encoderInit();
 
-    TM_HD44780_Puts(4, 0, "station");
-    for (int i = 0; i < 10; i++) {
-        HAL::delay(100);
-        HAL::wdgTick();
-    }
+    HAL_IWDG_Refresh(&hiwdg);
 
     core::setup();
 
@@ -32,7 +29,7 @@ extern "C" void MY_main() {
     while (1) {
         if (tickTimeElapsed) {
             tickTimeElapsed = 0;
-            HAL::wdgTick();
+            HAL_IWDG_Refresh(&hiwdg);
             core::tick();
         }
     }

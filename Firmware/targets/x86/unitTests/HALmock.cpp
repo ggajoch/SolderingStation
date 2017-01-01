@@ -10,9 +10,6 @@ namespace HAL {
 void delay(uint32_t ms) {
 }
 
-void wdgTick(){
-}
-
 namespace Display {
 float backlight, contrast;
 

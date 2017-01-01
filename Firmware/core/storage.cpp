@@ -8,23 +8,28 @@
 namespace core {
 namespace storage {
 
-Elements actualState() {
-    return {.targetTemperature = core::target,
-        .pidParams = core::pid.params,
+Settings actualSettings() {
+    return {.pidParams = core::pid.params,
         .tipParams = core::tempSensor::params,
         .contrast = core::display::contrast,
         .backlight = core::display::backlight};
 }
 
-Elements inMemory;
+State actualState() {
+    return {.targetTemperature = core::target};
+}
+
+Settings settingsInMemory;
+State stateInMemory;
 
 void read() {
-    HAL::Memory::get(inMemory.asArrayView());
-    core::target = inMemory.targetTemperature;
-    core::pid.params = inMemory.pidParams;
-    core::tempSensor::params = inMemory.tipParams;
-    core::display::setContrast(inMemory.contrast);
-    core::display::setBacklight(inMemory.backlight);
+    HAL::Memory::getSettings(settingsInMemory.asArrayView());
+    HAL::Memory::getState(stateInMemory.asArrayView());
+    core::target = stateInMemory.targetTemperature;
+    core::pid.params = settingsInMemory.pidParams;
+    core::tempSensor::params = settingsInMemory.tipParams;
+    core::display::setContrast(settingsInMemory.contrast);
+    core::display::setBacklight(settingsInMemory.backlight);
 }
 
 // this function should be invoked on every tick
@@ -32,16 +37,22 @@ void tick() {
     static std::chrono::milliseconds saveDataTimePoint{0};
     static bool saved = true;
 
-    Elements now = actualState();
-    if (now != inMemory) {
+    State nowState = actualState();
+    if (nowState != stateInMemory) {
         saveDataTimePoint = timer::now() + config::timeToSaveDataToMemory;
-        inMemory = now;
+        stateInMemory = nowState;
         saved = false;
     }
 
     if (!saved && timer::now() > saveDataTimePoint) {
         saved = true;
-        HAL::Memory::store(inMemory.asArrayView());
+        HAL::Memory::storeState(stateInMemory.asArrayView());
+    }
+
+    Settings nowSettings = actualSettings();
+    if (nowSettings != settingsInMemory) {
+        settingsInMemory = nowSettings;
+        HAL::Memory::storeSettings(settingsInMemory.asArrayView());
     }
 }
 

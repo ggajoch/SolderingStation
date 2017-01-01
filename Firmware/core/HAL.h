@@ -32,8 +32,10 @@ void callbackTick();
 }
 
 namespace Memory {
-void store(libs::array_view<const std::uint8_t> data);
-void get(libs::array_view<std::uint8_t> data);
+void storeSettings(libs::array_view<const std::uint8_t> data);
+void getSettings(libs::array_view<std::uint8_t> data);
+void storeState(libs::array_view<const std::uint8_t> data);
+void getState(libs::array_view<std::uint8_t> data);
 }
 
 }  // namespace HAL

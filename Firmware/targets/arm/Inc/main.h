@@ -51,6 +51,8 @@
 #define ENC_P_GPIO_Port GPIOC
 #define ADC1_IN0_Pin GPIO_PIN_0
 #define ADC1_IN0_GPIO_Port GPIOA
+#define DETECTOR_Pin GPIO_PIN_7
+#define DETECTOR_GPIO_Port GPIOA
 #define LCD_BACKLIGHT_Pin GPIO_PIN_1
 #define LCD_BACKLIGHT_GPIO_Port GPIOB
 #define LCD_D7_Pin GPIO_PIN_2

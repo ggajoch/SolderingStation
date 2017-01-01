@@ -6,7 +6,6 @@
 
 namespace HAL {
 void delay(std::uint32_t ms);
-void wdgTick();
 
 namespace Display {
 void setBacklight(float percent);

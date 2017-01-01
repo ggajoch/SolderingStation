@@ -108,24 +108,24 @@ void callbackTick() {
 }  // namespace Encoder
 
 namespace Memory {
-void storeSettings(libs::array_view<const uint8_t> data) {
+void storeSettings(core::storage::Settings* data) {
     UNREFERENCED_PARAMETER(data);
     Com::puts("SAVING TO MEMORY Settings\n");
 }
-void storeState(libs::array_view<const uint8_t> data) {
+void storeState(core::storage::State* data) {
     UNREFERENCED_PARAMETER(data);
     Com::puts("SAVING TO MEMORY State\n");
 }
-void getSettings(libs::array_view<uint8_t> data) {
+void getSettings(core::storage::Settings* data) {
     static constexpr core::storage::Settings elements = {
         .pidParams = {.Kp = 1.0, .Ki = 4.0, .Kd = 0}, .tipParams = {.offset = 20, .gain = 0.11}, .contrast = 27.5, .backlight = 100};
 
-    std::memcpy(data.data(), &elements, sizeof(core::storage::Settings));
+    *data = elements;
 }
-void getState(libs::array_view<uint8_t> data) {
+void getState(core::storage::State* data) {
     static constexpr core::storage::State elements = {.targetTemperature = 0};
 
-    std::memcpy(data.data(), &elements, sizeof(core::storage::State));
+    *data = elements;
 }
 }  // namespace Memory
 

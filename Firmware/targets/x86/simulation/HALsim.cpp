@@ -83,27 +83,27 @@ namespace Encoder {
 }  // namespace Encoder
 
 namespace Memory {
-void storeSettings(core::storage::Settings* data) {
+void storeSettings(const core::storage::Settings& data) {
     UNREFERENCED_PARAMETER(data);
     Com::puts("SAVING TO MEMORY Settings\n");
 }
-void storeState(core::storage::State* data) {
+void storeState(const core::storage::State& data) {
     UNREFERENCED_PARAMETER(data);
     Com::puts("SAVING TO MEMORY State\n");
 }
-void getSettings(core::storage::Settings* data) {
+std::experimental::optional<core::storage::Settings> getSettings() {
     static constexpr core::storage::Settings elements = {
         .pidParams = {.Kp = 1.0, .Ki = 4.0, .Kd = 0},
         .tipParams = {.offset = 20, .gain = 0.11},
         .contrast = 27.5,
         .backlight = 100};
 
-    *data = elements;
+    return elements;
 }
-void getState(core::storage::State* data) {
+std::experimental::optional<core::storage::State> getState() {
     static constexpr core::storage::State elements = {.targetTemperature = 0};
 
-    *data = elements;
+    return elements;
 }
 }  // namespace Memory
 

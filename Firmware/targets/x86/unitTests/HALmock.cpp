@@ -79,10 +79,10 @@ void callbackTick() {
 }  // namespace Encoder
 
 namespace Memory {
-void storeSettings(core::storage::Settings* data) {}
-void getSettings(core::storage::Settings* data) {}
-void storeState(core::storage::State* data) {}
-void getState(core::storage::State* data) {}
+void storeSettings(const core::storage::Settings& data) {}
+void storeState(const core::storage::State& data) {}
+std::experimental::optional<core::storage::Settings> getSettings() {}
+std::experimental::optional<core::storage::State> getState() {}
 }  // namespace Memory
 
 }  // namespace HAL

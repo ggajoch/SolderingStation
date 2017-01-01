@@ -23,8 +23,8 @@ Settings settingsInMemory;
 State stateInMemory;
 
 void read() {
-    HAL::Memory::getSettings(&settingsInMemory);
-    HAL::Memory::getState(&stateInMemory);
+    settingsInMemory = *HAL::Memory::getSettings();
+    stateInMemory = *HAL::Memory::getState();
     core::target = stateInMemory.targetTemperature;
     core::pid.params = settingsInMemory.pidParams;
     core::tempSensor::params = settingsInMemory.tipParams;
@@ -46,13 +46,13 @@ void tick() {
 
     if (!saved && timer::now() > saveDataTimePoint) {
         saved = true;
-        HAL::Memory::storeState(&stateInMemory);
+        HAL::Memory::storeState(stateInMemory);
     }
 
     Settings nowSettings = actualSettings();
     if (nowSettings != settingsInMemory) {
         settingsInMemory = nowSettings;
-        HAL::Memory::storeSettings(&settingsInMemory);
+        HAL::Memory::storeSettings(settingsInMemory);
     }
 }
 

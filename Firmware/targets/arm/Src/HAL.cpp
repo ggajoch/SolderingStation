@@ -14,6 +14,8 @@
 
 #include "encoder_hw.h"
 
+#include "i2c_memory.h"
+
 namespace HAL {
 
 void delay(uint32_t ms) {
@@ -117,8 +119,20 @@ void storeState(const core::storage::State& data) {
     Com::puts("SAVING TO MEMORY State\n");
 }
 std::experimental::optional<core::storage::Settings> getSettings() {
-    static constexpr core::storage::Settings elements = {
-        .pidParams = {.Kp = 1.0, .Ki = 4.0, .Kd = 0}, .tipParams = {.offset = 20, .gain = 0.11}, .contrast = 27.5, .backlight = 100};
+    core::storage::Settings elements;
+
+    auto fromMemory = i2cMemoryReadSettings();
+
+    if (!fromMemory) {
+        return {};
+    }
+
+    i2cMemorySettings formMemorySettings = *fromMemory;
+
+    elements.backlight = formMemorySettings.backlight;
+    elements.contrast = formMemorySettings.contrast;
+    elements.pidParams = formMemorySettings.pidParams;
+    elements.tipParams = formMemorySettings.tipParams;
 
     return elements;
 }

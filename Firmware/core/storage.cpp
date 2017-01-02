@@ -23,8 +23,19 @@ Settings settingsInMemory;
 State stateInMemory;
 
 void read() {
-    settingsInMemory = *HAL::Memory::getSettings();
-    stateInMemory = *HAL::Memory::getState();
+    auto settings = HAL::Memory::getSettings();
+    if (!settings) {
+        return;
+    }
+
+    settingsInMemory = *settings;
+
+    auto state = HAL::Memory::getState();
+    if (state) {
+        stateInMemory = *state;
+    } else {
+        stateInMemory.targetTemperature = 0;
+    }
     core::target = stateInMemory.targetTemperature;
     core::pid.params = settingsInMemory.pidParams;
     core::tempSensor::params = settingsInMemory.tipParams;

@@ -5,5 +5,9 @@
 #include "stm32f1xx_hal.h"
 #include "main.h"
 #include "i2c.h"
+#include "i2c_memory_struct.h"
+#include <experimental/optional>
+
+std::experimental::optional<i2cMemorySettings> i2cMemoryReadSettings();
 
 #endif  // TARGETS_ARM_INC_I2C_MEMORY_H_

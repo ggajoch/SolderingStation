@@ -4,10 +4,11 @@
 namespace core {
 namespace sleepManager {
 
-extern bool sleepState, standState;
+extern bool sleepState, standState, configState;
 
 void tick();
 void encoderCallback();
+void configStateSet(bool now);
 
 }  // namespace sleepManager
 }  // namespace core

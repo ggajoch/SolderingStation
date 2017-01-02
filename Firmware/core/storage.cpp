@@ -2,6 +2,7 @@
 #include "HAL.h"
 #include "config.h"
 #include "display.h"
+#include "sleepManager.h"
 #include "tempSensor.h"
 #include "timer.h"
 
@@ -25,10 +26,21 @@ State stateInMemory;
 void read() {
     auto settings = HAL::Memory::getSettings();
     if (!settings) {
-        return;
+        core::sleepManager::configStateSet(false);
+        static constexpr core::PID::Params pidParams = {.Kp = 0.0, .Ki = 0.0, .Kd = 0.0};
+        static constexpr core::tempSensor::Params tipParams = {.offset = 0, .gain = 0.0};
+        core::pid.params = pidParams;
+        core::tempSensor::params = tipParams;
+        core::display::setContrast(27.5);
+        core::display::setBacklight(100.0);
+    } else {
+        core::sleepManager::configStateSet(true);
+        settingsInMemory = *settings;
+        core::pid.params = settingsInMemory.pidParams;
+        core::tempSensor::params = settingsInMemory.tipParams;
+        core::display::setContrast(settingsInMemory.contrast);
+        core::display::setBacklight(settingsInMemory.backlight);
     }
-
-    settingsInMemory = *settings;
 
     auto state = HAL::Memory::getState();
     if (state) {
@@ -37,10 +49,6 @@ void read() {
         stateInMemory.targetTemperature = 0;
     }
     core::target = stateInMemory.targetTemperature;
-    core::pid.params = settingsInMemory.pidParams;
-    core::tempSensor::params = settingsInMemory.tipParams;
-    core::display::setContrast(settingsInMemory.contrast);
-    core::display::setBacklight(settingsInMemory.backlight);
 }
 
 // this function should be invoked on every tick

@@ -7,7 +7,7 @@
 namespace core {
 namespace sleepManager {
 
-bool sleepState = false, standState;
+bool sleepState = true, standState;
 
 void tick() {
     standState = HAL::Tip::inStand();

@@ -214,7 +214,8 @@ void TIM2_IRQHandler(void)
 void USART1_IRQHandler(void)
 {
   /* USER CODE BEGIN USART1_IRQn 0 */
-    static char USART1_buffer[100];
+	#define USART1_buffer_size 100
+    static char USART1_buffer[USART1_buffer_size];
     static uint8_t USART1_buffer_cnt = 0;
 
     uint32_t tmp_flag = 0, tmp_it_source = 0;
@@ -232,7 +233,11 @@ void USART1_IRQHandler(void)
             void HAL_CmdCallback(char* buf);
             HAL_CmdCallback(USART1_buffer);
         }
+        if (USART1_buffer_cnt >= USART1_buffer_size){
+        	USART1_buffer_cnt = 0;
+        }
     }
+	#undef USART1_buffer_size
   /* USER CODE END USART1_IRQn 0 */
   HAL_UART_IRQHandler(&huart1);
   /* USER CODE BEGIN USART1_IRQn 1 */

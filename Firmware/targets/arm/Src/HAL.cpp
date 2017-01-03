@@ -111,11 +111,18 @@ void callbackTick() {
 
 namespace Memory {
 void storeSettings(const core::storage::Settings& data) {
-    UNREFERENCED_PARAMETER(data);
+    i2cMemorySettings settings;
+    settings.backlight = data.backlight;
+    settings.contrast = data.contrast;
+    settings.pidParams = data.pidParams;
+    settings.tipParams = data.tipParams;
+    i2cMemoryWriteSettings(settings);
     Com::puts("SAVING TO MEMORY Settings\n");
 }
 void storeState(const core::storage::State& data) {
-    UNREFERENCED_PARAMETER(data);
+    i2cMemoryState state;
+    state.targetTemperature = data.targetTemperature;
+    i2cMemoryWriteState(state);
     Com::puts("SAVING TO MEMORY State\n");
 }
 std::experimental::optional<core::storage::Settings> getSettings() {

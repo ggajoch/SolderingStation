@@ -9,6 +9,8 @@
 #include <experimental/optional>
 
 std::experimental::optional<i2cMemorySettings> i2cMemoryReadSettings();
+void i2cMemoryWriteSettings(const i2cMemorySettings& settings);
 std::experimental::optional<i2cMemoryState> i2cMemoryReadState();
+void i2cMemoryWriteState(const i2cMemoryState& state);
 
 #endif  // TARGETS_ARM_INC_I2C_MEMORY_H_

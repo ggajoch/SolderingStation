@@ -137,7 +137,16 @@ std::experimental::optional<core::storage::Settings> getSettings() {
     return elements;
 }
 std::experimental::optional<core::storage::State> getState() {
-    static constexpr core::storage::State elements = {.targetTemperature = 0};
+    core::storage::State elements;
+    auto formMemory = i2cMemoryReadState();
+
+    if (!formMemory) {
+        return {};
+    }
+
+    i2cMemoryState formMemoryState = *formMemory;
+
+    elements.targetTemperature = formMemoryState.targetTemperature;
 
     return elements;
 }

@@ -6,3 +6,9 @@ std::experimental::optional<i2cMemorySettings> i2cMemoryReadSettings() {
 
     return settings;
 }
+
+std::experimental::optional<i2cMemoryState> i2cMemoryReadState() {
+    static constexpr i2cMemoryState state = {.targetTemperature = 5};
+
+    return state;
+}

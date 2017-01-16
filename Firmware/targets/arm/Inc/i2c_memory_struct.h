@@ -20,11 +20,16 @@ typedef struct{
 typedef struct{
 	uint8_t data[sizeof(i2cMemorySettings)];
 	uint8_t crc;
-}i2cMemorySettingsLayout;
+} i2cMemorySettingsLayout;
 
 typedef struct{
 	uint8_t data[sizeof(i2cMemoryState)];
 	uint8_t crc;
-}i2cMemoryStateLayout;
+} i2cMemoryStateLayout;
+
+typedef struct{
+	uint16_t version;
+	uint8_t crc;
+} i2cMemoryVersion;
 
 #endif  // TARGETS_ARM_INC_I2C_MEMORY_STRUCT_H_

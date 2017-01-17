@@ -111,49 +111,32 @@ void callbackTick() {
 
 namespace Memory {
 void storeSettings(const core::storage::Settings& data) {
-    i2cMemorySettings settings;
-    settings.backlight = data.backlight;
-    settings.contrast = data.contrast;
-    settings.pidParams = data.pidParams;
-    settings.tipParams = data.tipParams;
-    i2cMemoryWriteSettings(settings);
+    i2cMemoryWriteSettings(data);
     Com::puts("SAVING TO MEMORY Settings\n");
 }
 void storeState(const core::storage::State& data) {
-    i2cMemoryState state;
-    state.targetTemperature = data.targetTemperature;
-    i2cMemoryWriteState(state);
+    i2cMemoryWriteState(data);
     Com::puts("SAVING TO MEMORY State\n");
 }
 std::experimental::optional<core::storage::Settings> getSettings() {
-    core::storage::Settings elements;
-
     auto fromMemory = i2cMemoryReadSettings();
 
     if (!fromMemory) {
         return {};
     }
 
-    i2cMemorySettings formMemorySettings = *fromMemory;
-
-    elements.backlight = formMemorySettings.backlight;
-    elements.contrast = formMemorySettings.contrast;
-    elements.pidParams = formMemorySettings.pidParams;
-    elements.tipParams = formMemorySettings.tipParams;
+    core::storage::Settings elements = *fromMemory;
 
     return elements;
 }
 std::experimental::optional<core::storage::State> getState() {
-    core::storage::State elements;
     auto formMemory = i2cMemoryReadState();
 
     if (!formMemory) {
         return {};
     }
 
-    i2cMemoryState formMemoryState = *formMemory;
-
-    elements.targetTemperature = formMemoryState.targetTemperature;
+    core::storage::State elements = *formMemory;
 
     return elements;
 }

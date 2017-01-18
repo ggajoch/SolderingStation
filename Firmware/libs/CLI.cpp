@@ -3,15 +3,16 @@
 #include <cstdint>
 #include <cstdlib>
 #include <cstring>
+#include <gsl/span>
 
 #include "CLI.h"
 
 namespace libs {
 namespace CLI {
 
-libs::array_view<Command*> commands;
+gsl::span<Command*> commands;
 
-void set_commands(libs::array_view<Command*> cmds) {
+void set_commands(gsl::span<Command*> cmds) {
     commands = cmds;
 }
 
@@ -48,7 +49,7 @@ bool parse_line(char* line) {
                 }
             }
 
-            libs::array_view<char*> view(params.data(), param_nr);
+            gsl::span<char*> view(params.data(), param_nr);
             return cmd->callbackDispatcher(view);
         }
     }

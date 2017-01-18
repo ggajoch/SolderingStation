@@ -14,6 +14,10 @@ target_sources(libs
 		"${SOURCES}"
 )
 
+target_link_libraries(${NAME} INTERFACE
+	gsl
+)
+
 target_include_directories(${NAME} INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})
 
 target_format_sources(${NAME} "${SOURCES}")

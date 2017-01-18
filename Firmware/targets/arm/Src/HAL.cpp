@@ -108,11 +108,11 @@ void callbackTick() {
 }  // namespace Encoder
 
 namespace Memory {
-void store(libs::array_view<const uint8_t> data) {
+void store(gsl::span<const uint8_t> data) {
     UNREFERENCED_PARAMETER(data);
     Com::puts("SAVING TO MEMORY\n");
 }
-void get(libs::array_view<uint8_t> data) {
+void get(gsl::span<uint8_t> data) {
     static constexpr core::storage::Elements elements = {.targetTemperature = 0,
         .pidParams = {.Kp = 1.0, .Ki = 4.0, .Kd = 0},
         .tipParams = {.offset = 20, .gain = 0.11},

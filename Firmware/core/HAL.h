@@ -2,7 +2,7 @@
 #define CORE_HAL_H_
 
 #include <cstdint>
-#include "array_view.h"
+#include <gsl/span>
 
 namespace HAL {
 void delay(std::uint32_t ms);
@@ -31,8 +31,8 @@ void callbackTick();
 }
 
 namespace Memory {
-void store(libs::array_view<const std::uint8_t> data);
-void get(libs::array_view<std::uint8_t> data);
+void store(gsl::span<const std::uint8_t> data);
+void get(gsl::span<std::uint8_t> data);
 }
 
 }  // namespace HAL

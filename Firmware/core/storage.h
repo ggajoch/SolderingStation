@@ -3,7 +3,7 @@
 
 #include <cstdint>
 #include <cstring>
-#include "array_view.h"
+#include <gsl/span>
 #include "core.h"
 #include "pid.h"
 #include "tempSensor.h"
@@ -17,8 +17,8 @@ struct Settings {
     float contrast;
     float backlight;
 
-    libs::array_view<std::uint8_t> asArrayView() {
-        return libs::make_array_view(reinterpret_cast<std::uint8_t*>(this), sizeof(*this));
+    gsl::span<std::uint8_t> asArrayView() {
+        return gsl::make_span(reinterpret_cast<std::uint8_t*>(this), sizeof(*this));
     }
 
     bool operator==(const Settings& rhs) {
@@ -33,8 +33,8 @@ struct Settings {
 struct State {
     float targetTemperature;
 
-    libs::array_view<std::uint8_t> asArrayView() {
-        return libs::make_array_view(reinterpret_cast<std::uint8_t*>(this), sizeof(*this));
+    gsl::span<std::uint8_t> asArrayView() {
+        return gsl::make_span(reinterpret_cast<std::uint8_t*>(this), sizeof(*this));
     }
 
     bool operator==(const State& rhs) {

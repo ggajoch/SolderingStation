@@ -1,6 +1,5 @@
 #include <cstring>
 #include "Average.h"
-#include "array_view.h"
 
 #include "HAL.h"
 #include "com.h"

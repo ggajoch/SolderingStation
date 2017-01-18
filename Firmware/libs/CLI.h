@@ -1,7 +1,7 @@
 #ifndef LIBS_CLI_H_
 #define LIBS_CLI_H_
 
-#include "array_view.h"
+#include <gsl/span>
 
 namespace libs {
 namespace CLI {
@@ -17,15 +17,15 @@ class Command {
     Command(const char* name, unsigned int requiredArguments) : name(name), requiredArguments(requiredArguments) {
     }
 
-    bool callbackDispatcher(const array_view<char*> parameters) {
-        if (requiredArguments < maximumRequiredArguments && parameters.size() != requiredArguments) {
+    bool callbackDispatcher(const gsl::span<char*> parameters) {
+        if (requiredArguments < maximumRequiredArguments && (unsigned int)parameters.size() != requiredArguments) {
             return false;
         }
         callback(parameters);
         return true;
     }
 
-    virtual void callback(const libs::array_view<char*> parameters) {
+    virtual void callback(const gsl::span<char*> parameters) {
         UNREFERENCED_PARAMETER(parameters);
     }
 
@@ -33,7 +33,7 @@ class Command {
     unsigned int requiredArguments;
 };
 
-void set_commands(libs::array_view<Command*> cmds);
+void set_commands(gsl::span<Command*> cmds);
 bool parse_line(char* line);
 
 }  // namespace CLI

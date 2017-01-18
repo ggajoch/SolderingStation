@@ -3,7 +3,7 @@
 
 #include <cstdint>
 #include <experimental/optional>
-#include "array_view.h"
+#include <gsl/span>
 #include "storage.h"
 
 namespace HAL {
@@ -37,6 +37,8 @@ void storeSettings(const core::storage::Settings& data);
 void storeState(const core::storage::State& data);
 std::experimental::optional<core::storage::Settings> getSettings();
 std::experimental::optional<core::storage::State> getState();
+/*void store(gsl::span<const std::uint8_t> data);
+void get(gsl::span<std::uint8_t> data);*/
 }
 
 }  // namespace HAL

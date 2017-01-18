@@ -140,6 +140,19 @@ std::experimental::optional<core::storage::State> getState() {
 
     return elements;
 }
+/*void store(gsl::span<const uint8_t> data) {
+    UNREFERENCED_PARAMETER(data);
+    Com::puts("SAVING TO MEMORY\n");
+}
+void get(gsl::span<uint8_t> data) {
+    static constexpr core::storage::Elements elements = {.targetTemperature = 0,
+        .pidParams = {.Kp = 1.0, .Ki = 4.0, .Kd = 0},
+        .tipParams = {.offset = 20, .gain = 0.11},
+        .contrast = 27.5,
+        .backlight = 100};
+
+    std::memcpy(data.data(), &elements, sizeof(core::storage::Elements));
+}*/
 }  // namespace Memory
 
 }  // namespace HAL

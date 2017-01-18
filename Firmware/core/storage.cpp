@@ -51,10 +51,14 @@ void read() {
     core::target = stateInMemory.targetTemperature;
 }
 
+bool saved = true;
+
+bool stateIsSaved() {
+    return saved;
+}
 // this function should be invoked on every tick
 void tick() {
     static std::chrono::milliseconds saveDataTimePoint{0};
-    static bool saved = true;
 
     State nowState = actualState();
     if (nowState != stateInMemory) {

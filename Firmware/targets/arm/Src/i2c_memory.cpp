@@ -68,12 +68,123 @@ void i2cMemoryWriteSettings(const core::storage::Settings& settings) {
     i2cMemoryWriteBlock(0x0000, sizeof(i2cMemorySettingsLayout), memoryToWrite);
 }
 
-std::experimental::optional<core::storage::State> i2cMemoryReadState() {
-    static constexpr core::storage::State state = {.targetTemperature = 0};
+void i2cGetMemoryBounds(uint16_t& i2cMemoryStartAddress, uint16_t& i2cMemorySize) {
+    i2cMemoryStartAddress = divCeli(sizeof(i2cMemorySettingsLayout), 8) * 8;
 
-    return state;
+    switch (MEMORY_TYPE) {
+        case MEM_24C01:
+            i2cMemorySize = 128;
+            break;
+        case MEM_24C02:
+            i2cMemorySize = 256;
+            break;
+        case MEM_24C04:
+            i2cMemorySize = 512;
+            break;
+        case MEM_24C08:
+            i2cMemorySize = 1024;
+            break;
+        case MEM_24C16:
+            i2cMemorySize = 2048;
+            break;
+    }
+}
+
+std::experimental::optional<i2cMemoryStateLayoutFound> i2cMemoryFindLastState() {
+    uint16_t i2cMemoryStartAddress, i2cMemorySize;
+    i2cGetMemoryBounds(i2cMemoryStartAddress, i2cMemorySize);
+
+    uint8_t memoryRead[4];
+    i2cMemoryStateLayout stateMemory;
+    i2cMemoryStateLayoutFound stateMemoryFound;
+    bool found = false;
+
+    for (uint16_t i = i2cMemorySize - 4; i >= i2cMemoryStartAddress; i -= 4) {
+        i2cMemoryReadBlock(i, 1, memoryRead);
+        stateMemory.marker = memoryRead[0];
+
+        if (stateMemory.marker == 0x00) {
+            if (found) {
+                // erase blocks, which should be empty
+                memoryRead[0] = 0xFF;
+                i2cMemoryWriteBlock(i, 1, memoryRead);
+            } else {
+                i2cMemoryReadBlock(i + 1, 3, &memoryRead[1]);
+                stateMemory.temperature = memoryRead[1] + ((uint16_t)memoryRead[2]) * 256;
+                stateMemory.crc = memoryRead[3];
+                if (stateMemory.crc == 0x00) {  // TODO: calculate CRC
+                    found = true;
+                    stateMemoryFound.state = stateMemory;
+                    stateMemoryFound.index = i;
+                } else {
+                    // erase blocks, with wrong crc
+                    memoryRead[0] = 0xFF;
+                    i2cMemoryWriteBlock(i, 1, memoryRead);
+                }
+            }
+        }
+    }
+
+    if (found) {
+        return stateMemoryFound;
+    } else {
+        return {};
+    }
+}
+
+std::experimental::optional<core::storage::State> i2cMemoryReadState() {
+    auto lastState = i2cMemoryFindLastState();
+    if (lastState) {
+        core::storage::State state;
+        i2cMemoryStateLayoutFound stateFound = *lastState;
+        state.targetTemperature = stateFound.state.temperature;
+        return state;
+    } else {
+        return {};
+    }
 }
 
 void i2cMemoryWriteState(const core::storage::State& state) {
-    UNREFERENCED_PARAMETER(state);
+    uint16_t i2cMemoryStartAddress, i2cMemorySize;
+    i2cGetMemoryBounds(i2cMemoryStartAddress, i2cMemorySize);
+
+    auto lastState = i2cMemoryFindLastState();
+
+    if (lastState) {
+        i2cMemoryStateLayoutFound stateFound = *lastState;
+        uint16_t nextIndex = stateFound.index + 4;
+        if (nextIndex >= i2cMemorySize) {
+            nextIndex = i2cMemoryStartAddress;
+        }
+
+        stateFound.state.marker = 0x00;
+        stateFound.state.temperature = state.targetTemperature;
+        stateFound.state.crc = 0x00;  // TODO: calculate CRC
+
+        uint8_t memoryWrite[4];
+        memoryWrite[0] = stateFound.state.marker;
+        memoryWrite[1] = stateFound.state.temperature % 256;
+        memoryWrite[2] = stateFound.state.temperature / 256;
+        memoryWrite[3] = stateFound.state.crc;
+
+        i2cMemoryWriteBlock(nextIndex, 4, memoryWrite);
+
+        memoryWrite[0] = 0xFF;
+
+        i2cMemoryWriteBlock(stateFound.index, 1, memoryWrite);
+
+    } else {
+        i2cMemoryStateLayout stateMemory;
+        stateMemory.marker = 0x00;
+        stateMemory.temperature = state.targetTemperature;
+        stateMemory.crc = 0x00;  // TODO: calculate crc
+
+        uint8_t memoryWrite[4];
+        memoryWrite[0] = stateMemory.marker;
+        memoryWrite[1] = stateMemory.temperature % 256;
+        memoryWrite[2] = stateMemory.temperature / 256;
+        memoryWrite[3] = stateMemory.crc;
+
+        i2cMemoryWriteBlock(i2cMemoryStartAddress, 4, memoryWrite);
+    }
 }

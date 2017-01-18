@@ -48,6 +48,7 @@ struct State {
 
 void read();
 
+bool stateIsSaved();
 // this function should be invoked on every tick
 void tick();
 

@@ -7,6 +7,8 @@
 #include "com.h"
 #include "core.h"
 
+#include "HAL.h"
+
 uint16_t divCeli(uint16_t a, uint16_t b) {
     uint16_t value = a / b;
     if (a % b > 0) {
@@ -141,6 +143,7 @@ std::experimental::optional<i2cMemoryStateLayoutFound> i2cMemoryFindLastState() 
 }
 
 std::experimental::optional<core::storage::State> i2cMemoryReadState() {
+    HAL::Tip::setHeating(0);
     auto lastState = i2cMemoryFindLastState();
     if (lastState) {
         core::storage::State state;
@@ -153,6 +156,8 @@ std::experimental::optional<core::storage::State> i2cMemoryReadState() {
 }
 
 void i2cMemoryWriteState(const core::storage::State& state) {
+    HAL::Tip::setHeating(0);
+
     uint16_t i2cMemoryStartAddress, i2cMemorySize;
     i2cGetMemoryBounds(i2cMemoryStartAddress, i2cMemorySize);
 

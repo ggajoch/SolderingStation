@@ -1,6 +1,12 @@
 #include "i2c_memory.h"
 #include "iwdg.h"
 
+#include "reader.h"
+#include "writer.h"
+
+#include "com.h"
+#include "core.h"
+
 uint16_t divCeli(uint16_t a, uint16_t b) {
     uint16_t value = a / b;
     if (a % b > 0) {
@@ -110,8 +116,10 @@ std::experimental::optional<i2cMemoryStateLayoutFound> i2cMemoryFindLastState() 
                 i2cMemoryWriteBlock(i, 1, memoryRead);
             } else {
                 i2cMemoryReadBlock(i + 1, 3, &memoryRead[1]);
-                stateMemory.temperature = memoryRead[1] + ((uint16_t)memoryRead[2]) * 256;
-                stateMemory.crc = memoryRead[3];
+                Reader memoryReader(memoryRead);
+                stateMemory.marker = memoryReader.ReadByte();
+                stateMemory.temperature = memoryReader.ReadWordLE();
+                stateMemory.crc = memoryReader.ReadByte();
                 if (stateMemory.crc == 0x00) {  // TODO: calculate CRC
                     found = true;
                     stateMemoryFound.state = stateMemory;
@@ -162,16 +170,18 @@ void i2cMemoryWriteState(const core::storage::State& state) {
         stateFound.state.crc = 0x00;  // TODO: calculate CRC
 
         uint8_t memoryWrite[4];
-        memoryWrite[0] = stateFound.state.marker;
-        memoryWrite[1] = stateFound.state.temperature % 256;
-        memoryWrite[2] = stateFound.state.temperature / 256;
-        memoryWrite[3] = stateFound.state.crc;
+        Writer memoryWriter(memoryWrite);
+        memoryWriter.WriteByte(stateFound.state.marker);
+        memoryWriter.WriteWordLE(stateFound.state.temperature);
+        memoryWriter.WriteByte(stateFound.state.crc);
 
         i2cMemoryWriteBlock(nextIndex, 4, memoryWrite);
 
         memoryWrite[0] = 0xFF;
 
         i2cMemoryWriteBlock(stateFound.index, 1, memoryWrite);
+
+        core::com::printf("@%d\n", nextIndex);
 
     } else {
         i2cMemoryStateLayout stateMemory;
@@ -180,11 +190,12 @@ void i2cMemoryWriteState(const core::storage::State& state) {
         stateMemory.crc = 0x00;  // TODO: calculate crc
 
         uint8_t memoryWrite[4];
-        memoryWrite[0] = stateMemory.marker;
-        memoryWrite[1] = stateMemory.temperature % 256;
-        memoryWrite[2] = stateMemory.temperature / 256;
-        memoryWrite[3] = stateMemory.crc;
+        Writer memoryWriter(memoryWrite);
+        memoryWriter.WriteByte(stateMemory.marker);
+		memoryWriter.WriteWordLE(stateMemory.temperature);
+		memoryWriter.WriteByte(stateMemory.crc);
 
         i2cMemoryWriteBlock(i2cMemoryStartAddress, 4, memoryWrite);
+
     }
 }

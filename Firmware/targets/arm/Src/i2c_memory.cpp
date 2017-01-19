@@ -192,10 +192,9 @@ void i2cMemoryWriteState(const core::storage::State& state) {
         uint8_t memoryWrite[4];
         Writer memoryWriter(memoryWrite);
         memoryWriter.WriteByte(stateMemory.marker);
-		memoryWriter.WriteWordLE(stateMemory.temperature);
-		memoryWriter.WriteByte(stateMemory.crc);
+        memoryWriter.WriteWordLE(stateMemory.temperature);
+        memoryWriter.WriteByte(stateMemory.crc);
 
         i2cMemoryWriteBlock(i2cMemoryStartAddress, 4, memoryWrite);
-
     }
 }

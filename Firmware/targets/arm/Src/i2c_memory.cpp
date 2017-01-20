@@ -9,6 +9,8 @@
 
 #include "HAL.h"
 
+#include "crc8.h"
+
 uint16_t divCeli(uint16_t a, uint16_t b) {
     uint16_t value = a / b;
     if (a % b > 0) {

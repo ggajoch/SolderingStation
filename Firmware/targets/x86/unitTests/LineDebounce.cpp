@@ -4,7 +4,7 @@
 using libs::debouncer::LineDebounce;
 using libs::debouncer::State;
 
-TEST(LineDebounceTest, basic) {
+TEST(LineDebounce, initial) {
 	LineDebounce<5> debounce;
 	EXPECT_EQ(false, debounce.getValue());
 	EXPECT_EQ(State::UNSTABLE, debounce.getState());
@@ -18,6 +18,14 @@ TEST(LineDebounceTest, basic) {
 	debounce.tick(false);
 	EXPECT_EQ(false, debounce.getValue());
 	EXPECT_EQ(State::STABLE, debounce.getState());
+}
+
+TEST(LineDebounce, basic) {
+	LineDebounce<5> debounce;
+
+	for(int i = 0 ; i < 5 ; i++){
+		debounce.tick(false);
+	}
 
 	debounce.tick(true);
 	EXPECT_EQ(false, debounce.getValue());
@@ -46,19 +54,14 @@ TEST(LineDebounceTest, basic) {
 	debounce.tick(true);
 	EXPECT_EQ(true, debounce.getValue());
 	EXPECT_EQ(State::STABLE, debounce.getState());
+}
 
-
-
+TEST(LineDebounce, critical) {
+	LineDebounce<5> debounce;
 
 	for(int i = 0 ; i < 5 ; i++){
 		debounce.tick(false);
-		EXPECT_EQ(true, debounce.getValue());
-		EXPECT_EQ(State::UNSTABLE, debounce.getState());
 	}
-
-	debounce.tick(false);
-	EXPECT_EQ(false, debounce.getValue());
-	EXPECT_EQ(State::TRANSITION, debounce.getState());
 
 	for(int i = 0 ; i < 5 ; i++){
 		debounce.tick(true);
@@ -70,7 +73,17 @@ TEST(LineDebounceTest, basic) {
 	EXPECT_EQ(true, debounce.getValue());
 	EXPECT_EQ(State::TRANSITION, debounce.getState());
 
-	debounce.tick(true);
-	EXPECT_EQ(true, debounce.getValue());
+	for(int i = 0 ; i < 5 ; i++){
+		debounce.tick(false);
+		EXPECT_EQ(true, debounce.getValue());
+		EXPECT_EQ(State::UNSTABLE, debounce.getState());
+	}
+
+	debounce.tick(false);
+	EXPECT_EQ(false, debounce.getValue());
+	EXPECT_EQ(State::TRANSITION, debounce.getState());
+
+	debounce.tick(false);
+	EXPECT_EQ(false, debounce.getValue());
 	EXPECT_EQ(State::STABLE, debounce.getState());
 }

@@ -6,12 +6,10 @@ using libs::debouncer::State;
 
 TEST(LineDebounce, initial) {
 	LineDebounce<5> debounce;
-	EXPECT_EQ(false, debounce.getValue());
 	EXPECT_EQ(State::UNSTABLE, debounce.getState());
 
 	for(int i = 0 ; i < 4 ; i++){
 		debounce.tick(false);
-		EXPECT_EQ(false, debounce.getValue());
 		EXPECT_EQ(State::UNSTABLE, debounce.getState());
 	}
 

@@ -79,9 +79,9 @@ void callbackTick() {
 }  // namespace Encoder
 
 namespace Memory {
-void store(libs::array_view<const uint8_t> data) {
+void store(gsl::span<const uint8_t> data) {
 }
-void get(libs::array_view<uint8_t> data) {
+void get(gsl::span<uint8_t> data) {
 }
 }  // namespace Memory
 

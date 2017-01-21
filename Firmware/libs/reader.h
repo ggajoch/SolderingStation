@@ -18,9 +18,8 @@
  * that is independent of both current memory layout and the actual
  * buffer location in memory.
  */
-class Reader final
-{
-  public:
+class Reader final {
+ public:
     /**
      * @brief Default ctor.
      */
@@ -125,7 +124,7 @@ class Reader final
      */
     gsl::span<const uint8_t> ReadToEnd();
 
-  private:
+ private:
     bool UpdateState(uint16_t requestedSize);
 
     /**
@@ -149,13 +148,11 @@ class Reader final
     bool isValid;
 };
 
-inline bool Reader::Status() const
-{
+inline bool Reader::Status() const {
     return this->isValid;
 }
 
-inline void Reader::Reset()
-{
+inline void Reader::Reset() {
     this->position = 0;
     this->isValid = !this->buffer.empty();
 }

@@ -18,9 +18,8 @@
  * that is independent of both current memory layout and the actual
  * buffer location in memory.
  */
-class Writer final
-{
-  public:
+class Writer final {
+ public:
     /**
      * @brief Default ctor
      */
@@ -113,7 +112,7 @@ class Writer final
      */
     gsl::span<std::uint8_t> UsedSpan();
 
-  private:
+ private:
     /**
      * @brief Updates internal writer status
      * @param requestedSize Number of bytes that will be written to buffer
@@ -148,19 +147,16 @@ class Writer final
     bool _isValid;
 };
 
-inline bool Writer::Status() const
-{
+inline bool Writer::Status() const {
     return this->_isValid;
 }
 
-inline void Writer::Reset()
-{
+inline void Writer::Reset() {
     this->_position = 0;
     this->_isValid = this->_buffer.length() > 0;
 }
 
-inline uint16_t Writer::GetDataLength() const
-{
+inline uint16_t Writer::GetDataLength() const {
     return this->_position;
 }
 

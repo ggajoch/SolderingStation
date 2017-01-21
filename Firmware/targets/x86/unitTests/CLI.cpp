@@ -6,7 +6,7 @@
 
 namespace libs {
 namespace CLI {
-extern libs::array_view<Command*> commands;
+extern gsl::span<Command*> commands;
 }
 }
 using libs::CLI::commands;
@@ -18,7 +18,7 @@ struct CLITest_;
 std::vector<CLITest_*> testCommands;
 
 std::array<char*, 50> params;
-libs::array_view<char*> rx_params;
+gsl::span<char*> rx_params;
 
 struct CLITest_ : Command {
     explicit CLITest_(const char* name) : Command(name), callbacked(false) {
@@ -29,7 +29,7 @@ struct CLITest_ : Command {
         testCommands.push_back(this);
     }
 
-    void callback(const libs::array_view<char*> parameters) override {
+    void callback(const gsl::span<char*> parameters) override {
         // printf("callback: %s | ", this->name);
         // for(auto x : parameters) {
         // printf("%p, %s, ", x, x);
@@ -95,7 +95,7 @@ class CLITest : public ::testing::Test {
         CLITest5 = &CLITest5_o;
 
         static Command* tab[] = {CLITest1, CLITest2, CLITest3, CLITest4, CLITest5};
-        auto x = libs::array_view<Command*>(tab);
+        auto x = gsl::span<Command*>(tab);
         set_commands(x);
     }
 };

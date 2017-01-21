@@ -14,8 +14,9 @@ class LineDebounce {
  public:
     LineDebounce() {
         state = State::UNSTABLE;
-        last_value = false;
-        times_stable = 0;
+        lastValue = false;
+        stableValue = false;
+        timesStable = 0;
     }
 
     void tick(bool now) {
@@ -25,39 +26,45 @@ class LineDebounce {
                 break;
             case State::TRANSITION:
                 this->state = State::STABLE;
-                break;
+            //[[fallthrough]];
             case State::STABLE:
                 tickStable(now);
                 break;
         }
-        last_value = now;
+        lastValue = now;
     }
     State getState() {
         return state;
     }
     bool getValue() {
-        return last_value;
+        return stableValue;
     }
 
  private:
     State state;
-    bool last_value;
-    uint32_t times_stable;
+    bool lastValue;
+    bool stableValue;
+    uint32_t timesStable;
 
     void tickUnstable(bool now) {
-        if (now == last_value) {
-            ++times_stable;
+        if (now == lastValue) {
+            ++timesStable;
         } else {
-            times_stable = 0;
+            timesStable = 0;
         }
-        if (times_stable == debounceTime) {
-            this->state = State::TRANSITION;
+        if (timesStable == debounceTime) {
+            if (now == stableValue) {
+                this->state = State::STABLE;
+            } else {
+                stableValue = now;
+                this->state = State::TRANSITION;
+            }
         }
     }
 
     void tickStable(bool now) {
-        if (now != last_value) {
-            times_stable = 0;
+        if (now != lastValue) {
+            timesStable = 0;
             this->state = State::UNSTABLE;
         }
     }

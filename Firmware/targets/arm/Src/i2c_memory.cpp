@@ -50,6 +50,19 @@ void i2cMemoryReadBlock(uint16_t address, uint16_t dataSize, uint8_t* data) {
     }
 }
 
+uint8_t crc8Settings(i2cMemorySettingsLayout settings) {
+    return settings.crc;
+    // TODO: calculate IT
+}
+
+uint8_t crc8State(i2cMemoryStateLayout state) {
+    uint8_t data[3];
+    Writer dataWriter(data);
+    dataWriter.WriteByte(state.marker);
+    dataWriter.WriteWordLE(state.temperature);
+    return crc8(data, 3);
+}
+
 std::experimental::optional<core::storage::Settings> i2cMemoryReadSettings() {
     uint8_t memoryRead[sizeof(i2cMemorySettingsLayout)];
 
@@ -59,7 +72,7 @@ std::experimental::optional<core::storage::Settings> i2cMemoryReadSettings() {
 
     i2cMemorySettingsLayout* settingsMemory = reinterpret_cast<i2cMemorySettingsLayout*>(memoryRead);
 
-    if (settingsMemory->crc == 0 && settingsMemory->version == MEMORY_VERSION) {  // TODO: caculate CRC
+    if (settingsMemory->crc == crc8Settings(*settingsMemory) && settingsMemory->version == MEMORY_VERSION) {  // TODO: caculate CRC
         core::storage::Settings settings = settingsMemory->settings;
         return settings;
     } else {
@@ -72,7 +85,7 @@ void i2cMemoryWriteSettings(const core::storage::Settings& settings) {
 
     settingsMemory.version = MEMORY_VERSION;
     settingsMemory.settings = settings;
-    settingsMemory.crc = 0;  // TODO: calculate crc of data & version
+    settingsMemory.crc = crc8Settings(settingsMemory);  // TODO: calculate crc of data & version
 
     uint8_t* memoryToWrite = reinterpret_cast<uint8_t*>(&settingsMemory);
     i2cMemoryWriteBlock(0x0000, sizeof(i2cMemorySettingsLayout), memoryToWrite);
@@ -124,7 +137,7 @@ std::experimental::optional<i2cMemoryStateLayoutFound> i2cMemoryFindLastState() 
                 stateMemory.marker = memoryReader.ReadByte();
                 stateMemory.temperature = memoryReader.ReadWordLE();
                 stateMemory.crc = memoryReader.ReadByte();
-                if (stateMemory.crc == 0x00) {  // TODO: calculate CRC
+                if (stateMemory.crc == crc8State(stateMemory)) {  // TODO: calculate CRC
                     found = true;
                     stateMemoryFound.state = stateMemory;
                     stateMemoryFound.index = i;
@@ -174,7 +187,7 @@ void i2cMemoryWriteState(const core::storage::State& state) {
 
         stateFound.state.marker = 0x00;
         stateFound.state.temperature = state.targetTemperature;
-        stateFound.state.crc = 0x00;  // TODO: calculate CRC
+        stateFound.state.crc = crc8State(stateFound.state);  // TODO: calculate CRC
 
         uint8_t memoryWrite[4];
         Writer memoryWriter(memoryWrite);
@@ -194,7 +207,7 @@ void i2cMemoryWriteState(const core::storage::State& state) {
         i2cMemoryStateLayout stateMemory;
         stateMemory.marker = 0x00;
         stateMemory.temperature = state.targetTemperature;
-        stateMemory.crc = 0x00;  // TODO: calculate crc
+        stateMemory.crc = crc8State(stateMemory);  // TODO: calculate crc
 
         uint8_t memoryWrite[4];
         Writer memoryWriter(memoryWrite);

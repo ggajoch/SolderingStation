@@ -51,8 +51,22 @@ void i2cMemoryReadBlock(uint16_t address, uint16_t dataSize, uint8_t* data) {
 }
 
 uint8_t crc8Settings(i2cMemorySettingsLayout settings) {
-    return settings.crc;
-    // TODO: calculate IT
+    uint8_t data[30];
+    Writer dataWriter(data);
+
+    dataWriter.WriteWordLE(settings.version);
+
+    dataWriter.WriteDoubleWordLE((uint32_t)settings.settings.backlight);
+    dataWriter.WriteDoubleWordLE((uint32_t)settings.settings.contrast);
+
+    dataWriter.WriteDoubleWordLE((uint32_t)settings.settings.pidParams.Kp);
+    dataWriter.WriteDoubleWordLE((uint32_t)settings.settings.pidParams.Kd);
+    dataWriter.WriteDoubleWordLE((uint32_t)settings.settings.pidParams.Ki);
+
+    dataWriter.WriteDoubleWordLE((uint32_t)settings.settings.tipParams.gain);
+    dataWriter.WriteDoubleWordLE((uint32_t)settings.settings.tipParams.offset);
+
+    return crc8(data, 30);
 }
 
 uint8_t crc8State(i2cMemoryStateLayout state) {

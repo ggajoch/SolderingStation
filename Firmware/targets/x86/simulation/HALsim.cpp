@@ -83,12 +83,10 @@ namespace Encoder {
 }  // namespace Encoder
 
 namespace Memory {
-void storeSettings(const core::storage::Settings& data) {
-    UNREFERENCED_PARAMETER(data);
+void storeSettings(const core::storage::Settings&) {
     Com::puts("SAVING TO MEMORY Settings\n");
 }
-void storeState(const core::storage::State& data) {
-    UNREFERENCED_PARAMETER(data);
+void storeState(const core::storage::State&) {
     Com::puts("SAVING TO MEMORY State\n");
 }
 std::experimental::optional<core::storage::Settings> getSettings() {

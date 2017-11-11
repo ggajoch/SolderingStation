@@ -25,8 +25,7 @@ class Command {
         return true;
     }
 
-    virtual void callback(const gsl::span<char*> parameters) {
-        UNREFERENCED_PARAMETER(parameters);
+    virtual void callback(const gsl::span<char*>) {
     }
 
     const char* name;

@@ -25,13 +25,12 @@ void rxCommandCallback(char* data) {
 }
 
 void tick() {
-    core::com::printf("TICK %.2f %.2f %.2f %.2f\n", core::temp, core::target, core::power, core::pid.integral);
-
     if (rxCommandPtr != nullptr) {
         libs::CLI::parse_line(rxCommandPtr);
         rxCommandPtr = nullptr;
     }
-    HAL::Com::puts("*\n");
+
+    core::com::printf("TICK %.2f %.2f %.2f %.2f\n", core::temp, core::target, core::power, core::pid.integral);
 }
 
 }  // namespace com

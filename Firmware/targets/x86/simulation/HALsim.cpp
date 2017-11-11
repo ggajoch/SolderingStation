@@ -1,43 +1,38 @@
 #include <queue>
 #include <cstdio>
 #include <cstring>
+#include <thread>
 #include "com.h"
 
 #include "HAL.h"
 #include "HALsim.h"
 
-#include "Serial.h"
 #include "storage.h"
 
-extern Serial * serial;
 
 namespace HAL {
 
-void delay(uint32_t ms) {}
+void delay(uint32_t ms) {
+    std::this_thread::sleep_for(std::chrono::milliseconds{ms});
+}
 
 namespace Display {
     void setBacklight(float percent) {
-        std::printf("Setting backlight: %f\n", percent);
+        std::printf("display backlight %f\n", percent);
     }
 
     void setContrast(float percent) {
-        std::printf("Setting contrast: %f\n", percent);
+        std::printf("display contrast %f\n", percent);
     }
 
-    void write(char array[2][16])  {
-        char line1[17], line2[17];
-        std::memcpy(line1, array[0], 16);
-        line1[16] = '\0';
-        std::memcpy(line2, array[1], 16);
-        line2[16] = '\0';
-        core::com::printf("DISP |%s%s|\n", line1, line2);
+    void write(char /*array*/[2][16])  {
     }
 }  // namespace Display
 
 namespace Tip {
     float heatingPercentage;
     void setHeating(float percent) {
-        heatingPercentage = percent;
+        std::printf("tip heating %f\n", percent);
     }
 
     uint16_t temperature;
@@ -49,45 +44,38 @@ namespace Tip {
         return temperature;
     }
 
-    bool inStandFlag = false;
     bool inStand() {
-        return inStandFlag;
+        return false;
     }
 }  // namespace Tip
 
 namespace Com {
     void puts(const char * data) {
-//        std::printf("%s", data);
-        serial->WriteData(data, strlen(data));
+        std::printf("serial %s", data);
     }
 
     void (*callback)(char * data);
-    void setCallback(void (*callback_)(char * data)) {
+    void setCallback(void (*callback_)(char *)) {
         callback = callback_;
     }
 }  // namespace Com
 
 namespace Encoder {
-    int count;
     int getCountAndReset() {
-        int now = count;
-        count = 0;
-        return now;
+        return 0;
     }
-    void reset();
 
-    void (*callback)();
-    void setButtonCallback(void (*callback_)()) {
-        callback = callback_;
+    void setButtonCallback(void (*)()) {
     }
+    void callbackTick() {}
 }  // namespace Encoder
 
 namespace Memory {
 void storeSettings(const core::storage::Settings&) {
-    Com::puts("SAVING TO MEMORY Settings\n");
+    printf("mem save settings\n");
 }
 void storeState(const core::storage::State&) {
-    Com::puts("SAVING TO MEMORY State\n");
+    printf("mem save state\n");
 }
 std::experimental::optional<core::storage::Settings> getSettings() {
     static constexpr core::storage::Settings elements = {

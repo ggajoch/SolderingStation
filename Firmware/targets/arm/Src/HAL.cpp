@@ -34,13 +34,6 @@ void setContrast(float percent) {
 }
 
 void write(char array[2][16]) {
-    char line1[17], line2[17];
-    std::memcpy(line1, array[0], 16);
-    line1[16] = '\0';
-    std::memcpy(line2, array[1], 16);
-    line2[16] = '\0';
-    core::com::printf("DISP |%s%s|\n", line1, line2);
-
     TM_HD44780_Puts(0, 0, line1);
     TM_HD44780_Puts(0, 1, line2);
 }

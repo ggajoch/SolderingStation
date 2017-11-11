@@ -4,6 +4,7 @@
 #include "HAL.h"
 #include "core.h"
 #include "sleepManager.h"
+#include "com.h"
 
 namespace core {
 namespace display {
@@ -32,6 +33,13 @@ void tick() {
     }
 
     HAL::Display::write(display);
+
+    char line1[17], line2[17];
+    std::memcpy(line1, display[0], 16);
+    line1[16] = '\0';
+    std::memcpy(line2, display[1], 16);
+    line2[16] = '\0';
+    com::printf("DISP |%s%s|\n", line1, line2);
 }
 
 float backlight, contrast;

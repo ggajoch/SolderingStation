@@ -5,6 +5,7 @@
 #include "sleepManager.h"
 #include "tempSensor.h"
 #include "timer.h"
+#include "com.h"
 
 namespace core {
 namespace storage {
@@ -26,6 +27,7 @@ State stateInMemory;
 void read() {
     auto settings = HAL::Memory::getSettings();
     if (!settings) {
+        com::printf("Incorrect setting in memory, fallback to default\n");
         core::sleepManager::configStateSet(false);
         static constexpr core::PID::Params pidParams = {.Kp = 0.0, .Ki = 0.0, .Kd = 0.0};
         static constexpr core::tempSensor::Params tipParams = {.offset = 0, .gain = 0.0};
@@ -34,6 +36,7 @@ void read() {
         core::display::setContrast(27.5);
         core::display::setBacklight(100.0);
     } else {
+        com::printf("Setting from memory loaded\n");
         core::sleepManager::configStateSet(true);
         settingsInMemory = *settings;
         core::pid.params = settingsInMemory.pidParams;

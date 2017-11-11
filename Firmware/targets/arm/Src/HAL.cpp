@@ -14,6 +14,8 @@
 
 #include "encoder_hw.h"
 
+#include "i2c_memory.h"
+
 namespace HAL {
 
 void delay(uint32_t ms) {
@@ -108,7 +110,37 @@ void callbackTick() {
 }  // namespace Encoder
 
 namespace Memory {
-void store(gsl::span<const uint8_t> data) {
+void storeSettings(const core::storage::Settings& data) {
+    i2cMemoryWriteSettings(data);
+    Com::puts("SAVING TO MEMORY Settings\n");
+}
+void storeState(const core::storage::State& data) {
+    i2cMemoryWriteState(data);
+    Com::puts("SAVING TO MEMORY State\n");
+}
+std::experimental::optional<core::storage::Settings> getSettings() {
+    auto fromMemory = i2cMemoryReadSettings();
+
+    if (!fromMemory) {
+        return {};
+    }
+
+    core::storage::Settings elements = *fromMemory;
+
+    return elements;
+}
+std::experimental::optional<core::storage::State> getState() {
+    auto formMemory = i2cMemoryReadState();
+
+    if (!formMemory) {
+        return {};
+    }
+
+    core::storage::State elements = *formMemory;
+
+    return elements;
+}
+/*void store(gsl::span<const uint8_t> data) {
     UNREFERENCED_PARAMETER(data);
     Com::puts("SAVING TO MEMORY\n");
 }
@@ -120,7 +152,7 @@ void get(gsl::span<uint8_t> data) {
         .backlight = 100};
 
     std::memcpy(data.data(), &elements, sizeof(core::storage::Elements));
-}
+}*/
 }  // namespace Memory
 
 }  // namespace HAL

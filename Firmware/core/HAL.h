@@ -2,7 +2,9 @@
 #define CORE_HAL_H_
 
 #include <cstdint>
+#include <experimental/optional>
 #include <gsl/span>
+#include "storage.h"
 
 namespace HAL {
 void delay(std::uint32_t ms);
@@ -31,8 +33,12 @@ void callbackTick();
 }
 
 namespace Memory {
-void store(gsl::span<const std::uint8_t> data);
-void get(gsl::span<std::uint8_t> data);
+void storeSettings(const core::storage::Settings& data);
+void storeState(const core::storage::State& data);
+std::experimental::optional<core::storage::Settings> getSettings();
+std::experimental::optional<core::storage::State> getState();
+/*void store(gsl::span<const std::uint8_t> data);
+void get(gsl::span<std::uint8_t> data);*/
 }
 
 }  // namespace HAL

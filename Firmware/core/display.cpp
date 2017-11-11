@@ -11,9 +11,16 @@ namespace display {
 void tick() {
     char display[2][16];
 
-    std::sprintf(display[0], "%3d/%3d     %3d%%", static_cast<int>(temp), static_cast<int>(target), static_cast<int>(power));
+    std::sprintf(display[0],
+        "%3d/%3d %c   %3d%%",
+        static_cast<int>(temp),
+        static_cast<int>(target),
+        storage::stateIsSaved() ? ' ' : '*',
+        static_cast<int>(power));
 
-    if (sleepManager::sleepState) {
+    if (!sleepManager::configState) {
+        std::memcpy(display[1], "   CONNECT PC   ", 16);
+    } else if (sleepManager::sleepState) {
         std::memcpy(display[1], "     SLEEP      ", 16);
     } else if (sleepManager::standState) {
         std::memcpy(display[1], "     STAND      ", 16);

@@ -83,28 +83,28 @@ namespace Encoder {
 }  // namespace Encoder
 
 namespace Memory {
-    void store(libs::array_view<const uint8_t> data) {
-        std::printf("SAVING TO MEMORY\n");
-    }
+void storeSettings(const core::storage::Settings& data) {
+    UNREFERENCED_PARAMETER(data);
+    Com::puts("SAVING TO MEMORY Settings\n");
+}
+void storeState(const core::storage::State& data) {
+    UNREFERENCED_PARAMETER(data);
+    Com::puts("SAVING TO MEMORY State\n");
+}
+std::experimental::optional<core::storage::Settings> getSettings() {
+    static constexpr core::storage::Settings elements = {
+        .pidParams = {.Kp = 1.0, .Ki = 4.0, .Kd = 0},
+        .tipParams = {.offset = 20, .gain = 0.11},
+        .contrast = 27.5,
+        .backlight = 100};
 
-    void get(libs::array_view<uint8_t> data) {
-        static constexpr core::storage::Elements elements = {
-                .targetTemperature = 0,
-                .pidParams = {
-                        .Kp = 10.0,
-                        .Ki = 6.0,
-                        .Kd = 0
-                },
-                .tipParams = {
-                        .offset = 0,
-                        .gain = 0.1
-                },
-                .contrast = 27.5,
-                .backlight = 66.6
-        };
+    return elements;
+}
+std::experimental::optional<core::storage::State> getState() {
+    static constexpr core::storage::State elements = {.targetTemperature = 0};
 
-        std::memcpy(data.data(), &elements, sizeof(core::storage::Elements));
-    }
+    return elements;
+}
 }  // namespace Memory
 
 }  // namespace HAL

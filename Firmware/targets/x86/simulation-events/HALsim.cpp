@@ -64,8 +64,10 @@ namespace Encoder {
 }  // namespace Encoder
 
 namespace Memory {
-    void store(libs::array_view<const uint8_t> data) {}
-    void get(libs::array_view<uint8_t> data) {}
+void storeSettings(const core::storage::Settings& data) {}
+void storeState(const core::storage::State& data) {}
+std::experimental::optional<core::storage::Settings> getSettings() {}
+std::experimental::optional<core::storage::State> getState() {}
 }  // namespace Memory
 
 }  // namespace HAL

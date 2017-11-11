@@ -50,8 +50,7 @@ class SendConfig : public Command {
     SendConfig() : Command("conf", 0) {
     }
 
-    void callback(const gsl::span<char*> parameters) override {
-        UNREFERENCED_PARAMETER(parameters);
+    void callback(const gsl::span<char*>) override {
         core::com::printf("conf %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f\n",
             core::target,
             core::pid.params.Kp,
@@ -80,10 +79,8 @@ class Ping : public Command {
     Ping() : Command("ping", 0) {
     }
 
-    void callback(const gsl::span<char*> parameters) override {
-        UNREFERENCED_PARAMETER(parameters);
-        core::com::printf("ping\n");
-        core::com::printf("ping\n");
+    void callback(const gsl::span<char*>) override {
+        core::com::printf("pong\n");
     }
 };
 

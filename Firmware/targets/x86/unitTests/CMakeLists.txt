@@ -7,12 +7,11 @@ file(GLOB SOURCES
 
 add_executable(${NAME} ${SOURCES})
 
-target_compile_options(${NAME} PRIVATE "-fexceptions")
-
 target_link_libraries(${NAME}
 	libs
 	core
 	gtest
+	gtest_main
 )
 
 target_format_sources(${NAME} "${SOURCES}")

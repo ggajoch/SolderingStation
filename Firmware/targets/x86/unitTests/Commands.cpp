@@ -77,5 +77,5 @@ TEST_F(Commands, display) {
 
 TEST_F(Commands, ping) {
     parse("ping");
-    EXPECT_TRUE(HAL::Com::checkLastLine("ping\n"));
+    EXPECT_TRUE(HAL::Com::checkLastLine("pong\n"));
 }

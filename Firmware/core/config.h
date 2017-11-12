@@ -21,7 +21,7 @@ enum class MemoryType : uint16_t {
     MEM_24C16 = 2048,
 };
 
-constexpr static MemoryType memory_type = MemoryType::MEM_24C16;
+constexpr static MemoryType memory_type = MemoryType::MEM_24C01;
 
 
 }  // namespace config

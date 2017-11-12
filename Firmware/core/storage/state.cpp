@@ -16,8 +16,9 @@ static_assert(sizeof(i2cMemorySettingsLayout) % 8 == 0, "Settings have to be 8-b
 static_assert(sizeof(i2cMemoryStateLayout) == 4, "State needs to be 4-byte length");
 
 constexpr static uint16_t max_slot() {
-    uint16_t start_address = sizeof(i2cMemorySettingsLayout);
-    uint16_t size = static_cast<uint16_t>(core::config::memory_type);
+    constexpr uint16_t start_address = sizeof(i2cMemorySettingsLayout);
+    constexpr uint16_t size = static_cast<uint16_t>(core::config::memory_type);
+    static_assert((size-start_address) % sizeof(i2cMemoryStateLayout) == 0, "");
 
     return (size-start_address)/sizeof(i2cMemoryStateLayout);
 }

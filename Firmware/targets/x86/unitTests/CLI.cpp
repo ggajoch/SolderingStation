@@ -3,6 +3,7 @@
 
 #include "CLI.h"
 #include "HALmock.h"
+#include "core.h"
 
 namespace libs {
 namespace CLI {
@@ -109,12 +110,6 @@ TEST_F(CLITest, init) {
     }
 }
 
-static void parse(const char* cmd) {
-    static char tmp[100];
-    strcpy(tmp, cmd);
-    libs::CLI::parse_line(tmp);
-}
-
 void checkIfCallbacked(Command* cmd) {
     bool was = false;
     for (auto x : testCommands) {
@@ -127,6 +122,14 @@ void checkIfCallbacked(Command* cmd) {
     }
     if (cmd != nullptr)
         EXPECT_TRUE(was);
+}
+
+static void parse(const char* cmd) {
+    static char tmp[100];
+    strcpy(tmp, cmd);
+    HAL::Com::handler(tmp);
+    checkIfCallbacked(nullptr); // nothing is invoked until tick()
+    core::tick();
 }
 
 int actualTesting;

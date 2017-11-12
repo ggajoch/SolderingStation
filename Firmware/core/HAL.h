@@ -1,10 +1,7 @@
 #ifndef CORE_HAL_H_
 #define CORE_HAL_H_
 
-#include <cstdint>
-#include <experimental/optional>
 #include <gsl/span>
-#include "storage/storage.h"
 
 namespace HAL {
 void delay(std::uint32_t ms);

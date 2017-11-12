@@ -14,7 +14,7 @@ float calcTemperature(int raw_reading) {
 float getAveragedTemperature() {
     libs::Average<float, config::tempAverages> temperatureAverage;
 
-    for (size_t i = 0; i < temperatureAverage.size(); ++i) {
+    for (uint16_t i = 0; i < temperatureAverage.size(); ++i) {
         uint16_t raw_reading = HAL::Tip::readRaw();
         float temperature = calcTemperature(raw_reading);
         temperatureAverage.put(temperature);

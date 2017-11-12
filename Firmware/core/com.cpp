@@ -1,8 +1,10 @@
 #include <cstdarg>
 #include <cstdio>
+
 #include "CLI.h"
 #include "HAL.h"
 #include "storage/persistent_state.h"
+#include "core.h"
 
 namespace core {
 namespace com {
@@ -27,7 +29,7 @@ void tick() {
         rxCommandPtr = nullptr;
     }
 
-    core::com::printf("TICK %.2f %.2f %.2f %.2f\n", core::temp, core::persistent_state.target, core::power, core::pid.integral);
+    core::com::printf("TICK %.2f %d %.2f %.2f\n", core::temp, core::persistent_state.target, core::power, core::pid.integral);
 }
 
 }  // namespace com

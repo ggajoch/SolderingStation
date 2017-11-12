@@ -1,53 +1,31 @@
 #include <experimental/optional>
-#include <reader.h>
 #include "state.h"
 #include "HAL.h"
 #include "layout.h"
 #include "config.h"
 
-uint16_t divCeli(uint16_t a, uint16_t b) {
+uint16_t div_ceil_uint(uint16_t a, uint16_t b) {
     uint16_t value = a / b;
-    if (a % b > 0) {
+    if (a % b != 0) {
         value += 1;
     }
     return value;
 }
 
-void i2cGetMemoryBounds(uint16_t& i2cMemoryStartAddress, uint16_t& i2cMemorySize) {
-    i2cMemoryStartAddress = divCeli(sizeof(i2cMemorySettingsLayout), 8) * 8;
+static_assert(sizeof(i2cMemorySettingsLayout) % 8 == 0, "Settings have to be 8-byte padded");
+static_assert(sizeof(i2cMemoryStateLayout) == 4, "State needs to be 4-byte length");
 
-    switch (core::config::memory_type) {
-        case core::config::MemoryType::MEM_24C01:
-            i2cMemorySize = 128;
-            break;
-        case core::config::MemoryType::MEM_24C02:
-            i2cMemorySize = 256;
-            break;
-        case core::config::MemoryType::MEM_24C04:
-            i2cMemorySize = 512;
-            break;
-        case core::config::MemoryType::MEM_24C08:
-            i2cMemorySize = 1024;
-            break;
-        case core::config::MemoryType::MEM_24C16:
-            i2cMemorySize = 2048;
-            break;
-    }
-}
+constexpr static uint16_t max_slot() {
+    uint16_t start_address = sizeof(i2cMemorySettingsLayout);
+    uint16_t size = static_cast<uint16_t>(core::config::memory_type);
 
-
-uint16_t max_slot() {
-    uint16_t i2cMemoryStartAddress, i2cMemorySize;
-    i2cGetMemoryBounds(i2cMemoryStartAddress, i2cMemorySize);
-
-    return (i2cMemorySize-i2cMemoryStartAddress)/4;
+    return (size-start_address)/sizeof(i2cMemoryStateLayout);
 }
 
 uint16_t slot_to_address(uint16_t slot) {
-    uint16_t i2cMemoryStartAddress, i2cMemorySize;
-    i2cGetMemoryBounds(i2cMemoryStartAddress, i2cMemorySize);
+    uint16_t start_address = sizeof(i2cMemorySettingsLayout);
 
-    return i2cMemoryStartAddress + 4*slot;
+    return start_address + sizeof(i2cMemoryStateLayout)*slot;
 }
 
 i2cMemoryStateLayout stateLayout;
@@ -57,9 +35,8 @@ bool correct_marker(uint16_t slot) {
     return stateLayout.marker == 0x00;
 }
 
-bool correct_slot(uint16_t slot) {
-    HAL::Memory::get(slot_to_address(slot)+1, gsl::span<uint8_t>((uint8_t*)(&stateLayout)+1, 3));
-
+bool get_slot(uint16_t slot) {
+    HAL::Memory::get(slot_to_address(slot), stateLayout.as_span());
     return stateLayout.crc_match();
 }
 
@@ -72,11 +49,11 @@ void save_slot(uint16_t slot, i2cMemoryStateLayout data) {
     HAL::Memory::set(slot_to_address(slot), data.as_span());
 }
 
-bool find_state(uint16_t slot, uint16_t& temperature) {
+bool find_state(uint16_t& slot, uint16_t& temperature) {
     bool found = false;
     for(uint16_t i = 0; i < max_slot(); ++i) {
         if (correct_marker(i)) {
-            if (correct_slot(i)) {
+            if (get_slot(i)) {
                 slot = i;
                 temperature = stateLayout.temperature;
                 found = true;
@@ -86,7 +63,8 @@ bool find_state(uint16_t slot, uint16_t& temperature) {
         }
     }
 
-    for(int i = slot+1; i < max_slot(); ++i) {
+    slot++;
+    for(uint16_t i = slot; i < max_slot(); ++i) {
         if (correct_marker(i)) {
             erase_slot(i);
         }
@@ -105,13 +83,16 @@ std::experimental::optional<core::PersistentState> getState() {
 
 void saveState(core::PersistentState state) {
     uint16_t slot = 0, temperature = 0;
-    if (!find_state(slot, temperature)) {
-        slot = 0;
+    if (find_state(slot, temperature)) {
+        erase_slot(slot);
+        slot++;
+        if (slot >= max_slot()) {
+            slot = 0;
+        }
     }
-    erase_slot(slot);
     i2cMemoryStateLayout layout;
     layout.marker = 0x00;
     layout.temperature = state.target;
     layout.crc = layout.calculate_crc();
-    save_slot(slot+1, layout);
+    save_slot(slot, layout);
 }

@@ -1,19 +1,12 @@
 #include <gtest/gtest.h>
-#include <storage/settings.h>
-#include <crc8.h>
-#include <sleepManager.h>
-#include "storage/state.h"
 #include "HALmock.h"
 
-struct i2cMemorySettingsLayout {
-    uint16_t version;
-    core::Settings settings;
-    uint8_t crc;
+#include "stateManager.h"
 
-    gsl::span<std::uint8_t> as_span() {
-        return gsl::make_span(reinterpret_cast<std::uint8_t *>(this), sizeof(*this));
-    }
-} __attribute__((packed));
+#include "storage/storage.h"
+#include "storage/settings.h"
+#include "storage/state.h"
+#include "storage/layout.h"
 
 i2cMemorySettingsLayout* ptr = reinterpret_cast<i2cMemorySettingsLayout*>(HAL::Memory::table.data());
 
@@ -21,7 +14,7 @@ TEST(StorageSettings, read_ok) {
     std::fill(HAL::Memory::table.begin(), HAL::Memory::table.end(), 0);
 
     ptr->version = 0x01;
-    ptr->crc = crc8(ptr->settings.as_span());
+    ptr->crc = ptr->calculate_crc();
     EXPECT_EQ(ptr->crc, 0);
     EXPECT_TRUE(getSettings());
 }
@@ -30,7 +23,7 @@ TEST(StorageSettings, read_incorrect_crc) {
     std::fill(HAL::Memory::table.begin(), HAL::Memory::table.end(), 0);
 
     ptr->version = 0x01;
-    ptr->crc = crc8(ptr->settings.as_span())+1;
+    ptr->crc = ptr->calculate_crc()+1;
     EXPECT_FALSE(getSettings());
 }
 
@@ -38,7 +31,7 @@ TEST(StorageSettings, read_incorrect_version) {
     std::fill(HAL::Memory::table.begin(), HAL::Memory::table.end(), 0);
 
     ptr->version = 0x02;
-    ptr->crc = crc8(ptr->settings.as_span());
+    ptr->crc = ptr->calculate_crc();
     EXPECT_FALSE(getSettings());
 }
 
@@ -79,7 +72,7 @@ TEST(Storage, tickSettings) {
     std::fill(HAL::Memory::table.begin(), HAL::Memory::table.end(), 0);
     EXPECT_FALSE(getSettings());
 
-    core::sleepManager::configurationCorrectState = true;
+    core::stateManager::configuration_correct = true;
     core::settings.pidParams.Kp = 75.6;
 
     core::storage::tick();
@@ -94,7 +87,7 @@ TEST(Storage, tickSettingsShouldntBeSavedWhenConfigurationIsInvalid) {
     std::fill(HAL::Memory::table.begin(), HAL::Memory::table.end(), 0);
     EXPECT_FALSE(getSettings());
 
-    core::sleepManager::configurationCorrectState = false;
+    core::stateManager::configuration_correct = false;
     core::settings.pidParams.Kp = 75.6;
 
     core::storage::tick();
@@ -106,7 +99,9 @@ TEST(Storage, tickSettingsShouldntBeSavedWhenConfigurationIsInvalid) {
 TEST(Storage, readSettingsInvalidCRC) {
     std::fill(HAL::Memory::table.begin(), HAL::Memory::table.end(), 0);
 
-    core::storage::read();
+    core::stateManager::configuration_correct = true;
 
-    EXPECT_FALSE(core::sleepManager::configurationCorrectState);
+    core::setup();
+
+    EXPECT_FALSE(core::stateManager::configuration_correct);
 }

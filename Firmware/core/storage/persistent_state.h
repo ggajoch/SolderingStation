@@ -7,7 +7,7 @@
 namespace core {
 
 struct PersistentState {
-    float target;
+    uint16_t target;
 
     bool operator==(const PersistentState &rhs) const {
         return std::memcmp(reinterpret_cast<const char *>(this), reinterpret_cast<const char *>(&rhs), sizeof(PersistentState))
@@ -18,8 +18,6 @@ struct PersistentState {
         return !(*this == rhs);
     }
 };
-
-extern PersistentState persistent_state;
 
 }
 

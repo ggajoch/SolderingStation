@@ -2,6 +2,7 @@
 
 #include "HALmock.h"
 #include "tempSensor.h"
+#include "settings.h"
 
 constexpr float eps = 1e-4;
 

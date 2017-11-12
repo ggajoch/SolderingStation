@@ -2,13 +2,13 @@
 #define CORE_SLEEPMANAGER_H_
 
 namespace core {
-namespace sleepManager {
+namespace stateManager {
 
-extern bool sleepState, standState, configurationCorrectState;
+extern bool sleep, in_stand, configuration_correct;
 
 void tick();
 
-}  // namespace sleepManager
+}  // namespace stateManager
 }  // namespace core
 
 #endif  // CORE_SLEEPMANAGER_H_

@@ -1,11 +1,14 @@
 cmake_minimum_required(VERSION 3.1)
 
+project(SolderingStation)
+
 set(TARGET_PLATFORM "arm" CACHE STRING "Target platform")
 set(PLATFORM_PATH ${CMAKE_CURRENT_SOURCE_DIR}/targets/${TARGET_PLATFORM})
 if(NOT EXISTS ${PLATFORM_PATH})
   message(FATAL_ERROR "Target platform ${TARGET_PLATFORM} does not exist")
 endif()
 
+include(CodeCoverage.cmake)
 
 include(functions.cmake)
 include(${PLATFORM_PATH}/toolchain.cmake)

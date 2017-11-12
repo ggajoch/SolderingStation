@@ -1,9 +1,9 @@
 #include <cstdio>
 #include <cstring>
+#include <storage/storage.h>
 
 #include "HAL.h"
-#include "core.h"
-#include "sleepManager.h"
+#include "stateManager.h"
 #include "com.h"
 #include "storage/persistent_state.h"
 
@@ -16,15 +16,15 @@ void tick() {
     std::sprintf(display[0],
         "%3d/%3d %c   %3d%%",
         static_cast<int>(temp),
-        static_cast<int>(core::persistent_state.target),
+        core::persistent_state.target,
         storage::stateIsSaved() ? ' ' : '*',
         static_cast<int>(power));
 
-    if (!sleepManager::configurationCorrectState) {
+    if (!stateManager::configuration_correct) {
         std::memcpy(display[1], "   CONNECT PC   ", 16);
-    } else if (sleepManager::sleepState) {
+    } else if (stateManager::sleep) {
         std::memcpy(display[1], "     SLEEP      ", 16);
-    } else if (sleepManager::standState) {
+    } else if (stateManager::in_stand) {
         std::memcpy(display[1], "     STAND      ", 16);
     } else {
         int lastBarElement = static_cast<int>(16.0 * power / 100.0);

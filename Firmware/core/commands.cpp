@@ -5,7 +5,7 @@
 #include "core.h"
 #include "display.h"
 #include "storage/persistent_state.h"
-#include "sleepManager.h"
+#include "stateManager.h"
 
 namespace core {
 namespace commands {
@@ -18,8 +18,8 @@ class SetTemperature : public Command {
     }
 
     void callback(const gsl::span<char*> parameters) override {
-        core::persistent_state.target = static_cast<float>(std::atof(parameters[0]));
-        core::com::printf("temp %.2f\n", core::persistent_state.target);
+        core::persistent_state.target = static_cast<uint16_t>(std::atoi(parameters[0]));
+        core::com::printf("temp %d\n", core::persistent_state.target);
     }
 };
 
@@ -53,7 +53,7 @@ class SendConfig : public Command {
     }
 
     void callback(const gsl::span<char*>) override {
-        core::com::printf("conf %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f\n",
+        core::com::printf("conf %d %.2f %.2f %.2f %.2f %.2f %.2f %.2f\n",
             core::persistent_state.target,
             settings.pidParams.Kp,
             settings.pidParams.Ki,
@@ -86,17 +86,6 @@ class Ping : public Command {
     }
 };
 
-class AcceptConfig : public Command {
- public:
-    AcceptConfig() : Command("config_ok", 0) {
-    }
-
-    void callback(const gsl::span<char*>) override {
-        core::com::printf("Config OK!\n");
-        core::sleepManager::configurationCorrectState = true;
-    }
-};
-
 void setup() {
     static SetTemperature setTemperature;
     static SetPIDCoefficients setPIDCoefficients;
@@ -104,7 +93,6 @@ void setup() {
     static SendConfig sendConfig;
     static Display display;
     static Ping ping;
-    static AcceptConfig acceptConfig;
 
     static Command* commands[] = {
         &setTemperature,
@@ -112,8 +100,7 @@ void setup() {
         &setTipScaling,
         &sendConfig,
         &ping,
-        &display,
-        &acceptConfig
+        &display
     };
     libs::CLI::set_commands(gsl::span<Command*>(commands));
 }

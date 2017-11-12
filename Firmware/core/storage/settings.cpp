@@ -4,8 +4,6 @@
 
 #include "layout.h"
 
-
-
 std::experimental::optional<core::Settings> getSettings() {
     i2cMemorySettingsLayout settings;
 

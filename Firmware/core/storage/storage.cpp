@@ -1,9 +1,6 @@
 #include "storage.h"
-#include "HAL.h"
 #include "config.h"
-#include "display.h"
-#include "sleepManager.h"
-#include "tempSensor.h"
+#include "stateManager.h"
 #include "timer.h"
 #include "com.h"
 
@@ -12,9 +9,6 @@
 #include "state.h"
 
 namespace core {
-Settings settings;
-PersistentState persistent_state;
-
 namespace storage {
 
 Settings settingsInMemory;
@@ -24,7 +18,7 @@ void read() {
     auto settings = getSettings();
     if (!settings) {
         com::printf("Incorrect setting in memory, fallback to defaults\n");
-        core::sleepManager::configurationCorrectState = false;
+        core::stateManager::configuration_correct = false;
 
         core::settings.pidParams = {.Kp = 0.0, .Ki = 0.0, .Kd = 0.0};
         core::settings.tipParams = {.offset = 0, .gain = 0.0};
@@ -32,7 +26,7 @@ void read() {
         core::settings.backlight = 100;
     } else {
         com::printf("Setting from memory loaded\n");
-        core::sleepManager::configurationCorrectState = true;
+        core::stateManager::configuration_correct = true;
         core::settings = *settings;
 
         settingsInMemory = *settings;
@@ -45,7 +39,7 @@ void read() {
     if (state) {
         stateInMemory = *state;
     } else {
-        stateInMemory.target = 0.0f;
+        stateInMemory.target = 0;
     }
     core::persistent_state = stateInMemory;
 }
@@ -70,7 +64,7 @@ void tick() {
         saveState(stateInMemory);
     }
 
-    if (core::settings != settingsInMemory && core::sleepManager::configurationCorrectState) {
+    if (core::settings != settingsInMemory && core::stateManager::configuration_correct) {
         settingsInMemory = core::settings;
         storeSettings(core::settings);
     }

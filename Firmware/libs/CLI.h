@@ -25,8 +25,7 @@ class Command {
         return true;
     }
 
-    virtual void callback(const gsl::span<char*>) {
-    }
+    virtual void callback(const gsl::span<char*>) = 0;
 
     const char* name;
     unsigned int requiredArguments;

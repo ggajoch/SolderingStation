@@ -14,7 +14,6 @@ constexpr static std::chrono::seconds timeToSaveDataToMemory{10};
 constexpr static uint8_t memory_version = 0x01;
 
 enum class MemoryType : uint16_t {
-    dummy = 44,
     MEM_24C01 = 128,
     MEM_24C02 = 256,
     MEM_24C04 = 512,
@@ -22,7 +21,7 @@ enum class MemoryType : uint16_t {
     MEM_24C16 = 2048,
 };
 
-constexpr static MemoryType memory_type = MemoryType::dummy;
+constexpr static MemoryType memory_type = MemoryType::MEM_24C16;
 
 
 }  // namespace config

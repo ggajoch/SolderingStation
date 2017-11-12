@@ -63,8 +63,7 @@ bool find_state(uint16_t& slot, uint16_t& temperature) {
         }
     }
 
-    slot++;
-    for(uint16_t i = slot; i < max_slot(); ++i) {
+    for(uint16_t i = slot+1; i < max_slot(); ++i) {
         if (correct_marker(i)) {
             erase_slot(i);
         }

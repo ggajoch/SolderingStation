@@ -5,7 +5,6 @@
 
 #include "storage/storage.h"
 #include "storage/settings.h"
-#include "storage/state.h"
 #include "storage/layout.h"
 
 i2cMemorySettingsLayout* ptr = reinterpret_cast<i2cMemorySettingsLayout*>(HAL::Memory::table.data());
@@ -68,8 +67,8 @@ TEST(StorageSettings, version_corrupt) {
 }
 
 
-TEST(Storage, tickSettings) {
-    std::fill(HAL::Memory::table.begin(), HAL::Memory::table.end(), 0);
+TEST(Storage, tickShouldSaveSettings) {
+    std::fill(HAL::Memory::table.begin(), HAL::Memory::table.end(), 0xFF);
     EXPECT_FALSE(getSettings());
 
     core::stateManager::configuration_correct = true;
@@ -81,6 +80,11 @@ TEST(Storage, tickSettings) {
     EXPECT_TRUE(settings_read);
 
     EXPECT_FLOAT_EQ(settings_read->pidParams.Kp, 75.6);
+
+    // memory unchanged from byte 32
+    for(int i = 32; i < HAL::Memory::table.size(); ++i) {
+        EXPECT_EQ(HAL::Memory::table.at(i), 0xFF);
+    }
 }
 
 TEST(Storage, tickSettingsShouldntBeSavedWhenConfigurationIsInvalid) {
@@ -96,7 +100,7 @@ TEST(Storage, tickSettingsShouldntBeSavedWhenConfigurationIsInvalid) {
     EXPECT_FALSE(settings_read);
 }
 
-TEST(Storage, readSettingsInvalidCRC) {
+TEST(Storage, readInvalidSettingsDefaultConfig) {
     std::fill(HAL::Memory::table.begin(), HAL::Memory::table.end(), 0);
 
     core::stateManager::configuration_correct = true;
@@ -104,4 +108,11 @@ TEST(Storage, readSettingsInvalidCRC) {
     core::setup();
 
     EXPECT_FALSE(core::stateManager::configuration_correct);
+    EXPECT_FLOAT_EQ(core::settings.pidParams.Kp, 0);
+    EXPECT_FLOAT_EQ(core::settings.pidParams.Ki, 0);
+    EXPECT_FLOAT_EQ(core::settings.pidParams.Kd, 0);
+    EXPECT_FLOAT_EQ(core::settings.tipParams.offset, 0);
+    EXPECT_FLOAT_EQ(core::settings.tipParams.gain, 0);
+    EXPECT_FLOAT_EQ(core::settings.contrast, 27.5);
+    EXPECT_FLOAT_EQ(core::settings.backlight, 100);
 }

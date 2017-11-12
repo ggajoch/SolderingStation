@@ -31,9 +31,9 @@ void tick() {
     HAL::Tip::setHeating(power);
 
     com::tick();
-    display::tick();
     timer::tick();
     storage::tick();
+    display::tick();
 }
 
 }  // namespace core

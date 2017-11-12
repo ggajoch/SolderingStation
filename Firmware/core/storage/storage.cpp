@@ -59,7 +59,7 @@ void tick() {
         saved = false;
     }
 
-    if (!saved && timer::now() > saveDataTimePoint) {
+    if (!saved && timer::now() >= saveDataTimePoint) {
         saved = true;
         saveState(stateInMemory);
     }

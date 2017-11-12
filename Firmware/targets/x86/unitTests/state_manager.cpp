@@ -7,6 +7,9 @@
 
 class StateManager : public ::testing::Test {
     void SetUp() {
+        core::persistent_state.target = 1;
+        core::tick();
+
         core::stateManager::configuration_correct = true;
         core::stateManager::sleep = false;
         HAL::Tip::in_stand = false;

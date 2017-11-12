@@ -51,11 +51,6 @@ namespace Com {
     void puts(const char * data) {
         std::printf("serial %s", data);
     }
-
-    void (*callback)(char * data);
-    void setCallback(void (*callback_)(char *)) {
-        callback = callback_;
-    }
 }  // namespace Com
 
 namespace Encoder {

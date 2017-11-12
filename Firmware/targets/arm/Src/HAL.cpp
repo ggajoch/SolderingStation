@@ -34,6 +34,12 @@ void setContrast(float percent) {
 }
 
 void write(char array[2][16]) {
+    char line1[17], line2[17];
+    std::memcpy(line1, array[0], 16);
+    line1[16] = '\0';
+    std::memcpy(line2, array[1], 16);
+    line2[16] = '\0';
+
     TM_HD44780_Puts(0, 0, line1);
     TM_HD44780_Puts(0, 1, line2);
 }
@@ -82,11 +88,6 @@ bool inStand() {
 namespace Com {
 void puts(const char* data) {
     HAL_UART_Transmit(&huart1, (uint8_t*)(data), strlen(data), 1000);
-}
-
-void (*callback)(char* data);
-void setCallback(void (*callback_)(char* data)) {
-    callback = callback_;
 }
 }  // namespace Com
 

@@ -21,7 +21,6 @@ void setup() {
     commands::setup();
     storage::read();
     HAL::Tip::setHeating(0);
-    HAL::Com::setCallback(com::rxCommandCallback);
     HAL::Encoder::setButtonCallback(sleepManager::encoderCallback);
 }
 

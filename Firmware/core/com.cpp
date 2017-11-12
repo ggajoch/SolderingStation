@@ -20,9 +20,6 @@ int printf(const char* format, ...) {
 }
 
 char* rxCommandPtr = nullptr;
-void rxCommandCallback(char* data) {
-    rxCommandPtr = data;
-}
 
 void tick() {
     if (rxCommandPtr != nullptr) {
@@ -35,3 +32,13 @@ void tick() {
 
 }  // namespace com
 }  // namespace core
+
+namespace HAL {
+namespace Com {
+
+void handler(char *data) {
+    core::com::rxCommandPtr = data;
+}
+
+}  // namespace Com
+}  // namespace HAL

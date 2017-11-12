@@ -23,13 +23,15 @@ bool inStand();
 
 namespace Com {
 void puts(const char* data);
-void setCallback(void callback(char* data));
+void handler(char* data); // implemented in core
+//void setCallback(void callback(char* data));
 }
 
 namespace Encoder {
 int getCountAndReset();
 void setButtonCallback(void (*callback)());
 void callbackTick();
+//void button_handler(); // implemented in core
 }
 
 namespace Memory {

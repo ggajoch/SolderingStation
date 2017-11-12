@@ -15,10 +15,6 @@ namespace Tip {
     extern uint16_t temperature;
 }  // namespace Tip
 
-namespace Com {
-    extern void (*callback)(char * data);
-}  // namespace Com
-
 namespace Encoder {
     extern int count;
     extern void (*callback)();

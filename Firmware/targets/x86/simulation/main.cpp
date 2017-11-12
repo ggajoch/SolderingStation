@@ -45,7 +45,7 @@ int main() {
         if (command == "serial") {
             char data[100];
             strcpy(data, params.c_str());
-            HAL::Com::callback(data);
+            HAL::Com::handler(data);
         } else if (command == "tick") {
             core::tick();
         } else if (command == "sim") {

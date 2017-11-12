@@ -31,13 +31,11 @@ namespace Display {
 
 namespace Tip {
     float heatingPercentage;
+    bool inStandFlag;
+    uint16_t temperature;
+
     void setHeating(float percent) {
         std::printf("tip heating %f\n", percent);
-    }
-
-    uint16_t temperature;
-    void setTemperature(float temp) {
-        temperature = static_cast<uint16_t>(10*temp);
     }
 
     uint16_t readRaw() {
@@ -45,7 +43,7 @@ namespace Tip {
     }
 
     bool inStand() {
-        return false;
+        return inStandFlag;
     }
 }  // namespace Tip
 

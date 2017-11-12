@@ -17,7 +17,7 @@ class SetTemperature : public Command {
 
     void callback(const gsl::span<char*> parameters) override {
         core::target = static_cast<float>(std::atof(parameters[0]));
-        core::com::printf("temp %f\n", core::pid.target);
+        core::com::printf("temp %.2f\n", core::target);
     }
 };
 

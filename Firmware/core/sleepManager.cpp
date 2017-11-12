@@ -19,10 +19,6 @@ void tick() {
     }
 }
 
-void encoderCallback() {
-    std::printf("ENCODER\n");
-    sleepState = !sleepState;
-}
 
 void configStateSet(bool now) {
     configState = now;
@@ -30,3 +26,13 @@ void configStateSet(bool now) {
 
 }  // namespace sleepManager
 }  // namespace core
+
+namespace HAL {
+namespace Encoder {
+
+void buttonHandler() {
+    core::sleepManager::sleepState = !core::sleepManager::sleepState;
+}
+
+}  // namespace Encoder
+}  // namespace HAL

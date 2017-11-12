@@ -11,10 +11,8 @@ extern "C" {
 
 void encoderInit();
 int encoderGetCountAndReset();
-void encoderSetButtonCallback(void (*callback)());
 
 void encoder10kHzTickISR();
-void encoderCallbackTick();
 
 #ifdef __cplusplus
 }

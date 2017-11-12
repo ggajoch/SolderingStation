@@ -7,10 +7,9 @@
 #include "LineDebounce.h"
 
 #include "hardwareConfig.h"
+#include "HAL.h"
 
-void (*encoderCallback)() = NULL;
-
-volatile int encoderCount = 0, buttonCount = 0;
+volatile int encoderCount = 0;
 
 struct State {
     bool p, n;
@@ -27,21 +26,6 @@ int encoderGetCountAndReset() {
         encoderCount = 0;
     __enable_irq();
     return toReturn;
-}
-
-void encoderSetButtonCallback(void (*callback)()) {
-    encoderCallback = callback;
-}
-
-void encoderCallbackTick() {
-    __disable_irq();
-    if (buttonCount > 0) {
-        buttonCount--;
-        if (encoderCallback != NULL) {
-            encoderCallback();
-        }
-    }
-    __enable_irq();
 }
 
 libs::debouncer::LineDebounce<ENCODER_DEBOUNCE_STABLE> EncoderDebouncedLineP;
@@ -76,6 +60,6 @@ void encoder10kHzTickISR() {
     ButtonDebouncedLine.tick(btn);
 
     if (ButtonDebouncedLine.getState() == libs::debouncer::State::TRANSITION && ButtonDebouncedLine.getValue() == false) {
-        buttonCount++;
+        HAL::Encoder::buttonHandler();
     }
 }

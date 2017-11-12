@@ -60,7 +60,6 @@ namespace Com {
 
 namespace Encoder {
     int getCountAndReset() { return 0; }
-    void setButtonCallback(void (*callback)()) {}
 }  // namespace Encoder
 
 namespace Memory {

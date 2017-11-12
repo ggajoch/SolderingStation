@@ -95,22 +95,14 @@ namespace Encoder {
 int getCountAndReset() {
     return encoderGetCountAndReset();
 }
-void setButtonCallback(void (*callback)()) {
-    encoderSetButtonCallback(callback);
-}
-void callbackTick() {
-    encoderCallbackTick();
-}
 }  // namespace Encoder
 
 namespace Memory {
 void storeSettings(const core::storage::Settings& data) {
     i2cMemoryWriteSettings(data);
-    Com::puts("SAVING TO MEMORY Settings\n");
 }
 void storeState(const core::storage::State& data) {
     i2cMemoryWriteState(data);
-    Com::puts("SAVING TO MEMORY State\n");
 }
 std::experimental::optional<core::storage::Settings> getSettings() {
     auto fromMemory = i2cMemoryReadSettings();

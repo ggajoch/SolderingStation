@@ -57,10 +57,6 @@ namespace Encoder {
     int getCountAndReset() {
         return 0;
     }
-
-    void setButtonCallback(void (*)()) {
-    }
-    void callbackTick() {}
 }  // namespace Encoder
 
 namespace Memory {

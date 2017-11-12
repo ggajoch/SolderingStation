@@ -29,9 +29,7 @@ void handler(char* data); // implemented in core
 
 namespace Encoder {
 int getCountAndReset();
-void setButtonCallback(void (*callback)());
-void callbackTick();
-//void button_handler(); // implemented in core
+void buttonHandler(); // implemented in core
 }
 
 namespace Memory {

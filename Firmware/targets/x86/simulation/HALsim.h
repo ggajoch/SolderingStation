@@ -6,9 +6,6 @@
 
 namespace HAL {
 
-namespace Display {
-}  // namespace Display
-
 namespace Tip {
     extern float heatingPercentage;
     extern bool inStandFlag;
@@ -17,11 +14,7 @@ namespace Tip {
 
 namespace Encoder {
     extern int count;
-    extern void (*callback)();
 }  // namespace Encoder
-
-namespace Memory {
-}  // namespace Memory
 
 }  // namespace HAL
 

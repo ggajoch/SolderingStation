@@ -12,7 +12,6 @@ void tick() {
     core::target += encoder * 5;
     if (core::target < 0)
         core::target = 0;
-    HAL::Encoder::callbackTick();
 }
 
 }  // namespace encoder

@@ -22,7 +22,9 @@ bool checkLastLine(const char* line);
 
 namespace Encoder {}  // namespace Encoder
 
-namespace Memory {}  // namespace Memory
+namespace Memory {
+extern std::array<uint8_t, 10000> table;
+}  // namespace Memory
 
 }  // namespace HAL
 

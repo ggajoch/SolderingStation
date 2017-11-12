@@ -20,6 +20,8 @@ void parse_sim_command(std::string command) {
         is >> HAL::Tip::temperature;
     } else if (cmd == "stand") {
         is >> HAL::Tip::inStandFlag;
+    } else if (cmd == "button") {
+        HAL::Encoder::buttonHandler();
     }
 }
 
@@ -42,11 +44,11 @@ int main() {
 
 //        std::cout << "Cmd:" << command << " with params |" << params << "|" << std::endl;
 
-        if (command == "serial") {
+        if (command == "serial" or command == "s") {
             char data[100];
             strcpy(data, params.c_str());
             HAL::Com::handler(data);
-        } else if (command == "tick") {
+        } else if (command == "tick" or command == "t") {
             core::tick();
         } else if (command == "sim") {
             parse_sim_command(params);

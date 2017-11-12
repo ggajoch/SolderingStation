@@ -63,10 +63,10 @@ namespace Encoder {
 }  // namespace Encoder
 
 namespace Memory {
-void storeSettings(const core::storage::Settings& data) {}
-void storeState(const core::storage::State& data) {}
-std::experimental::optional<core::storage::Settings> getSettings() {}
-std::experimental::optional<core::storage::State> getState() {}
+void storeSettings(const core::Settings& data) {}
+void storeState(const core::PersistentState& data) {}
+std::experimental::optional<core::Settings> getSettings() {}
+std::experimental::optional<core::PersistentState> getState() {}
 }  // namespace Memory
 
 }  // namespace HAL

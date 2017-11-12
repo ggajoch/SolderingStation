@@ -11,6 +11,19 @@ constexpr static std::chrono::milliseconds tickDuration{100};
 
 constexpr static std::chrono::seconds timeToSaveDataToMemory{10};
 
+constexpr static uint8_t memory_version = 0x01;
+
+enum MemoryType {
+    MEM_24C16,
+    MEM_24C08,
+    MEM_24C04,
+    MEM_24C02,
+    MEM_24C01,
+};
+
+constexpr static MemoryType memory_type = MEM_24C16;
+
+
 }  // namespace config
 }  // namespace core
 

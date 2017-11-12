@@ -3,11 +3,11 @@
 
 #include <stdint.h>
 #include <array>
-#include "storage.h"
+#include "storage/storage.h"
 
 typedef struct{
 	uint16_t version;
-	core::storage::Settings settings;
+	core::Settings settings;
 	uint8_t crc;
 } i2cMemorySettingsLayout;
 

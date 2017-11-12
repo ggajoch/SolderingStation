@@ -4,7 +4,7 @@
 #include "HAL.h"
 #include "com.h"
 #include "core.h"
-#include "storage.h"
+#include "storage/storage.h"
 
 #include "adc.h"
 #include "tim.h"
@@ -98,34 +98,36 @@ int getCountAndReset() {
 }  // namespace Encoder
 
 namespace Memory {
-void storeSettings(const core::storage::Settings& data) {
+void storeSettings(const core::Settings& data) {
     i2cMemoryWriteSettings(data);
 }
-void storeState(const core::storage::State& data) {
+void storeState(const core::PersistentState& data) {
     i2cMemoryWriteState(data);
 }
-std::experimental::optional<core::storage::Settings> getSettings() {
+std::experimental::optional<core::Settings> getSettings() {
     auto fromMemory = i2cMemoryReadSettings();
 
     if (!fromMemory) {
         return {};
     }
 
-    core::storage::Settings elements = *fromMemory;
+    core::Settings elements = *fromMemory;
 
     return elements;
 }
-std::experimental::optional<core::storage::State> getState() {
+std::experimental::optional<core::PersistentState> getState() {
     auto formMemory = i2cMemoryReadState();
 
     if (!formMemory) {
         return {};
     }
 
-    core::storage::State elements = *formMemory;
+    core::PersistentState elements = *formMemory;
 
     return elements;
 }
+void set(uint16_t, gsl::span<const std::uint8_t>){}
+void get(uint16_t, gsl::span<std::uint8_t>) {}
 /*void store(gsl::span<const uint8_t> data) {
     UNREFERENCED_PARAMETER(data);
     Com::puts("SAVING TO MEMORY\n");

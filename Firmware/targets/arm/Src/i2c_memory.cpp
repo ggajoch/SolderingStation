@@ -66,7 +66,7 @@ uint8_t crc8Settings(i2cMemorySettingsLayout settings) {
     dataWriter.WriteDoubleWordLE((uint32_t)settings.settings.tipParams.gain);
     dataWriter.WriteDoubleWordLE((uint32_t)settings.settings.tipParams.offset);
 
-    return crc8(data, 30);
+    return 0;//crc8(data, 30);
 }
 
 uint8_t crc8State(i2cMemoryStateLayout state) {
@@ -74,10 +74,10 @@ uint8_t crc8State(i2cMemoryStateLayout state) {
     Writer dataWriter(data);
     dataWriter.WriteByte(state.marker);
     dataWriter.WriteWordLE(state.temperature);
-    return crc8(data, 3);
+    return 0;//crc8(data, 3);
 }
 
-std::experimental::optional<core::storage::Settings> i2cMemoryReadSettings() {
+std::experimental::optional<core::Settings> i2cMemoryReadSettings() {
     uint8_t memoryRead[sizeof(i2cMemorySettingsLayout)];
 
     HAL_IWDG_Refresh(&hiwdg);
@@ -87,14 +87,14 @@ std::experimental::optional<core::storage::Settings> i2cMemoryReadSettings() {
     i2cMemorySettingsLayout* settingsMemory = reinterpret_cast<i2cMemorySettingsLayout*>(memoryRead);
 
     if (settingsMemory->crc == crc8Settings(*settingsMemory) && settingsMemory->version == MEMORY_VERSION) {  // TODO: caculate CRC
-        core::storage::Settings settings = settingsMemory->settings;
+        core::Settings settings = settingsMemory->settings;
         return settings;
     } else {
         return {};
     }
 }
 
-void i2cMemoryWriteSettings(const core::storage::Settings& settings) {
+void i2cMemoryWriteSettings(const core::Settings& settings) {
     i2cMemorySettingsLayout settingsMemory;
 
     settingsMemory.version = MEMORY_VERSION;
@@ -171,20 +171,20 @@ std::experimental::optional<i2cMemoryStateLayoutFound> i2cMemoryFindLastState() 
     }
 }
 
-std::experimental::optional<core::storage::State> i2cMemoryReadState() {
+std::experimental::optional<core::PersistentState> i2cMemoryReadState() {
     HAL::Tip::setHeating(0);
     auto lastState = i2cMemoryFindLastState();
     if (lastState) {
-        core::storage::State state;
+        core::PersistentState state;
         i2cMemoryStateLayoutFound stateFound = *lastState;
-        state.targetTemperature = stateFound.state.temperature;
+        state.target = stateFound.state.temperature;
         return state;
     } else {
         return {};
     }
 }
 
-void i2cMemoryWriteState(const core::storage::State& state) {
+void i2cMemoryWriteState(const core::PersistentState& state) {
     HAL::Tip::setHeating(0);
 
     uint16_t i2cMemoryStartAddress, i2cMemorySize;
@@ -200,7 +200,7 @@ void i2cMemoryWriteState(const core::storage::State& state) {
         }
 
         stateFound.state.marker = 0x00;
-        stateFound.state.temperature = state.targetTemperature;
+        stateFound.state.temperature = state.target;
         stateFound.state.crc = crc8State(stateFound.state);  // TODO: calculate CRC
 
         uint8_t memoryWrite[4];
@@ -220,7 +220,7 @@ void i2cMemoryWriteState(const core::storage::State& state) {
     } else {
         i2cMemoryStateLayout stateMemory;
         stateMemory.marker = 0x00;
-        stateMemory.temperature = state.targetTemperature;
+        stateMemory.temperature = state.target;
         stateMemory.crc = crc8State(stateMemory);  // TODO: calculate crc
 
         uint8_t memoryWrite[4];

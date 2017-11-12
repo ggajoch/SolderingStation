@@ -4,12 +4,6 @@
 namespace core {
 namespace tempSensor {
 
-struct Params {
-    float offset, gain;
-};
-
-extern Params params;
-
 float getAveragedTemperature();
 
 }  // namespace tempSensor

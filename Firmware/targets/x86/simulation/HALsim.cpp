@@ -7,7 +7,8 @@
 #include "HAL.h"
 #include "HALsim.h"
 
-#include "storage.h"
+#include "storage/persistent_state.h"
+#include "settings.h"
 
 
 namespace HAL {
@@ -60,25 +61,12 @@ namespace Encoder {
 }  // namespace Encoder
 
 namespace Memory {
-void storeSettings(const core::storage::Settings&) {
-    printf("mem save settings\n");
+std::array<uint8_t, 10000> table;
+void set(uint16_t address, gsl::span<const std::uint8_t> data) {
+    std::copy(data.begin(), data.end(), table.begin()+address);
 }
-void storeState(const core::storage::State&) {
-    printf("mem save state\n");
-}
-std::experimental::optional<core::storage::Settings> getSettings() {
-    static constexpr core::storage::Settings elements = {
-        .pidParams = {.Kp = 1.0, .Ki = 4.0, .Kd = 0},
-        .tipParams = {.offset = 20, .gain = 0.11},
-        .contrast = 27.5,
-        .backlight = 100};
-
-    return elements;
-}
-std::experimental::optional<core::storage::State> getState() {
-    static constexpr core::storage::State elements = {.targetTemperature = 0};
-
-    return elements;
+void get(uint16_t address, gsl::span<std::uint8_t> data) {
+    std::copy(table.begin()+address, table.begin()+address+data.length(), data.begin());
 }
 }  // namespace Memory
 

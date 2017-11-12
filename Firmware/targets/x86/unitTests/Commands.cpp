@@ -4,8 +4,10 @@
 #include "HALmock.h"
 #include "core.h"
 #include "display.h"
+#include "settings.h"
+#include "storage/persistent_state.h"
 
-bool parse(const char* cmd) {
+void parse(const char* cmd) {
     static char tmp[100];
     strcpy(tmp, cmd);
     EXPECT_TRUE(libs::CLI::parse_line(tmp));
@@ -19,45 +21,45 @@ class Commands : public ::testing::Test {
 
 TEST_F(Commands, setTemperature) {
     parse("temp 100");
-    EXPECT_FLOAT_EQ(core::target, 100);
+    EXPECT_FLOAT_EQ(core::persistent_state.target, 100);
     parse("temp 101.5");
-    EXPECT_FLOAT_EQ(core::target, 101.5);
+    EXPECT_FLOAT_EQ(core::persistent_state.target, 101.5);
     parse("temp 666.666");
-    EXPECT_FLOAT_EQ(core::target, 666.666);
+    EXPECT_FLOAT_EQ(core::persistent_state.target, 666.666);
 }
 
 TEST_F(Commands, setPIDCoefficients) {
     parse("pid 1 2 3");
-    EXPECT_FLOAT_EQ(core::pid.params.Kp, 1);
-    EXPECT_FLOAT_EQ(core::pid.params.Ki, 2);
-    EXPECT_FLOAT_EQ(core::pid.params.Kd, 3);
+    EXPECT_FLOAT_EQ(core::settings.pidParams.Kp, 1);
+    EXPECT_FLOAT_EQ(core::settings.pidParams.Ki, 2);
+    EXPECT_FLOAT_EQ(core::settings.pidParams.Kd, 3);
 
     parse("pid 33.3 22.2 11.1");
-    EXPECT_FLOAT_EQ(core::pid.params.Kp, 33.3);
-    EXPECT_FLOAT_EQ(core::pid.params.Ki, 22.2);
-    EXPECT_FLOAT_EQ(core::pid.params.Kd, 11.1);
+    EXPECT_FLOAT_EQ(core::settings.pidParams.Kp, 33.3);
+    EXPECT_FLOAT_EQ(core::settings.pidParams.Ki, 22.2);
+    EXPECT_FLOAT_EQ(core::settings.pidParams.Kd, 11.1);
 }
 
 TEST_F(Commands, setTipScaling) {
     parse("tip 1 2");
-    EXPECT_FLOAT_EQ(core::tempSensor::params.offset, 1);
-    EXPECT_FLOAT_EQ(core::tempSensor::params.gain, 2);
+    EXPECT_FLOAT_EQ(core::settings.tipParams.offset, 1);
+    EXPECT_FLOAT_EQ(core::settings.tipParams.gain, 2);
 
     parse("tip 123.456 789.321");
-    EXPECT_FLOAT_EQ(core::tempSensor::params.offset, 123.456);
-    EXPECT_FLOAT_EQ(core::tempSensor::params.gain, 789.321);
+    EXPECT_FLOAT_EQ(core::settings.tipParams.offset, 123.456);
+    EXPECT_FLOAT_EQ(core::settings.tipParams.gain, 789.321);
 }
 
 TEST_F(Commands, sendConfig) {
     char buf[100];
     std::sprintf(buf,
         "conf %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f\n",
-        core::target,
-        core::pid.params.Kp,
-        core::pid.params.Ki,
-        core::pid.params.Kd,
-        core::tempSensor::params.offset,
-        core::tempSensor::params.gain,
+        core::persistent_state.target,
+        core::settings.pidParams.Kp,
+        core::settings.pidParams.Ki,
+        core::settings.pidParams.Kd,
+        core::settings.tipParams.offset,
+        core::settings.tipParams.gain,
         core::display::backlight,
         core::display::contrast);
 

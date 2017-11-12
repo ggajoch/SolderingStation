@@ -10,7 +10,7 @@ void setup();
 void tick();
 
 extern PID pid;
-extern float temp, target, power;
+extern float temp, power;
 
 }  // namespace core
 

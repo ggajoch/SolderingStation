@@ -1,6 +1,7 @@
 #include <cstdio>
 #include <cstring>
 #include <queue>
+#include <gtest/gtest.h>
 
 #include "HAL.h"
 #include "HALmock.h"
@@ -75,10 +76,15 @@ int getCountAndReset() {
 }  // namespace Encoder
 
 namespace Memory {
-void storeSettings(const core::storage::Settings& data) {}
-void storeState(const core::storage::State& data) {}
-std::experimental::optional<core::storage::Settings> getSettings() {}
-std::experimental::optional<core::storage::State> getState() {}
+std::array<uint8_t, 10000> table;
+void set(uint16_t address, gsl::span<const std::uint8_t> data) {
+    ASSERT_LT(address + data.size(), table.size());
+    std::copy(data.begin(), data.end(), table.begin()+address);
+}
+void get(uint16_t address, gsl::span<std::uint8_t> data) {
+    ASSERT_LT(address + data.size(), table.size());
+    std::copy(table.begin()+address, table.begin()+address+data.length(), data.begin());
+}
 }  // namespace Memory
 
 }  // namespace HAL

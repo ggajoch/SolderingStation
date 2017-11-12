@@ -5,7 +5,7 @@ file(GLOB SOURCES
         "*.cpp"
 )
 
-add_executable(${NAME} ${SOURCES})
+add_executable(${NAME} ${SOURCES} storage.cpp)
 
 target_link_libraries(${NAME}
 	libs

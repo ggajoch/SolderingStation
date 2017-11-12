@@ -2,6 +2,7 @@
 #define CORE_PID_H_
 
 #include <cmath>
+#include "settings.h"
 
 namespace core {
 
@@ -10,13 +11,9 @@ namespace core {
 class PID {
  public:
     float target;
-    struct Params {
-        float Kp, Ki, Kd;
-    } params;
     float lowerLimit, upperLimit;
 
     PID() {
-        params.Kp = params.Ki = params.Kd = 0;
         target = 0;
         this->lowerLimit = 0;
         this->upperLimit = 100;
@@ -27,7 +24,9 @@ class PID {
         error = target - temp;
 
         float diff = error - prevError;
-        float pwr = params.Kp * error + params.Ki * (integral + error) + params.Kd * diff;
+        float pwr = settings.pidParams.Kp * error +
+                    settings.pidParams.Ki * (integral + error) +
+                    settings.pidParams.Kd * diff;
 
         if (lowerLimit < pwr && pwr < upperLimit) {
             integral += error;

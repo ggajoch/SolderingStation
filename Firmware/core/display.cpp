@@ -5,6 +5,7 @@
 #include "core.h"
 #include "sleepManager.h"
 #include "com.h"
+#include "storage/persistent_state.h"
 
 namespace core {
 namespace display {
@@ -15,11 +16,11 @@ void tick() {
     std::sprintf(display[0],
         "%3d/%3d %c   %3d%%",
         static_cast<int>(temp),
-        static_cast<int>(target),
+        static_cast<int>(core::persistent_state.target),
         storage::stateIsSaved() ? ' ' : '*',
         static_cast<int>(power));
 
-    if (!sleepManager::configState) {
+    if (!sleepManager::configurationCorrectState) {
         std::memcpy(display[1], "   CONNECT PC   ", 16);
     } else if (sleepManager::sleepState) {
         std::memcpy(display[1], "     SLEEP      ", 16);

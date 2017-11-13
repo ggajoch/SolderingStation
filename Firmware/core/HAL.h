@@ -7,9 +7,8 @@ namespace HAL {
 void delay(std::uint32_t ms);
 
 namespace Display {
-void setBacklight(float percent);
-void setContrast(float percent);
-void write(char array[2][16]);
+void set(float backlight_percent, float contrast_percent);
+void write(char line1[17], char line2[17]);
 }
 
 namespace Tip {

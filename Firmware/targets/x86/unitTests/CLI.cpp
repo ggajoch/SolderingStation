@@ -120,8 +120,9 @@ void checkIfCallbacked(Command* cmd) {
             was = true;
         }
     }
-    if (cmd != nullptr)
+    if (cmd != nullptr) {
         EXPECT_TRUE(was);
+    }
 }
 
 static void parse(const char* cmd) {

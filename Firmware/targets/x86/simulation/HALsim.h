@@ -9,7 +9,6 @@ namespace HAL {
 namespace Tip {
     extern float heatingPercentage;
     extern bool inStandFlag;
-    extern uint16_t temperature;
 }  // namespace Tip
 
 namespace Encoder {

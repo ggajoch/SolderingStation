@@ -21,8 +21,8 @@ void setup() {
 
 void tick() {
     com::tick();
-    stateManager::tick();
     encoder::tick();
+    stateManager::tick();
 
     HAL::Tip::setHeating(0);
     HAL::delay(5);

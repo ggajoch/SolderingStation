@@ -7,8 +7,16 @@
 #include "core.h"
 #include "HALsim.h"
 #include "com.h"
+#include "plantModel.h"
+
+#include <ncurses.h>
 
 using namespace std::chrono_literals;
+
+TipModel model;
+
+WINDOW *window;
+
 
 void parse_sim_command(std::string command) {
     std::string cmd;
@@ -18,7 +26,6 @@ void parse_sim_command(std::string command) {
     is >> cmd;
 
     if (cmd == "temp") {
-        is >> HAL::Tip::temperature;
     } else if (cmd == "stand") {
         is >> HAL::Tip::inStandFlag;
     } else if (cmd == "button") {
@@ -29,39 +36,123 @@ void parse_sim_command(std::string command) {
 void tick() {
     while(true) {
         core::tick();
+
+        if (HAL::Tip::inStandFlag) {
+            attron(COLOR_PAIR(2));
+        }
+        mvprintw(0, 55, "STAND");
+        attron(COLOR_PAIR(1));
+
+        mvprintw(5, 20, "PID target: %.2f     ", core::pid.target);
+        refresh();
+
+        model.tick(HAL::Tip::heatingPercentage);
+
         std::this_thread::sleep_for(100ms);
     }
 }
 
+void handle_mouse(int x, int y) {
+    if (y == 0) {
+        if (x >= 25 && x < 30) {
+            // LEFT
+            HAL::Encoder::count--;
+        }
+        if (x >= 35 && x < 40) {
+            // RIGHT
+            HAL::Encoder::count++;
+        }
+        if (x >= 45 && x < 53) {
+            // BUTTON
+            HAL::Encoder::buttonHandler();
+        }
+        if (x >= 55 && x < 63) {
+            // STAND
+            HAL::Tip::inStandFlag = !HAL::Tip::inStandFlag;
+        }
+    }
+}
+
+void handle_serial(const char * cmd) {
+    static char data[100];
+    strcpy(data, cmd);
+    HAL::Com::handler(data);
+}
+
 int main() {
+    initscr();
+    start_color();
+    window = newwin(100, 100, 6, 0);
+    scrollok(window, TRUE);
+    noecho();
+    raw();
+    keypad(stdscr, TRUE);
+    cbreak();
+
+    init_pair(1, COLOR_WHITE, COLOR_BLACK);
+    init_pair(2, COLOR_BLACK, COLOR_WHITE);
+
+    attron(COLOR_PAIR(1));
+
+    mousemask(ALL_MOUSE_EVENTS, NULL);
+    MEVENT event;
+    refresh();
+
+
+    mvprintw(0, 25, "LEFT");
+    mvprintw(0, 35, "RIGHT");
+    mvprintw(0, 45, "BUTTON");
+    mvprintw(0, 55, "STAND");
+
     core::setup();
+
+    handle_serial("pid 1 1 0");
+    core::tick();
+    handle_serial("tip 0 0.1");
+    core::tick();
+    handle_serial("disp 0 0");
+    core::tick();
 
     std::thread tick_thread(tick);
 
     while (true) {
-        std::string line;
-        std::getline(std::cin, line);
+        int ch = getch();
 
-        std::string command, params;
+        if(ch == KEY_RIGHT) {
+            HAL::Encoder::count++;
+        } else if(ch == KEY_LEFT) {
+            HAL::Encoder::count--;
+        } else if(ch == KEY_DOWN) {
+            HAL::Encoder::buttonHandler();
+        } else if(ch == 'r') {
+            core::setup();
+        } else if(ch == KEY_MOUSE) {
+            if(getmouse(&event) == OK && event.bstate & BUTTON1_CLICKED) {
+                handle_mouse(event.x, event.y);
+            }
+        } else {
+            char tmp[100];
+            getstr(tmp);
 
-        std::istringstream is(line);
+            std::string line(tmp);
 
-        is >> command;
-        std::string _;
-        std::getline(is, _, ' ');
+            std::string command, params;
 
-        std::getline(is, params);
+            std::istringstream is(line);
 
-//        std::cout << "Cmd:" << command << " with params |" << params << "|" << std::endl;
+            is >> command;
+            std::string _;
+            std::getline(is, _, ' ');
 
-        if (command == "serial" or command == "s") {
-            char data[100];
-            strcpy(data, params.c_str());
-            HAL::Com::handler(data);
-        } else if (command == "tick" or command == "t") {
-            core::tick();
-        } else if (command == "sim") {
-            parse_sim_command(params);
+            std::getline(is, params);
+
+            if (command == "serial" or command == "s") {
+                handle_serial(params.c_str());
+            } else if (command == "tick" or command == "t") {
+                core::tick();
+            } else if (command == "sim") {
+                parse_sim_command(params);
+            }
         }
     }
 }

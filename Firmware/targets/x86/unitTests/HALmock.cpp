@@ -14,19 +14,15 @@ void delay(uint32_t ms) {
 
 namespace Display {
 float backlight, contrast;
+void set(float backlight_percent, float contrast_percent) {
+    backlight = backlight_percent;
+    contrast = contrast_percent;
+}
 
-void setBacklight(float percent) {
-    backlight = percent;
-}
-void setContrast(float percent) {
-    contrast = percent;
-}
 char line1[17], line2[17];
-void write(char array[2][16]) {
-    std::memcpy(line1, array[0], 16);
-    line1[16] = '\0';
-    std::memcpy(line2, array[1], 16);
-    line2[16] = '\0';
+void write(char line1_[17], char line2_[17]) {
+    std::strcpy(line1, line1_);
+    std::strcpy(line2, line2_);
 }
 }  // namespace Display
 

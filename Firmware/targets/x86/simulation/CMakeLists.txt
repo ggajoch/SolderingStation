@@ -11,6 +11,7 @@ target_link_libraries(${NAME}
 	libs
 	core
 	pthread
+	ncurses
 )
 
 target_format_sources(${NAME} "${SOURCES}")

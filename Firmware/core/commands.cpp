@@ -33,6 +33,7 @@ class SetPIDCoefficients : public Command {
         settings.pidParams.Ki = static_cast<float>(std::atof(parameters[1]));
         settings.pidParams.Kd = static_cast<float>(std::atof(parameters[2]));
         core::pid.reset();
+        core::stateManager::config_command_received(core::stateManager::Command::Pid);
     }
 };
 
@@ -44,6 +45,7 @@ class SetTipScaling : public Command {
     void callback(const gsl::span<char*> parameters) override {
         settings.tipParams.offset = static_cast<float>(std::atof(parameters[0]));
         settings.tipParams.gain = static_cast<float>(std::atof(parameters[1]));
+        core::stateManager::config_command_received(core::stateManager::Command::Tip);
     }
 };
 
@@ -60,8 +62,8 @@ class SendConfig : public Command {
             settings.pidParams.Kd,
             settings.tipParams.offset,
             settings.tipParams.gain,
-            core::display::backlight,
-            core::display::contrast);
+            core::settings.display.backlight,
+            core::settings.display.contrast);
     }
 };
 
@@ -71,8 +73,9 @@ class Display : public Command {
     }
 
     void callback(const gsl::span<char*> parameters) override {
-        core::display::setBacklight(static_cast<float>(std::atof(parameters[0])));
-        core::display::setContrast(static_cast<float>(std::atof(parameters[1])));
+        core::display::setDisplaySettings(static_cast<float>(std::atof(parameters[0])),
+                                          static_cast<float>(std::atof(parameters[1])));
+        core::stateManager::config_command_received(core::stateManager::Command::Display);
     }
 };
 

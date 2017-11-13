@@ -8,6 +8,7 @@
 #include "HALsim.h"
 #include "com.h"
 
+using namespace std::chrono_literals;
 
 void parse_sim_command(std::string command) {
     std::string cmd;
@@ -25,8 +26,17 @@ void parse_sim_command(std::string command) {
     }
 }
 
+void tick() {
+    while(true) {
+        core::tick();
+        std::this_thread::sleep_for(100ms);
+    }
+}
+
 int main() {
     core::setup();
+
+    std::thread tick_thread(tick);
 
     while (true) {
         std::string line;

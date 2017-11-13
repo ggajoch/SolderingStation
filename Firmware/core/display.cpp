@@ -43,16 +43,12 @@ void tick() {
     com::printf("DISP |%s%s|\n", line1, line2);
 }
 
-float backlight, contrast;
+void setDisplaySettings(float backlightPercentage, float contrastPercentage) {
+    core::settings.display.backlight = backlightPercentage;
+    HAL::Display::setBacklight(backlightPercentage);
 
-void setBacklight(float percentage) {
-    backlight = percentage;
-    HAL::Display::setBacklight(backlight);
-}
-
-void setContrast(float percentage) {
-    contrast = percentage;
-    HAL::Display::setContrast(contrast);
+    core::settings.display.contrast = contrastPercentage;
+    HAL::Display::setContrast(contrastPercentage);
 }
 
 }  // namespace display

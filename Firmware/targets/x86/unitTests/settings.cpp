@@ -36,7 +36,7 @@ TEST(StorageSettings, read_incorrect_version) {
 
 TEST(StorageSettings, store_and_read) {
     core::Settings settings;
-    settings.backlight = 75.5;
+    settings.display.backlight = 75.5;
 
     storeSettings(settings);
     auto x = getSettings();
@@ -46,7 +46,7 @@ TEST(StorageSettings, store_and_read) {
 
 TEST(StorageSettings, crc_corrupt) {
     core::Settings settings;
-    settings.backlight = 75.5;
+    settings.display.backlight = 75.5;
 
     storeSettings(settings);
 
@@ -57,7 +57,7 @@ TEST(StorageSettings, crc_corrupt) {
 
 TEST(StorageSettings, version_corrupt) {
     core::Settings settings;
-    settings.backlight = 75.5;
+    settings.display.backlight = 75.5;
 
     storeSettings(settings);
 
@@ -113,6 +113,6 @@ TEST(Storage, readInvalidSettingsDefaultConfig) {
     EXPECT_FLOAT_EQ(core::settings.pidParams.Kd, 0);
     EXPECT_FLOAT_EQ(core::settings.tipParams.offset, 0);
     EXPECT_FLOAT_EQ(core::settings.tipParams.gain, 0);
-    EXPECT_FLOAT_EQ(core::settings.contrast, 27.5);
-    EXPECT_FLOAT_EQ(core::settings.backlight, 100);
+    EXPECT_FLOAT_EQ(core::settings.display.contrast, 27.5);
+    EXPECT_FLOAT_EQ(core::settings.display.backlight, 100);
 }

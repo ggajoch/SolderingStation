@@ -14,10 +14,14 @@ struct Settings : base::Pod<Settings> {
         float offset, gain;
     };
 
+    struct Display {
+        float contrast;
+        float backlight;
+    };
+
     PidParams pidParams;
     TipParams tipParams;
-    float contrast;
-    float backlight;
+    Display display;
 } __attribute__((packed));
 
 extern Settings settings;

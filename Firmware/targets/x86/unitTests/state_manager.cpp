@@ -5,9 +5,18 @@
 #include "core.h"
 #include "display.h"
 
+// hack to get access to internal type
+namespace core {
+namespace stateManager {
+extern uint8_t config_send_from_pc;
+}
+}
+
 class StateManager : public ::testing::Test {
     void SetUp() {
+        core::stateManager::config_send_from_pc = 0;
         core::persistent_state.target = 1;
+        HAL::Tip::set_temperature(60);
         core::tick();
 
         core::stateManager::configuration_correct = true;
@@ -26,8 +35,8 @@ class StateManager : public ::testing::Test {
  public:
     void check_idle() {
         for(int i = 0; i < 10; ++i) {
-            EXPECT_STREQ(HAL::Display::line1, " 60/101 *     0%");
             core::tick();
+            EXPECT_STREQ(HAL::Display::line1, " 60/101 *     0%");
             EXPECT_FLOAT_EQ(core::pid.target, 0);
             EXPECT_FLOAT_EQ(core::power, 0);
             EXPECT_FLOAT_EQ(HAL::Tip::heatingPercentage, 0);
@@ -154,4 +163,47 @@ TEST_F(StateManager, state_running) {
     core::display::tick();
     EXPECT_STREQ(HAL::Display::line1, " 60/101 *   100%");
     EXPECT_STREQ(HAL::Display::line2, "################");
+}
+
+void send_cmd(const char * line) {
+    static char tmp[100];
+    strcpy(tmp, line);
+    HAL::Com::handler(tmp);
+}
+
+TEST_F(StateManager, send_config) {
+    core::stateManager::configuration_correct = false;
+    core::stateManager::sleep = true;
+
+    core::tick();
+    EXPECT_EQ(core::stateManager::config_send_from_pc, 0);
+    EXPECT_STREQ(HAL::Display::line2, "   CONNECT PC   ");
+    EXPECT_FALSE(core::stateManager::configuration_correct);
+    check_idle();
+
+    send_cmd("pid 0.1 154.23 193.45");
+
+    core::tick();
+    EXPECT_EQ(core::stateManager::config_send_from_pc, 0b1);
+    EXPECT_STREQ(HAL::Display::line2, "   CONNECT PC   ");
+    EXPECT_FALSE(core::stateManager::configuration_correct);
+    check_idle();
+
+    send_cmd("disp 10 0.5");
+
+    core::tick();
+
+    EXPECT_EQ(core::stateManager::config_send_from_pc, 0b101);
+    EXPECT_STREQ(HAL::Display::line2, "   CONNECT PC   ");
+    EXPECT_FALSE(core::stateManager::configuration_correct);
+    check_idle();
+
+    send_cmd("tip 10 0.5");
+
+    core::tick();
+
+    EXPECT_EQ(core::stateManager::config_send_from_pc, 0b111);
+    EXPECT_STREQ(HAL::Display::line2, "     SLEEP      ");
+    EXPECT_TRUE(core::stateManager::configuration_correct);
+    check_idle();
 }

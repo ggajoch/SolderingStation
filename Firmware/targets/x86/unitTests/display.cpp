@@ -5,48 +5,29 @@
 #include "core.h"
 #include "display.h"
 
-TEST(Display, backlight_raw) {
-    auto test = [](float val) {
-        core::display::backlight = 0;
-        core::display::contrast = 78.5;
-        HAL::Display::backlight = 1;
-        HAL::Display::contrast = 2;
-
-        core::display::setBacklight(val);
-
-        EXPECT_FLOAT_EQ(core::display::backlight, val);
-        EXPECT_FLOAT_EQ(core::display::contrast, 78.5);
-        EXPECT_FLOAT_EQ(HAL::Display::backlight, val);
-        EXPECT_FLOAT_EQ(HAL::Display::contrast, 2);
-    };
-    test(10.0);
-    test(70.0);
-    test(55.0);
-}
-
-TEST(Display, contrast_raw) {
-    auto test = [](float val) {
-        core::display::backlight = 15.0;
-        core::display::contrast = 7.1;
-        HAL::Display::backlight = 3;
-        HAL::Display::contrast = 4;
-
-        core::display::setContrast(val);
-
-        EXPECT_FLOAT_EQ(core::display::backlight, 15.0);
-        EXPECT_FLOAT_EQ(core::display::contrast, val);
-        EXPECT_FLOAT_EQ(HAL::Display::backlight, 3);
-        EXPECT_FLOAT_EQ(HAL::Display::contrast, val);
-    };
-    test(10.0);
-    test(70.0);
-    test(55.0);
-}
-
-TEST(Display, contrast_cmd) {
+TEST(Display, set_settings) {
     auto test = [](float backlight, float contrast) {
-        core::display::backlight = -17.1f;
-        core::display::contrast = 20.5f;
+        core::settings.display.backlight = 0;
+        core::settings.display.contrast = 1;
+        HAL::Display::backlight = 2;
+        HAL::Display::contrast = 3;
+
+        core::display::setDisplaySettings(backlight, contrast);
+
+        EXPECT_FLOAT_EQ(core::settings.display.backlight, backlight);
+        EXPECT_FLOAT_EQ(core::settings.display.contrast, contrast);
+        EXPECT_FLOAT_EQ(HAL::Display::backlight, backlight);
+        EXPECT_FLOAT_EQ(HAL::Display::contrast, contrast);
+    };
+    test(10.0, 11.1);
+    test(70.0, 98.45);
+    test(55.0, 8596.23);
+}
+
+TEST(Display, display_cmd) {
+    auto test = [](float backlight, float contrast) {
+        core::settings.display.backlight = -17.1f;
+        core::settings.display.contrast = 20.5f;
         HAL::Display::backlight = 5;
         HAL::Display::contrast = 6;
 
@@ -54,15 +35,15 @@ TEST(Display, contrast_cmd) {
         sprintf(cmd, "disp %f %f", backlight, contrast);
         HAL::Com::handler(cmd);
 
-        EXPECT_FLOAT_EQ(core::display::backlight, -17.1);
-        EXPECT_FLOAT_EQ(core::display::contrast, 20.5);
+        EXPECT_FLOAT_EQ(core::settings.display.backlight, -17.1);
+        EXPECT_FLOAT_EQ(core::settings.display.contrast, 20.5);
         EXPECT_FLOAT_EQ(HAL::Display::backlight, 5);
         EXPECT_FLOAT_EQ(HAL::Display::contrast, 6);
 
         core::tick();
 
-        EXPECT_FLOAT_EQ(core::display::backlight, backlight);
-        EXPECT_FLOAT_EQ(core::display::contrast, contrast);
+        EXPECT_FLOAT_EQ(core::settings.display.backlight, backlight);
+        EXPECT_FLOAT_EQ(core::settings.display.contrast, contrast);
         EXPECT_FLOAT_EQ(HAL::Display::backlight, backlight);
         EXPECT_FLOAT_EQ(HAL::Display::contrast, contrast);
     };

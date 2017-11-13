@@ -6,10 +6,7 @@ namespace display {
 
 void tick();
 
-extern float backlight, contrast;
-
-void setBacklight(float percentage);
-void setContrast(float percentage);
+void setDisplaySettings(float backlightPercentage, float contrastPercentage);
 
 }  // namespace display
 }  // namespace core

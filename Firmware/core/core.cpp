@@ -20,6 +20,7 @@ void setup() {
 }
 
 void tick() {
+    com::tick();
     stateManager::tick();
     encoder::tick();
 
@@ -30,7 +31,6 @@ void tick() {
     power = pid.tick(temp);
     HAL::Tip::setHeating(power);
 
-    com::tick();
     timer::tick();
     storage::tick();
     display::tick();

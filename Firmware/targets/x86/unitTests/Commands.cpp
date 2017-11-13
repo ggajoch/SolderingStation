@@ -102,8 +102,8 @@ TEST_F(Commands, sendConfig) {
         core::settings.pidParams.Kd,
         core::settings.tipParams.offset,
         core::settings.tipParams.gain,
-        core::display::backlight,
-        core::display::contrast);
+        core::settings.display.backlight,
+        core::settings.display.contrast);
 
     parse("conf");
     EXPECT_TRUE(HAL::Com::checkLastLine(buf));

@@ -201,23 +201,17 @@ TEST_F(CLITest, incorrectNrOfArugments) {
     parse("test5");
     checkIfCallbacked(nullptr);
 
-    // EXPECT_TRUE(HAL::Com::checkLastLine("ERR Required 3 arguments for test5\n"));
-
     parse("test5 1");
     checkIfCallbacked(nullptr);
-    // EXPECT_TRUE(HAL::Com::checkLastLine("ERR Required 3 arguments for test5\n"));
 
     parse("test5 1 2");
     checkIfCallbacked(nullptr);
-    // EXPECT_TRUE(HAL::Com::checkLastLine("ERR Required 3 arguments for test5\n"));
 
     parse("test5 1 2 3 ");
     checkIfCallbacked(CLITest5);
-    // EXPECT_TRUE(HAL::Com::checkLastLine(""));
 
     parse("test5 1 2 3 4 ");
     checkIfCallbacked(nullptr);
-    // EXPECT_TRUE(HAL::Com::checkLastLine("ERR Required 3 arguments for test5\n"));
 }
 
 TEST_F(CLITest, allCasesRandom) {

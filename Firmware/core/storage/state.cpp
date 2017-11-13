@@ -4,14 +4,6 @@
 #include "layout.h"
 #include "config.h"
 
-uint16_t div_ceil_uint(uint16_t a, uint16_t b) {
-    uint16_t value = a / b;
-    if (a % b != 0) {
-        value += 1;
-    }
-    return value;
-}
-
 static_assert(sizeof(i2cMemorySettingsLayout) % 8 == 0, "Settings have to be 8-byte padded");
 static_assert(sizeof(i2cMemoryStateLayout) == 4, "State needs to be 4-byte length");
 

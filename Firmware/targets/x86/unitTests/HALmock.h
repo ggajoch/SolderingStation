@@ -21,7 +21,7 @@ extern bool in_stand;
 
 namespace Com {
 extern char lastLine[100];
-bool checkLastLine(const char* line);
+void checkLastLine(const char* line);
 }  // namespace Com
 
 namespace Encoder {

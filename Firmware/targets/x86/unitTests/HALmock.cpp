@@ -61,15 +61,9 @@ bool inStand() {
 
 namespace Com {
 char lastLine[100];
-bool checkLastLine(const char* line) {
-    bool res;
-    if (std::strcmp(line, lastLine) == 0) {
-        res = true;
-    } else {
-        res = false;
-    }
+void checkLastLine(const char* line) {
+    EXPECT_STREQ(line, lastLine);
     std::memset(lastLine, 0, sizeof(lastLine));
-    return res;
 }
 
 void puts(const char* data) {

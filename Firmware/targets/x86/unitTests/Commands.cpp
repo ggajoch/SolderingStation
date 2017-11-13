@@ -106,7 +106,7 @@ TEST_F(Commands, sendConfig) {
         core::settings.display.contrast);
 
     parse("conf");
-    EXPECT_TRUE(HAL::Com::checkLastLine(buf));
+    HAL::Com::checkLastLine(buf);
 }
 
 TEST_F(Commands, display) {
@@ -123,5 +123,5 @@ TEST_F(Commands, display) {
 
 TEST_F(Commands, ping) {
     parse("ping");
-    EXPECT_TRUE(HAL::Com::checkLastLine("pong\n"));
+    HAL::Com::checkLastLine("pong\n");
 }

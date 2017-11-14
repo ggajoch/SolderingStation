@@ -1,7 +1,6 @@
 import sys
 from PyQt4 import QtCore, QtGui
 from main_window import Ui_MainWindow
-import pyqtgraph as pg
 import socket
 import time
 
@@ -26,21 +25,38 @@ class StartQT4(QtGui.QMainWindow):
         QtCore.QObject.connect(clear, QtCore.SIGNAL("triggered()"), self.clear)
         menu.addAction(clear)
 
-        x = menu.ctrl
-        x = x[0]
-
-
         ui = menu.ctrl[0]
 
-        ui.autoPercentSpin.valueChanged.disconnect()
+        ui.timeScaleLabel = QtGui.QLabel(menu.widgetGroups[0])
+        ui.timeScaleLabel.setObjectName("timeScaleLabel")
+        ui.gridLayout.addWidget(ui.timeScaleLabel, 8, 0, 1, 2)
+        ui.timeScaleLabel.setText("Last seconds:")
 
-        ui.autoPercentSpin.setMaximum(10000)
-        ui.autoPercentSpin.setSuffix(" s")
+        ui.timeScale = QtGui.QSpinBox(menu.widgetGroups[0])
+        ui.timeScale.setEnabled(True)
+        ui.timeScale.setMinimum(1)
+        ui.timeScale.setMaximum(1e8)
+        ui.timeScale.setSingleStep(1)
+        ui.timeScale.setSuffix(" s")
+        ui.timeScale.setProperty("value", 1e8)
+        ui.timeScale.setObjectName("timeScale")
+        ui.gridLayout.addWidget(ui.timeScale, 8, 2, 1, 2)
 
-        QtCore.QObject.connect(ui.autoPercentSpin, QtCore.SIGNAL("valueChanged(int)"), self.set_history)
-        ui.autoPercentSpin.setValue(10000)
+        QtCore.QObject.connect(ui.timeScale, QtCore.SIGNAL("valueChanged(int)"), self.set_history)
+        QtCore.QObject.connect(ui.autoRadio, QtCore.SIGNAL("clicked()"), self.update_graph)
+
+        self.plot_update_timer = QtCore.QTimer(self)
+        self.connect(self.plot_update_timer, QtCore.SIGNAL("timeout()"), self.update_graph)
+        self.plot_update_timer.start(50)
+
+        self.changed = False
+        self.start_time = time.time()
+        self.x = []
+        self.y = []
 
         self.clear()
+
+        self.serial_thread = self.SocketThread()
         self.connect_socket()
 
     def set_history(self, seconds):
@@ -52,18 +68,16 @@ class StartQT4(QtGui.QMainWindow):
         self.y = []
         self.curve.setData(self.x, self.y)
 
-    def getMenu(self):
-        """
-        Create the menu
-        """
-        self.menu = None
-        if self.menu is None:
-            self.menu = QtGui.QMenu("Clear")
-            self.viewAll = QtGui.QAction("Dupa", self.menu)
-            self.menu.addAction(self.viewAll)
-        return self.menu
-
     def add_point(self, y):
+        now = time.time() - self.start_time
+
+        now = round(now, 2)
+        self.x.append(now)
+        self.y.append(y)
+
+        self.changed = True
+
+    def update_graph(self):
         now = time.time() - self.start_time
 
         remove_until = 0
@@ -72,18 +86,21 @@ class StartQT4(QtGui.QMainWindow):
                 remove_until = index
                 break
 
-        self.x[:remove_until] = []
-        self.y[:remove_until] = []
+        # if X is autorange
+        if self.curve.getViewBox().state['autoRange'][0]:
+            if self.changed:
+                self.changed = False
+                x = self.x[remove_until:]
+                y = self.y[remove_until:]
+                self.curve.setData(x, y)
+        else:
+            # X manual - set all acquired data
+            self.curve.setData(self.x, self.y)
 
-        now = round(now, 2)
-        self.x.append(now)
-        self.y.append(y)
-        self.curve.setData(self.x, self.y)
-
-    class UpdatePlotThread(QtCore.QThread):
-        def __init__(self, add_point):
+    class SocketThread(QtCore.QThread):
+        def __init__(self):
             QtCore.QThread.__init__(self)
-            self.add_point = add_point
+            self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
         def run(self):
             print "Connectting to TCP"
@@ -99,7 +116,6 @@ class StartQT4(QtGui.QMainWindow):
                     tip = table[1]
                     self.emit(QtCore.SIGNAL('add_point(float)'), float(tip))
 
-
         def send(self, text):
             print self.socket.send(str(text))
 
@@ -109,7 +125,6 @@ class StartQT4(QtGui.QMainWindow):
 
     def connect_socket(self):
         print "Connect"
-        self.serial_thread = self.UpdatePlotThread(self.add_point)
         self.connect(self.serial_thread, QtCore.SIGNAL("add_point(float)"), self.add_point)
         self.serial_thread.start()
 

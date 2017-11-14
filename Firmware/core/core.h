@@ -2,7 +2,7 @@
 #define CORE_CORE_H_
 
 #include "pid.h"
-#include "tempSensor.h"
+#include "storage/persistent_state.h"
 
 namespace core {
 
@@ -10,7 +10,9 @@ void setup();
 void tick();
 
 extern PID pid;
-extern float temp, target, power;
+extern float temp, power;
+
+extern PersistentState persistent_state;
 
 }  // namespace core
 

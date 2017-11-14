@@ -36,5 +36,5 @@ extern "C" void MY_main() {
 }
 
 extern "C" void HAL_CmdCallback(char* buf) {
-    HAL::Com::callback(buf);
+    HAL::Com::handler(buf);
 }

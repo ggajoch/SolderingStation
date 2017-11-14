@@ -2,12 +2,13 @@
 
 #include "HALmock.h"
 #include "tempSensor.h"
+#include "settings.h"
 
 constexpr float eps = 1e-4;
 
 TEST(tempScaling, basic) {
-    core::tempSensor::params.offset = 0;
-    core::tempSensor::params.gain = 1;
+    core::settings.tipParams.offset = 0;
+    core::settings.tipParams.gain = 1;
 
 //    libs::Average<float, config::tempAverages> temperatureAverage;
 
@@ -22,8 +23,8 @@ TEST(tempScaling, basic) {
         CLEAR();
     }
 
-    core::tempSensor::params.offset = 1;
-    core::tempSensor::params.gain = 2;
+    core::settings.tipParams.offset = 1;
+    core::settings.tipParams.gain = 2;
     CLEAR();
     for (int i = 0; i < 1000; ++i) {
         HAL::Tip::rawTemperatureData.push(i);
@@ -31,8 +32,8 @@ TEST(tempScaling, basic) {
         CLEAR();
     }
 
-    core::tempSensor::params.offset = 20.5;
-    core::tempSensor::params.gain = 0.05;
+    core::settings.tipParams.offset = 20.5;
+    core::settings.tipParams.gain = 0.05;
     CLEAR();
     for (int i = 0; i < 1000; ++i) {
         HAL::Tip::rawTemperatureData.push(i);

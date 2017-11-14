@@ -1,7 +1,9 @@
 #include <cstdarg>
 #include <cstdio>
+
 #include "CLI.h"
 #include "HAL.h"
+#include "storage/persistent_state.h"
 #include "core.h"
 
 namespace core {
@@ -20,19 +22,25 @@ int printf(const char* format, ...) {
 }
 
 char* rxCommandPtr = nullptr;
-void rxCommandCallback(char* data) {
-    rxCommandPtr = data;
-}
 
 void tick() {
-    core::com::printf("TICK %.2f %.2f %.2f %.2f\n", core::temp, core::target, core::power, core::pid.integral);
-
     if (rxCommandPtr != nullptr) {
         libs::CLI::parse_line(rxCommandPtr);
         rxCommandPtr = nullptr;
     }
-    HAL::Com::puts("*\n");
+
+    core::com::printf("TICK %.2f %d %.2f %.2f\n", core::temp, core::persistent_state.target, core::power, core::pid.integral);
 }
 
 }  // namespace com
 }  // namespace core
+
+namespace HAL {
+namespace Com {
+
+void handler(char *data) {
+    core::com::rxCommandPtr = data;
+}
+
+}  // namespace Com
+}  // namespace HAL

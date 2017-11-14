@@ -4,11 +4,13 @@
  */
 
 #include "crc8.h"
+
 /* Return CRC-8 of the data, using x^8 + x^2 + x + 1 polynomial.  A
  * table-based algorithm would be faster, but for only a few bytes it isn't
  * worth the code size. */
-uint8_t crc8(const void* vptr, int len) {
-    const uint8_t* data = (const uint8_t*)vptr;
+std::uint8_t crc8(const gsl::span<std::uint8_t> data_in) {
+    int len = data_in.length();
+    const uint8_t* data = data_in.data();
     unsigned crc = 0;
     int i, j;
     for (j = len; j; j--, data++) {

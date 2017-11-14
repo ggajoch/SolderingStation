@@ -1,55 +1,62 @@
 #include <queue>
 #include <cstdio>
 #include <cstring>
+#include <thread>
+#include <cassert>
+#include <config.h>
+#include <ncurses.h>
 #include "com.h"
 
 #include "HAL.h"
 #include "HALsim.h"
 
-#include "Serial.h"
-#include "storage.h"
+#include "storage/persistent_state.h"
+#include "settings.h"
+#include "plantModel.h"
 
-extern Serial * serial;
+#include "socket.h"
+
+extern WINDOW *window;
+extern TipModel model;
 
 namespace HAL {
 
-void delay(uint32_t ms) {}
+void delay(uint32_t ms) {
+    std::this_thread::sleep_for(std::chrono::milliseconds{ms});
+}
 
 namespace Display {
-    void setBacklight(float percent) {
-        std::printf("Setting backlight: %f\n", percent);
+    void set(float backlight_percent, float contrast_percent) {
+        mvprintw(3, 0, "backlight: %.2f%%   ", backlight_percent);
+        mvprintw(3, 20, "contrast: %.2f%%   ", contrast_percent);
+        refresh();
     }
 
-    void setContrast(float percent) {
-        std::printf("Setting contrast: %f\n", percent);
-    }
+    char line1[17], line2[17];
+    void write(char line1_[17], char line2_[17]) {
+        std::strcpy(line1, line1_);
+        std::strcpy(line2, line2_);
 
-    void write(char array[2][16])  {
-        char line1[17], line2[17];
-        std::memcpy(line1, array[0], 16);
-        line1[16] = '\0';
-        std::memcpy(line2, array[1], 16);
-        line2[16] = '\0';
-        core::com::printf("DISP |%s%s|\n", line1, line2);
+        mvprintw(0, 0, "%s", line1);
+        mvprintw(1, 0, "%s", line2);
+        refresh();
     }
 }  // namespace Display
 
 namespace Tip {
     float heatingPercentage;
+    bool inStandFlag = true;
+
     void setHeating(float percent) {
         heatingPercentage = percent;
-    }
-
-    uint16_t temperature;
-    void setTemperature(float temp) {
-        temperature = static_cast<uint16_t>(10*temp);
+        mvprintw(4, 20, "heating: %.2f%%    ", percent);
+        refresh();
     }
 
     uint16_t readRaw() {
-        return temperature;
+        return 10*model.Ttip;
     }
 
-    bool inStandFlag = false;
     bool inStand() {
         return inStandFlag;
     }
@@ -57,51 +64,40 @@ namespace Tip {
 
 namespace Com {
     void puts(const char * data) {
-//        std::printf("%s", data);
-        serial->WriteData(data, strlen(data));
-    }
-
-    void (*callback)(char * data);
-    void setCallback(void (*callback_)(char * data)) {
-        callback = callback_;
+        socket_write(data);
+//        wprintw(window, "serial %s", data);
+//        wrefresh(window);
     }
 }  // namespace Com
 
 namespace Encoder {
     int count;
     int getCountAndReset() {
-        int now = count;
+        auto now = count;
         count = 0;
         return now;
-    }
-    void reset();
-
-    void (*callback)();
-    void setButtonCallback(void (*callback_)()) {
-        callback = callback_;
     }
 }  // namespace Encoder
 
 namespace Memory {
-void storeSettings(const core::storage::Settings&) {
-    Com::puts("SAVING TO MEMORY Settings\n");
+std::array<uint8_t, static_cast<uint16_t>(core::config::memory_type)> table;
+void set(uint16_t address, gsl::span<const std::uint8_t> data) {
+//    printf("SAVE to %d: ", address);
+//    for(auto x: data) {
+//        printf("%d ", x);
+//    }
+//    printf("\n");
+    assert(address + data.size() <= table.size());
+    std::copy(data.begin(), data.end(), table.begin()+address);
 }
-void storeState(const core::storage::State&) {
-    Com::puts("SAVING TO MEMORY State\n");
-}
-std::experimental::optional<core::storage::Settings> getSettings() {
-    static constexpr core::storage::Settings elements = {
-        .pidParams = {.Kp = 1.0, .Ki = 4.0, .Kd = 0},
-        .tipParams = {.offset = 20, .gain = 0.11},
-        .contrast = 27.5,
-        .backlight = 100};
-
-    return elements;
-}
-std::experimental::optional<core::storage::State> getState() {
-    static constexpr core::storage::State elements = {.targetTemperature = 0};
-
-    return elements;
+void get(uint16_t address, gsl::span<std::uint8_t> data) {
+//    printf("READ from %d: ", address);
+    assert(address + data.size() <= table.size());
+    std::copy(table.begin()+address, table.begin()+address+data.length(), data.begin());
+//    for(auto x: data) {
+//        printf("%d ", x);
+//    }
+//    printf("\n");
 }
 }  // namespace Memory
 

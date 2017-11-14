@@ -4,6 +4,8 @@
 #include "com.h"
 #include "core.h"
 #include "display.h"
+#include "storage/persistent_state.h"
+#include "stateManager.h"
 
 namespace core {
 namespace commands {
@@ -16,8 +18,8 @@ class SetTemperature : public Command {
     }
 
     void callback(const gsl::span<char*> parameters) override {
-        core::target = static_cast<float>(std::atof(parameters[0]));
-        core::com::printf("temp %f\n", core::pid.target);
+        core::persistent_state.target = static_cast<uint16_t>(std::atoi(parameters[0]));
+        core::com::printf("temp %d\n", core::persistent_state.target);
     }
 };
 
@@ -27,10 +29,11 @@ class SetPIDCoefficients : public Command {
     }
 
     void callback(const gsl::span<char*> parameters) override {
-        core::pid.params.Kp = static_cast<float>(std::atof(parameters[0]));
-        core::pid.params.Ki = static_cast<float>(std::atof(parameters[1]));
-        core::pid.params.Kd = static_cast<float>(std::atof(parameters[2]));
+        settings.pidParams.Kp = static_cast<float>(std::atof(parameters[0]));
+        settings.pidParams.Ki = static_cast<float>(std::atof(parameters[1]));
+        settings.pidParams.Kd = static_cast<float>(std::atof(parameters[2]));
         core::pid.reset();
+        core::stateManager::config_command_received(core::stateManager::Command::Pid);
     }
 };
 
@@ -40,8 +43,9 @@ class SetTipScaling : public Command {
     }
 
     void callback(const gsl::span<char*> parameters) override {
-        core::tempSensor::params.offset = static_cast<float>(std::atof(parameters[0]));
-        core::tempSensor::params.gain = static_cast<float>(std::atof(parameters[1]));
+        settings.tipParams.offset = static_cast<float>(std::atof(parameters[0]));
+        settings.tipParams.gain = static_cast<float>(std::atof(parameters[1]));
+        core::stateManager::config_command_received(core::stateManager::Command::Tip);
     }
 };
 
@@ -51,15 +55,15 @@ class SendConfig : public Command {
     }
 
     void callback(const gsl::span<char*>) override {
-        core::com::printf("conf %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f\n",
-            core::target,
-            core::pid.params.Kp,
-            core::pid.params.Ki,
-            core::pid.params.Kd,
-            core::tempSensor::params.offset,
-            core::tempSensor::params.gain,
-            core::display::backlight,
-            core::display::contrast);
+        core::com::printf("conf %d %.2f %.2f %.2f %.2f %.2f %.2f %.2f\n",
+            core::persistent_state.target,
+            settings.pidParams.Kp,
+            settings.pidParams.Ki,
+            settings.pidParams.Kd,
+            settings.tipParams.offset,
+            settings.tipParams.gain,
+            core::settings.display.backlight,
+            core::settings.display.contrast);
     }
 };
 
@@ -69,8 +73,9 @@ class Display : public Command {
     }
 
     void callback(const gsl::span<char*> parameters) override {
-        core::display::setBacklight(static_cast<float>(std::atof(parameters[0])));
-        core::display::setContrast(static_cast<float>(std::atof(parameters[1])));
+        core::display::setDisplaySettings(static_cast<float>(std::atof(parameters[0])),
+                                          static_cast<float>(std::atof(parameters[1])));
+        core::stateManager::config_command_received(core::stateManager::Command::Display);
     }
 };
 
@@ -92,8 +97,13 @@ void setup() {
     static Display display;
     static Ping ping;
 
-    static Command* commands[] = {&setTemperature, &setPIDCoefficients, &setTipScaling, &sendConfig, &ping, &display
-
+    static Command* commands[] = {
+        &setTemperature,
+        &setPIDCoefficients,
+        &setTipScaling,
+        &sendConfig,
+        &ping,
+        &display
     };
     libs::CLI::set_commands(gsl::span<Command*>(commands));
 }

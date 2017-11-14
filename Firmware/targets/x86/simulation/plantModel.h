@@ -16,7 +16,7 @@ class TipModel {
 
     double Ttip, Tjoint;
     const double Tboard = 20;
-    double dt = 0.01;
+    double dt = 0.1;
 
     explicit TipModel(bool randomAir = false) : randomAir(randomAir) {
         std::srand(std::time(0));

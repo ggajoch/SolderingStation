@@ -1,18 +1,14 @@
 #ifndef CORE_HAL_H_
 #define CORE_HAL_H_
 
-#include <cstdint>
-#include <experimental/optional>
 #include <gsl/span>
-#include "storage.h"
 
 namespace HAL {
 void delay(std::uint32_t ms);
 
 namespace Display {
-void setBacklight(float percent);
-void setContrast(float percent);
-void write(char array[2][16]);
+void set(float backlight_percent, float contrast_percent);
+void write(char line1[17], char line2[17]);
 }
 
 namespace Tip {
@@ -23,22 +19,17 @@ bool inStand();
 
 namespace Com {
 void puts(const char* data);
-void setCallback(void callback(char* data));
+void handler(char* data); // implemented in core
 }
 
 namespace Encoder {
 int getCountAndReset();
-void setButtonCallback(void (*callback)());
-void callbackTick();
+void buttonHandler(); // implemented in core
 }
 
 namespace Memory {
-void storeSettings(const core::storage::Settings& data);
-void storeState(const core::storage::State& data);
-std::experimental::optional<core::storage::Settings> getSettings();
-std::experimental::optional<core::storage::State> getState();
-/*void store(gsl::span<const std::uint8_t> data);
-void get(gsl::span<std::uint8_t> data);*/
+void set(uint16_t address, gsl::span<const std::uint8_t> data);
+void get(uint16_t address, gsl::span<std::uint8_t> data);
 }
 
 }  // namespace HAL

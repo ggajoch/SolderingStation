@@ -4,7 +4,7 @@
 #include "HAL.h"
 #include "com.h"
 #include "core.h"
-#include "storage.h"
+#include "storage/storage.h"
 
 #include "adc.h"
 #include "tim.h"
@@ -39,7 +39,6 @@ void write(char array[2][16]) {
     line1[16] = '\0';
     std::memcpy(line2, array[1], 16);
     line2[16] = '\0';
-    core::com::printf("DISP |%s%s|\n", line1, line2);
 
     TM_HD44780_Puts(0, 0, line1);
     TM_HD44780_Puts(0, 1, line2);
@@ -90,56 +89,45 @@ namespace Com {
 void puts(const char* data) {
     HAL_UART_Transmit(&huart1, (uint8_t*)(data), strlen(data), 1000);
 }
-
-void (*callback)(char* data);
-void setCallback(void (*callback_)(char* data)) {
-    callback = callback_;
-}
 }  // namespace Com
 
 namespace Encoder {
 int getCountAndReset() {
     return encoderGetCountAndReset();
 }
-void setButtonCallback(void (*callback)()) {
-    encoderSetButtonCallback(callback);
-}
-void callbackTick() {
-    encoderCallbackTick();
-}
 }  // namespace Encoder
 
 namespace Memory {
-void storeSettings(const core::storage::Settings& data) {
+void storeSettings(const core::Settings& data) {
     i2cMemoryWriteSettings(data);
-    Com::puts("SAVING TO MEMORY Settings\n");
 }
-void storeState(const core::storage::State& data) {
+void storeState(const core::PersistentState& data) {
     i2cMemoryWriteState(data);
-    Com::puts("SAVING TO MEMORY State\n");
 }
-std::experimental::optional<core::storage::Settings> getSettings() {
+std::experimental::optional<core::Settings> getSettings() {
     auto fromMemory = i2cMemoryReadSettings();
 
     if (!fromMemory) {
         return {};
     }
 
-    core::storage::Settings elements = *fromMemory;
+    core::Settings elements = *fromMemory;
 
     return elements;
 }
-std::experimental::optional<core::storage::State> getState() {
+std::experimental::optional<core::PersistentState> getState() {
     auto formMemory = i2cMemoryReadState();
 
     if (!formMemory) {
         return {};
     }
 
-    core::storage::State elements = *formMemory;
+    core::PersistentState elements = *formMemory;
 
     return elements;
 }
+void set(uint16_t, gsl::span<const std::uint8_t>){}
+void get(uint16_t, gsl::span<std::uint8_t>) {}
 /*void store(gsl::span<const uint8_t> data) {
     UNREFERENCED_PARAMETER(data);
     Com::puts("SAVING TO MEMORY\n");

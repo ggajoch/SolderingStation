@@ -12,6 +12,7 @@ install:
   - sudo apt-get install -qq g++-5
   - sudo apt-get remove cmake
   - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5 90
+  - sudo apt-get install libboost-all-dev
 
 script:
   - wget https://cmake.org/files/v3.9/cmake-3.9.6.tar.gz

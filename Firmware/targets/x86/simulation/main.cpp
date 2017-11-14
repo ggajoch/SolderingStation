@@ -1,132 +1,169 @@
 #include <chrono>
 #include <cstring>
 #include <thread>
-
-#include "gtest/gtest.h"
+#include <iostream>
+#include <sstream>
 
 #include "core.h"
 #include "HALsim.h"
-#include "plantModel.h"
-#include "CLI.h"
-#include "core.h"
 #include "com.h"
-#include "Serial.h"
-#include "tempSensor.h"
+#include "plantModel.h"
+
+#include <ncurses.h>
+
+#include "socket.h"
+
+using namespace std::chrono_literals;
 
 TipModel model;
 
-void sendCommand(const char * data) {
-    static char buf[100];
-    std::strcpy(buf, data);
-    HAL::Com::callback(buf);
+WINDOW *window;
+
+
+void parse_sim_command(std::string command) {
+    std::string cmd;
+
+    std::istringstream is(command);
+
+    is >> cmd;
+
+    if (cmd == "temp") {
+    } else if (cmd == "stand") {
+        is >> HAL::Tip::inStandFlag;
+    } else if (cmd == "button") {
+        HAL::Encoder::buttonHandler();
+    }
 }
 
-void simTick() {
-    for (int i = 0; i < 10; ++i) {
+void tick() {
+    while(true) {
+        core::tick();
+
+        if (HAL::Tip::inStandFlag) {
+            attron(COLOR_PAIR(2));
+        }
+        mvprintw(0, 55, "STAND");
+        attron(COLOR_PAIR(1));
+
+        mvprintw(5, 20, "PID target: %.2f     ", core::pid.target);
+        refresh();
+
         model.tick(HAL::Tip::heatingPercentage);
-        HAL::Tip::setTemperature(model.Ttip);
-        core::com::printf("TICK %.2f %.2f %.2f %.2f\n",
-                          model.Ttip,
-                          core::target,
-                          core::power,
-                          core::pid.integral);
+
+        std::this_thread::sleep_for(100ms);
     }
 }
 
-class JointCmd : libs::CLI::Command {
- public:
-    JointCmd() : Command("joint", 1) {}
-
- private:
-    void callback(const libs::array_view<char *> parameters) override {
-        if (parameters[0][0] == '1') {
-            model.soldering(true);
-        } else {
-            model.soldering(false);
+void handle_mouse(int x, int y) {
+    if (y == 0) {
+        if (x >= 25 && x < 30) {
+            // LEFT
+            HAL::Encoder::count--;
+        }
+        if (x >= 35 && x < 40) {
+            // RIGHT
+            HAL::Encoder::count++;
+        }
+        if (x >= 45 && x < 53) {
+            // BUTTON
+            HAL::Encoder::buttonHandler();
+        }
+        if (x >= 55 && x < 63) {
+            // STAND
+            HAL::Tip::inStandFlag = !HAL::Tip::inStandFlag;
         }
     }
-} jointCmd;
+}
 
-class StandCmd : libs::CLI::Command {
- public:
-    StandCmd() : Command("stand", 1) {}
+void handle_serial(const char * cmd) {
+    static char data[100];
+    strcpy(data, cmd);
+    HAL::Com::handler(data);
+}
 
- private:
-    void callback(const libs::array_view<char *> parameters) override {
-        if (parameters[0][0] == '1') {
-            HAL::Tip::inStandFlag = true;
-        } else {
-            HAL::Tip::inStandFlag = false;
-        }
-    }
-} standCmd;
+int main() {
+    initscr();
+    start_color();
+    window = newwin(100, 100, 6, 0);
+    scrollok(window, TRUE);
+    noecho();
+    raw();
+    keypad(stdscr, TRUE);
+    cbreak();
 
-class EncoderCmd : libs::CLI::Command {
- public:
-    EncoderCmd() : Command("enc", 1) {}
+    init_pair(1, COLOR_WHITE, COLOR_BLACK);
+    init_pair(2, COLOR_BLACK, COLOR_WHITE);
 
- private:
-    void callback(const libs::array_view<char *> parameters) override {
-        HAL::Encoder::count = static_cast<int>(std::atoi(parameters[0]));
-    }
-} encoderCmd;
+    attron(COLOR_PAIR(1));
 
-class EncoderButtonCmd : libs::CLI::Command {
- public:
-    EncoderButtonCmd() : Command("encbtn", 0) {}
+    mousemask(ALL_MOUSE_EVENTS, NULL);
+    MEVENT event;
+    refresh();
 
- private:
-    void callback(const libs::array_view<char *> parameters) override {
-        HAL::Encoder::callback();
-    }
-} encoderButtonCmd;
 
-Serial * serial;
-
-int main(int argc, char **argv) {
-    ::testing::InitGoogleTest(&argc, argv);
-    model.soldering(false);
+    mvprintw(0, 25, "LEFT");
+    mvprintw(0, 35, "RIGHT");
+    mvprintw(0, 45, "BUTTON");
+    mvprintw(0, 55, "STAND");
 
     core::setup();
 
-    serial = new Serial("COM1");
-    printf("Connect: %d\n", serial->IsConnected());
+    handle_serial("pid 1 0.05 0");
+    core::tick();
+    handle_serial("tip 0 0.1");
+    core::tick();
+    handle_serial("disp 0 0");
+    core::tick();
 
-    std::string buffer;
-    std::chrono::system_clock::time_point next_point = std::chrono::system_clock::now();
-
-    next_point += std::chrono::milliseconds{100};
+    std::thread tick_thread(tick);
+    std::thread network_thread(::network_thread);
 
     while (true) {
-        std::this_thread::sleep_until(next_point);
-        next_point += std::chrono::milliseconds{100};
+        int ch = getch();
 
-        char buf[100];
-        int readed = serial->ReadData(buf, 100);
-        buf[readed] = '\0';
+        if(ch == KEY_RIGHT) {
+            HAL::Encoder::count++;
+        } else if(ch == KEY_LEFT) {
+            HAL::Encoder::count--;
+        } else if(ch == KEY_DOWN) {
+            HAL::Encoder::buttonHandler();
+        } else if(ch == 'r') {
+            core::setup();
+        } else if(ch == KEY_MOUSE) {
+            if(getmouse(&event) == OK && event.bstate & BUTTON1_CLICKED) {
+                handle_mouse(event.x, event.y);
+            }
+        } else {
+            mvwprintw(window, 1, 0, "                                                  ");
+            wmove(window, 1, 0);
+            mvwprintw(window, 1, 0, "%c", ch);
+            echo();
 
-        std::string now{buf};
-        buffer += now;
+            refresh();
+            char tmp[100];
+            tmp[0] = ch;
+            wgetstr(window, &tmp[1]);
 
-        std::size_t pos;
-        while ((pos = buffer.find('\n')) != std::string::npos) {
-            std::string cmd{buffer.substr(0, pos+1)};
-            buffer = buffer.substr(pos+1, buffer.size());
+            std::string line(tmp);
 
-            char data[100];
-            strcpy(data, cmd.c_str());
+            std::string command, params;
 
-            std::printf("command: %s", data);
-            HAL::Com::callback(data);
+            std::istringstream is(line);
+
+            is >> command;
+            std::string _;
+            std::getline(is, _, ' ');
+
+            std::getline(is, params);
+
+            if (command == "serial" or command == "s") {
+                handle_serial(params.c_str());
+            } else if (command == "tick" or command == "t") {
+                core::tick();
+            } else if (command == "sim") {
+                parse_sim_command(params);
+            }
+            noecho();
         }
-
-//        std::printf("enc: %d\n", HAL::Encoder::getCountAndReset());
-        core::tick();
-
-        // simulation-events
-        simTick();
     }
-
-    delete serial;
-    return RUN_ALL_TESTS();
 }

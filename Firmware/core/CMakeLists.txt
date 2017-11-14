@@ -1,6 +1,6 @@
 set(NAME core)
 
-file(GLOB SOURCES
+file(GLOB_RECURSE SOURCES
 	"*.h"
 	"*.cpp"
 )

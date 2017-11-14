@@ -13,28 +13,25 @@ class Average {
 
  public:
     constexpr Average() : insertion_index(0) {
-        for (auto& elem : history)
-            elem = 0;
+        std::fill(history.begin(), history.end(), 0);
     }
 
     void put(const Type& value) {
         history[insertion_index++] = value;
-        if (insertion_index == elements)
+        if (insertion_index == elements) {
             insertion_index = 0;
+        }
     }
 
     Type get() {
-        Type output = 0.0;
-        for (unsigned int i = 0; i < elements; ++i) {
-            output += history[i];
-        }
+        auto output = getSum();
         output /= static_cast<Type>(elements);
         return output;
     }
 
     Type getSum() {
-        Type output = 0.0;
-        for (unsigned int i = 0; i < elements; ++i) {
+        Type output = 0;
+        for (size_t i = 0; i < elements; ++i) {
             output += history[i];
         }
         return output;

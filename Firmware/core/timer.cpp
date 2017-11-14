@@ -1,5 +1,4 @@
 #include "timer.h"
-#include "config.h"
 
 namespace core {
 namespace timer {

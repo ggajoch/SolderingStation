@@ -4,13 +4,19 @@
 
 constexpr float eps = 1e-2;
 
+void reset() {
+    core::settings.pidParams.Kp = 0;
+    core::settings.pidParams.Ki = 0;
+    core::settings.pidParams.Kd = 0;
+}
+
 TEST(PID, setup) {
     core::PID pid;
+    reset();
     EXPECT_NEAR(pid.target, 0, eps);
-    EXPECT_NEAR(pid.params.Kp, 0, eps);
-    EXPECT_NEAR(pid.params.Ki, 0, eps);
-    EXPECT_NEAR(pid.params.Kd, 0, eps);
-    EXPECT_NEAR(pid.params.Kp, 0, eps);
+    EXPECT_NEAR(core::settings.pidParams.Kp, 0, eps);
+    EXPECT_NEAR(core::settings.pidParams.Ki, 0, eps);
+    EXPECT_NEAR(core::settings.pidParams.Kd, 0, eps);
     EXPECT_NEAR(pid.integral, 0, eps);
     EXPECT_NEAR(pid.prevError, 0, eps);
 }
@@ -23,7 +29,8 @@ TEST(PID, noOutput) {
 
 TEST(PID, proportional) {
     core::PID pid;
-    pid.params.Kp = -1;
+    reset();
+    core::settings.pidParams.Kp = -1;
     pid.target = 0;
     pid.lowerLimit = -1e6f;
     pid.upperLimit = 1e6f;
@@ -32,7 +39,7 @@ TEST(PID, proportional) {
         EXPECT_NEAR(pid.tick(i), i, eps);
     }
 
-    pid.params.Kp = 1.5f;
+    core::settings.pidParams.Kp = 1.5f;
     pid.target = 10.0f;
     EXPECT_NEAR(pid.tick(10), 0, eps);
     for (float i = -500; i <= 500; i += 0.7) {
@@ -42,7 +49,8 @@ TEST(PID, proportional) {
 
 TEST(PID, integral) {
     core::PID pid;
-    pid.params.Ki = -1;
+    reset();
+    core::settings.pidParams.Ki = -1.0f;
     pid.target = 0;
     pid.lowerLimit = -1e6f;
     pid.upperLimit = 1e6f;
@@ -52,7 +60,7 @@ TEST(PID, integral) {
     }
 
     pid.reset();
-    pid.params.Ki = 1.5f;
+    core::settings.pidParams.Ki = 1.5f;
     pid.target = 10.0f;
     EXPECT_NEAR(pid.tick(10), 0, eps);
     float sum = 0;
@@ -64,7 +72,8 @@ TEST(PID, integral) {
 
 TEST(PID, derivative) {
     core::PID pid;
-    pid.params.Kd = -1;
+    reset();
+    core::settings.pidParams.Kd = -1.0f;
     pid.target = 0;
     pid.lowerLimit = -1e6f;
     pid.upperLimit = 1e6f;
@@ -76,7 +85,7 @@ TEST(PID, derivative) {
     }
 
     pid.reset();
-    pid.params.Kd = 1.5f;
+    core::settings.pidParams.Kd = 1.5f;
     pid.target = 10.0f;
     EXPECT_NEAR(pid.tick(10), 0, eps);
 
@@ -87,7 +96,8 @@ TEST(PID, derivative) {
 
 TEST(PID, limits) {
     core::PID pid;
-    pid.params.Kp = -1;
+    reset();
+    core::settings.pidParams.Kp = -1.0f;
     pid.lowerLimit = -107;
     pid.upperLimit = 257;
     EXPECT_NEAR(pid.tick(0), 0, eps);
@@ -109,8 +119,9 @@ TEST(PID, limits) {
 
 TEST(PID, antiWindup) {
     core::PID pid;
-    pid.params.Kp = 1;
-    pid.params.Ki = 1;
+    reset();
+    core::settings.pidParams.Kp = 1.0f;
+    core::settings.pidParams.Ki = 1.0f;
     pid.target = 10;
     pid.lowerLimit = 0;
     pid.upperLimit = 100;

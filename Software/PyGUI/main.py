@@ -1,10 +1,11 @@
 import sys
 from PyQt4 import QtCore, QtGui
 from main_window import Ui_MainWindow
-import socket
 import pyqtgraph as pg
 import time
 import logging
+
+from connection_socket import SocketConnection
 
 
 class StartQT4(QtGui.QMainWindow):
@@ -18,8 +19,8 @@ class StartQT4(QtGui.QMainWindow):
         self.ui.setupUi(self)
 
         self.ui.sendButton.clicked.connect(self.send)
-        self.ui.actionSimulator.triggered.connect(self.connect_socket)
-        self.ui.actionDisconnect.triggered.connect(self.disconnect_socket)
+        self.ui.actionSimulator.triggered.connect(self.connect_simulator)
+        self.ui.actionDisconnect.triggered.connect(self.disconnect)
 
         self.setup_graph_menu()
         self.setup_graph_curves()
@@ -28,8 +29,11 @@ class StartQT4(QtGui.QMainWindow):
         self.plot_update_timer.timeout.connect(self.update_graph)
         self.plot_update_timer.start(50)
 
-        self.serial_thread = self.SocketThread()
-        self.connect_socket()
+        self.ui.actionSimulator.setDisabled(False)
+        self.ui.actionDisconnect.setDisabled(True)
+        self.connection = None
+
+        self.connect_simulator()
 
     def setup_graph_menu(self):
         self.log.info("Creating graph context menu")
@@ -140,62 +144,46 @@ class StartQT4(QtGui.QMainWindow):
         if self.changed:
             self.changed = False
 
-    class SocketThread(QtCore.QThread):
-        point_received_signal = QtCore.pyqtSignal(list)
+    def line_parse(self, string):
+        string = str(string)
+        if string.startswith("TICK"):
+            table = string.split(' ')
+            tip = float(table[1])
+            setpoint = float(table[2]) - 0.5
+            pwr = float(table[3])
+            self.add_point([tip, setpoint, pwr])
 
-        def __init__(self):
-            QtCore.QThread.__init__(self)
-            self.log = logging.getLogger('tcp_socket')
-            self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    def connect_simulator(self):
+        self.log.info("Connect to Simulator")
+        self.connect_device(SocketConnection(self))
 
-        def start(self):
-            self.log.info("Connecting: ('127.0.0.1', 12345)")
-            self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    def connect_device(self, device):
+        if self.connection is None:
+            self.connection = device
+            self.log.info("Starting connection to {}".format(self.connection))
+            self.connection.start()
 
-            try:
-                self.socket.connect(('127.0.0.1', 12345))
-            except socket.error:
-                self.log.error("Connection FAIL")
-                return False
+            self.ui.actionSimulator.setDisabled(True)
+            self.ui.actionDisconnect.setDisabled(False)
+        else:
+            self.log.warning("Cannot connect to {}, connection {} already present".format(device, self.connection))
 
-            self.log.info("Connection OK")
-            QtCore.QThread.start(self)
+    def disconnect(self):
+        self.log.info("Disconnect")
+        if self.connection is not None:
+            self.connection.stop()
+            self.log.info("Device {} disconnected".format(self.connection))
+            self.connection = None
 
-        def run(self):
-            while True:
-                s = self.socket.recv(1000)
-                s = s.strip()
-                if s.startswith("TICK"):
-                    table = s.split(' ')
-                    tip = float(table[1])
-                    setpoint = float(table[2])-0.5
-                    pwr = float(table[3])
-                    self.point_received_signal.emit([tip, setpoint, pwr])
-
-        def send(self, text):
-            self.log.debug("Sending {}".format(text))
-            print self.socket.send(str(text))
-
-        def close(self):
-            self.log.debug("Closing socket")
-            self.socket.shutdown(socket.SHUT_WR)
-            self.socket.close()
-
-    def connect_socket(self):
-        print "Connect"
-        self.serial_thread.point_received_signal.connect(self.add_point)
-        self.serial_thread.start()
-
-    def disconnect_socket(self):
-        print "Disconnect"
-        self.serial_thread.terminate()
-        self.serial_thread.wait()
-        self.serial_thread.close()
+            self.ui.actionSimulator.setDisabled(False)
+            self.ui.actionDisconnect.setDisabled(True)
+        else:
+            self.log.info("No connected device")
 
     def send(self):
         text = self.ui.sendText.text()
         self.log.debug("Command {}".format(text))
-        self.serial_thread.send(text + "\n")
+        self.connection.send(text + "\n")
 
 
 if __name__ == "__main__":

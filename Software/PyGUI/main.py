@@ -4,13 +4,15 @@ from main_window import Ui_MainWindow
 import socket
 import pyqtgraph as pg
 import time
+import logging
 
 
 class StartQT4(QtGui.QMainWindow):
     def __init__(self, parent=None):
         QtGui.QWidget.__init__(self, parent)
 
-        self.history_seconds = 1000
+        self.log = logging.getLogger('main')
+        self.log.info("Starting main window")
 
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
@@ -30,6 +32,8 @@ class StartQT4(QtGui.QMainWindow):
         self.connect_socket()
 
     def setup_graph_menu(self):
+        self.log.info("Creating graph context menu")
+
         menu = self.ui.widget.getPlotItem().getViewBox().menu
         clear = QtGui.QAction("Clear", menu)
         clear.triggered.connect(self.clear)
@@ -55,6 +59,7 @@ class StartQT4(QtGui.QMainWindow):
         ui.timeScale.setValue(1000)
 
     def setup_graph_curves(self):
+        self.log.info("Creating graph curves")
         # actual temperature
         self.curve_actual = self.ui.widget.getPlotItem().plot()
         self.curve_actual.setPen(pen=pg.mkPen(color='#ffffff', width=2))
@@ -87,9 +92,11 @@ class StartQT4(QtGui.QMainWindow):
         self.clear()
 
     def set_history(self, seconds):
+        self.log.debug("Setting history to {} seconds".format(seconds))
         self.history_seconds = seconds
 
     def clear(self):
+        self.log.info("Clearing graph")
         self.start_time = time.time()
         self.x = []
         self.curves = (
@@ -138,14 +145,23 @@ class StartQT4(QtGui.QMainWindow):
 
         def __init__(self):
             QtCore.QThread.__init__(self)
+            self.log = logging.getLogger('tcp_socket')
             self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+        def start(self):
+            self.log.info("Connecting: ('127.0.0.1', 12345)")
+            self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+            try:
+                self.socket.connect(('127.0.0.1', 12345))
+            except socket.error:
+                self.log.error("Connection FAIL")
+                return False
+
+            self.log.info("Connection OK")
+            QtCore.QThread.start(self)
 
         def run(self):
-            print "Connectting to TCP"
-            self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            self.socket.connect(('127.0.0.1', 12345))
-
-            print "Connected"
             while True:
                 s = self.socket.recv(1000)
                 s = s.strip()
@@ -157,9 +173,11 @@ class StartQT4(QtGui.QMainWindow):
                     self.point_received_signal.emit([tip, setpoint, pwr])
 
         def send(self, text):
+            self.log.debug("Sending {}".format(text))
             print self.socket.send(str(text))
 
         def close(self):
+            self.log.debug("Closing socket")
             self.socket.shutdown(socket.SHUT_WR)
             self.socket.close()
 
@@ -176,11 +194,13 @@ class StartQT4(QtGui.QMainWindow):
 
     def send(self):
         text = self.ui.sendText.text()
-        print "Sending: ", text
+        self.log.debug("Command {}".format(text))
         self.serial_thread.send(text + "\n")
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.DEBUG)
+
     app = QtGui.QApplication(sys.argv)
     myapp = StartQT4()
     myapp.show()

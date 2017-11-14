@@ -11,6 +11,8 @@
 
 #include <ncurses.h>
 
+#include "socket.h"
+
 using namespace std::chrono_literals;
 
 TipModel model;
@@ -114,6 +116,7 @@ int main() {
     core::tick();
 
     std::thread tick_thread(tick);
+    std::thread network_thread(::network_thread);
 
     while (true) {
         int ch = getch();

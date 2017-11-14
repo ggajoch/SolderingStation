@@ -14,6 +14,8 @@
 #include "settings.h"
 #include "plantModel.h"
 
+#include "socket.h"
+
 extern WINDOW *window;
 extern TipModel model;
 
@@ -62,6 +64,7 @@ namespace Tip {
 
 namespace Com {
     void puts(const char * data) {
+        socket_write(data);
 //        wprintw(window, "serial %s", data);
 //        wrefresh(window);
     }

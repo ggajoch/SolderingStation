@@ -94,12 +94,10 @@ class StartQT4(QtGui.QMainWindow):
             while True:
                 s = self.socket.recv(1000)
                 s = s.strip()
-                # print "Received"
                 if s.startswith("TICK"):
                     table = s.split(' ')
                     tip = table[1]
-                    # print "Adding point"
-                    self.add_point(float(tip))
+                    self.emit(QtCore.SIGNAL('add_point(float)'), float(tip))
 
 
         def send(self, text):
@@ -112,6 +110,7 @@ class StartQT4(QtGui.QMainWindow):
     def connect_socket(self):
         print "Connect"
         self.serial_thread = self.UpdatePlotThread(self.add_point)
+        self.connect(self.serial_thread, QtCore.SIGNAL("add_point(float)"), self.add_point)
         self.serial_thread.start()
 
     def disconnect_socket(self):

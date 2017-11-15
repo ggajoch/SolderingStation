@@ -37,6 +37,7 @@ class Ui_MainWindow(object):
         self.sendText.setObjectName(_fromUtf8("sendText"))
         self.horizontalLayout.addWidget(self.sendText)
         self.sendButton = QtGui.QPushButton(self.centralwidget)
+        self.sendButton.setDefault(True)
         self.sendButton.setObjectName(_fromUtf8("sendButton"))
         self.horizontalLayout.addWidget(self.sendButton)
         self.verticalLayout_2.addLayout(self.horizontalLayout)

@@ -4,6 +4,8 @@ from main_window import Ui_MainWindow
 import pyqtgraph as pg
 import time
 import logging
+from ConnectToDevice import ConnectionThread
+from ConnectionManager import ConnectionManager
 
 from connection_socket import SocketConnection
 
@@ -22,6 +24,8 @@ class StartQT4(QtGui.QMainWindow):
         self.ui.actionSimulator.triggered.connect(self.connect_simulator)
         self.ui.actionDisconnect.triggered.connect(self.disconnect)
 
+        self.ui.sendText.returnPressed.connect(self.send)
+
         self.setup_graph_menu()
         self.setup_graph_curves()
 
@@ -29,11 +33,49 @@ class StartQT4(QtGui.QMainWindow):
         self.plot_update_timer.timeout.connect(self.update_graph)
         self.plot_update_timer.start(50)
 
-        self.ui.actionSimulator.setDisabled(False)
-        self.ui.actionDisconnect.setDisabled(True)
-        self.connection = None
+        self.status_update_timer = QtCore.QTimer(self)
+        self.status_update_timer.timeout.connect(self.update_status)
+        self.status_update_timer.setSingleShot(True)
+        self.status_update_timer.start(0)
 
-        self.connect_simulator()
+
+        self.status_label = QtGui.QLabel("")
+        self.statusBar().addWidget(self.status_label)
+        self.statusBar().addWidget(QtGui.QLabel(""), 1)
+        self.mode_label = QtGui.QLabel("")
+        self.statusBar().addWidget(self.mode_label, 0)
+
+        self.got_point = False
+
+        self.connection_manager = ConnectionManager(self)
+
+    class Status:
+        Disconnected = ["Disconnected", "red"]
+        WaitingForDevice = ["Waiting For Device", "blue"]
+        Connected = ["Connected", "green"]
+
+    class Mode:
+        NoData = ["No data", "red"]
+        InStand = ["In stand", "cyan"]
+        Sleeping = ["Sleeping", "green"]
+        Heating = ["Heating", "magenta"]
+
+    def change_status(self, status):
+        self.status_label.setText(status[0])
+        self.status_label.setStyleSheet(' QLabel {color: %s}' % status[1])
+
+    def change_mode(self, mode):
+        self.mode_label.setText(mode[0])
+        self.mode_label.setStyleSheet(' QLabel {color: %s}' % mode[1])
+
+    def update_status(self):
+        if self.got_point:
+            self.got_point = False
+        else:
+            self.change_mode(self.Mode.NoData)
+
+        self.status_update_timer.stop()
+        self.status_update_timer.start(1000)
 
     def setup_graph_menu(self):
         self.log.info("Creating graph context menu")
@@ -120,6 +162,8 @@ class StartQT4(QtGui.QMainWindow):
             self.curves[index]['y'].append(val)
 
         self.changed = True
+        self.got_point = True
+        self.update_status()
 
     def update_graph(self):
         now = time.time() - self.start_time
@@ -152,38 +196,29 @@ class StartQT4(QtGui.QMainWindow):
             setpoint = float(table[2]) - 0.5
             pwr = float(table[3])
             self.add_point([tip, setpoint, pwr])
+        if string.startswith("DISP"):
+            if string.find("SLEEP") > -1:
+                self.change_mode(self.Mode.Sleeping)
+            elif string.find("STAND") > -1:
+                self.change_mode(self.Mode.InStand)
+            else:
+                self.change_mode(self.Mode.Heating)
 
     def connect_simulator(self):
         self.log.info("Connect to Simulator")
-        self.connect_device(SocketConnection(self))
-
-    def connect_device(self, device):
-        if self.connection is None:
-            self.connection = device
-            self.log.info("Starting connection to {}".format(self.connection))
-            self.connection.start()
-
-            self.ui.actionSimulator.setDisabled(True)
-            self.ui.actionDisconnect.setDisabled(False)
-        else:
-            self.log.warning("Cannot connect to {}, connection {} already present".format(device, self.connection))
+        self.connection_manager.connect(SocketConnection())
 
     def disconnect(self):
-        self.log.info("Disconnect")
-        if self.connection is not None:
-            self.connection.stop()
-            self.log.info("Device {} disconnected".format(self.connection))
-            self.connection = None
-
-            self.ui.actionSimulator.setDisabled(False)
-            self.ui.actionDisconnect.setDisabled(True)
-        else:
-            self.log.info("No connected device")
+        self.connection_manager.disconnect()
 
     def send(self):
+        if self.connection_manager.device is None:
+            self.log.error("Attempted to send command when there is no device connected")
+            return
+
         text = self.ui.sendText.text()
         self.log.debug("Command {}".format(text))
-        self.connection.send(text + "\n")
+        self.connection_manager.device.send(text + "\n")
 
 
 if __name__ == "__main__":

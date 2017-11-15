@@ -15,7 +15,7 @@
 
 using namespace std::chrono_literals;
 
-TipModel model;
+TipModel model(true);
 
 WINDOW *window;
 

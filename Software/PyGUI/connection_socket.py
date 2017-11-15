@@ -6,12 +6,10 @@ import logging
 class SocketConnection(QtCore.QThread):
     line_received_signal = QtCore.pyqtSignal(str)
 
-    def __init__(self, parent):
+    def __init__(self):
         QtCore.QThread.__init__(self)
         self.log = logging.getLogger('tcp_socket')
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-
-        self.line_received_signal.connect(parent.line_parse)
 
     def start(self):
         self.log.info("Connecting: ('127.0.0.1', 12345)")
@@ -19,9 +17,9 @@ class SocketConnection(QtCore.QThread):
 
         try:
             self.socket.connect(('127.0.0.1', 12345))
-        except socket.error:
-            self.log.error("Connection FAIL")
-            return False
+        except socket.error as e:
+            self.log.error("Connection FAIL: {}".format(e))
+            raise IOError
 
         self.log.info("Connection OK")
         self.log.debug("Starting socket thread")
@@ -31,6 +29,9 @@ class SocketConnection(QtCore.QThread):
         while True:
             try:
                 s = self.socket.recv(1000)
+                if s == '':
+                    # empty string - broken socket
+                    raise socket.error()
                 s = s.strip()
                 self.line_received_signal.emit(s)
             except socket.error as e:
@@ -39,7 +40,7 @@ class SocketConnection(QtCore.QThread):
 
     def send(self, text):
         self.log.debug("Sending {}".format(text))
-        print self.socket.send(str(text))
+        self.socket.send(str(text))
 
     def active(self):
         return self.isRunning()

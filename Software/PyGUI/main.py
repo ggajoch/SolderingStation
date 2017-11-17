@@ -4,9 +4,8 @@ from main_window import Ui_MainWindow
 import pyqtgraph as pg
 import time
 import logging
-from ConnectToDevice import ConnectionThread
-from ConnectionManager import ConnectionManager
 
+from ConnectionManager import ConnectionManager
 from connection_socket import SocketConnection
 
 
@@ -20,11 +19,31 @@ class StartQT4(QtGui.QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
-        self.ui.sendButton.clicked.connect(self.send)
-        self.ui.actionSimulator.triggered.connect(self.connect_simulator)
-        self.ui.actionDisconnect.triggered.connect(self.disconnect)
+        self.ui.setpointSpinBox.valueChanged.connect(self.update_setpoint)
 
-        self.ui.sendText.returnPressed.connect(self.send)
+        self.ui.offsetSpinBox.valueChanged.connect(self.update_tip)
+        self.ui.gainSpinBox.valueChanged.connect(self.update_tip)
+
+        self.ui.KpSpinBox.valueChanged.connect(self.update_pid)
+        self.ui.KiSpinBox.valueChanged.connect(self.update_pid)
+        self.ui.KdSpinBox.valueChanged.connect(self.update_pid)
+
+        self.ui.brightnessSpinBox.valueChanged.connect(self.update_display)
+        self.ui.contrastSpinBox.valueChanged.connect(self.update_display)
+
+        self.disabled_when_disconnected = (
+            self.ui.setpointSpinBox,
+            self.ui.offsetSpinBox, self.ui.gainSpinBox,
+            self.ui.KpSpinBox, self.ui.KiSpinBox, self.ui.KdSpinBox,
+            self.ui.brightnessSpinBox, self.ui.contrastSpinBox,
+            self.ui.disconnectButton
+        )
+        self.disabled_when_connected = (
+            self.ui.connectSimulatorButton,
+        )
+
+        self.ui.connectSimulatorButton.pressed.connect(self.connect_simulator)
+        self.ui.disconnectButton.pressed.connect(self.disconnect)
 
         self.setup_graph_menu()
         self.setup_graph_curves()
@@ -56,9 +75,9 @@ class StartQT4(QtGui.QMainWindow):
 
     class Mode:
         NoData = ["No data", "red"]
-        InStand = ["In stand", "cyan"]
+        InStand = ["In stand", "green"]
         Sleeping = ["Sleeping", "green"]
-        Heating = ["Heating", "magenta"]
+        Heating = ["Heating", "blue"]
 
     def change_status(self, status):
         self.status_label.setText(status[0])
@@ -211,15 +230,26 @@ class StartQT4(QtGui.QMainWindow):
     def disconnect(self):
         self.connection_manager.disconnect()
 
-    def send(self):
-        if self.connection_manager.device is None:
-            self.log.error("Attempted to send command when there is no device connected")
-            return
-
-        text = self.ui.sendText.text()
+    def send(self, text):
+        assert self.connection_manager.device is not None
         self.log.debug("Command {}".format(text))
         self.connection_manager.device.send(text + "\n")
 
+    def update_setpoint(self, _):
+        self.send("temp {}".format(self.ui.setpointSpinBox.value()))
+
+    def update_tip(self, _):
+        self.send("tip {} {}".format(self.ui.offsetSpinBox.value(),
+                                  self.ui.gainSpinBox.value()))
+
+    def update_pid(self, _):
+        self.send("pid {} {} {}".format(self.ui.KpSpinBox.value(),
+                                        self.ui.KiSpinBox.value(),
+                                        self.ui.KdSpinBox.value()))
+
+    def update_display(self, _):
+        self.send("disp {} {}".format(self.ui.brightnessSpinBox.value(),
+                                     self.ui.contrastSpinBox.value()))
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)

@@ -12,11 +12,14 @@ class ConnectionThread(QtCore.QThread):
         self.device = device
 
     def check_ping(self, line):
-        if str(line).strip().find("pong") > -1:
+        line = str(line).strip()
+        if line.find("pong") > -1:
+            self.device.send("conf\n")
+        if line.find("conf") > -1:
             self.device.line_received_signal.disconnect(self.check_ping)
             self.device.finished.disconnect(self.device_disconnected)
 
-            self.connection_update_signal.emit(0, "")
+            self.connection_update_signal.emit(0, line)
             self.terminate()
 
     def device_disconnected(self):

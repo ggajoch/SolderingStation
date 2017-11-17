@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>815</width>
+    <height>427</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -19,19 +19,256 @@
    </property>
    <layout class="QVBoxLayout" name="verticalLayout_2">
     <item>
-     <layout class="QHBoxLayout" name="horizontalLayout">
-      <item>
-       <widget class="QLineEdit" name="sendText"/>
-      </item>
-      <item>
-       <widget class="QPushButton" name="sendButton">
-        <property name="text">
-         <string>Send</string>
+     <layout class="QGridLayout" name="gridLayout">
+      <item row="1" column="4">
+       <widget class="QLabel" name="label_3">
+        <property name="maximumSize">
+         <size>
+          <width>55</width>
+          <height>16777215</height>
+         </size>
         </property>
-        <property name="default">
-         <bool>true</bool>
+        <property name="text">
+         <string>Setpoint:</string>
         </property>
        </widget>
+      </item>
+      <item row="2" column="8">
+       <widget class="QLabel" name="label_5">
+        <property name="text">
+         <string>Gain:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="9">
+       <widget class="QDoubleSpinBox" name="offsetSpinBox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+          <horstretch>70</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>70</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>70</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="8">
+       <widget class="QLabel" name="label_4">
+        <property name="minimumSize">
+         <size>
+          <width>40</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>40</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Offset:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="6">
+       <widget class="QLabel" name="label_8">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Kd:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="7">
+       <widget class="QDoubleSpinBox" name="KiSpinBox"/>
+      </item>
+      <item row="2" column="9">
+       <widget class="QDoubleSpinBox" name="gainSpinBox"/>
+      </item>
+      <item row="1" column="7">
+       <widget class="QDoubleSpinBox" name="KpSpinBox">
+        <property name="minimumSize">
+         <size>
+          <width>70</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>70</width>
+          <height>16777215</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="6">
+       <widget class="QLabel" name="label_7">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="text">
+         <string>Ki:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="6">
+       <widget class="QLabel" name="label_6">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>25</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>25</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Kp:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="7">
+       <widget class="QDoubleSpinBox" name="KdSpinBox"/>
+      </item>
+      <item row="1" column="5">
+       <widget class="QDoubleSpinBox" name="setpointSpinBox">
+        <property name="maximumSize">
+         <size>
+          <width>70</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="maximum">
+         <double>999.990000000000009</double>
+        </property>
+        <property name="singleStep">
+         <double>5.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="3">
+       <widget class="QPushButton" name="connectSimulatorButton">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>150</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Connect Simulator</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="3">
+       <widget class="QPushButton" name="disconnectButton">
+        <property name="text">
+         <string>Disconnect</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="10">
+       <widget class="QLabel" name="label_2">
+        <property name="text">
+         <string>Contrast:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="10">
+       <widget class="QLabel" name="label">
+        <property name="minimumSize">
+         <size>
+          <width>70</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>70</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Brightness:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="11">
+       <widget class="QDoubleSpinBox" name="brightnessSpinBox">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>70</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>70</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="maximum">
+         <double>100.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="11">
+       <widget class="QDoubleSpinBox" name="contrastSpinBox">
+        <property name="maximum">
+         <double>100.000000000000000</double>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="12">
+       <spacer name="horizontalSpacer">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>40</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
       </item>
      </layout>
     </item>
@@ -41,31 +278,6 @@
    </layout>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>800</width>
-     <height>20</height>
-    </rect>
-   </property>
-   <widget class="QMenu" name="menuConnect">
-    <property name="title">
-     <string>Connection</string>
-    </property>
-    <addaction name="actionSimulator"/>
-    <addaction name="separator"/>
-    <addaction name="actionDisconnect"/>
-   </widget>
-   <widget class="QMenu" name="menuControl">
-    <property name="title">
-     <string>Control</string>
-    </property>
-   </widget>
-   <addaction name="menuConnect"/>
-   <addaction name="menuControl"/>
-  </widget>
   <action name="actionSimulator">
    <property name="text">
     <string>Simulator</string>
@@ -76,6 +288,26 @@
     <string>Disconnect</string>
    </property>
   </action>
+  <action name="actionTip_Calibration">
+   <property name="text">
+    <string>Tip Calibration</string>
+   </property>
+  </action>
+  <action name="actionPID_Calibration">
+   <property name="text">
+    <string>PID Calibration</string>
+   </property>
+  </action>
+  <action name="actionSetpoint">
+   <property name="text">
+    <string>Temperature</string>
+   </property>
+  </action>
+  <action name="actionDisplay">
+   <property name="text">
+    <string>Display</string>
+   </property>
+  </action>
  </widget>
  <customwidgets>
   <customwidget>
@@ -84,6 +316,19 @@
    <header>pyqtgraph</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>connectSimulatorButton</tabstop>
+  <tabstop>disconnectButton</tabstop>
+  <tabstop>setpointSpinBox</tabstop>
+  <tabstop>KpSpinBox</tabstop>
+  <tabstop>KiSpinBox</tabstop>
+  <tabstop>KdSpinBox</tabstop>
+  <tabstop>offsetSpinBox</tabstop>
+  <tabstop>gainSpinBox</tabstop>
+  <tabstop>brightnessSpinBox</tabstop>
+  <tabstop>contrastSpinBox</tabstop>
+  <tabstop>widget</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

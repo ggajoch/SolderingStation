@@ -1,5 +1,4 @@
-#ifndef SOLDERINGSTATION_STORAGE_LAYOUT_H
-#define SOLDERINGSTATION_STORAGE_LAYOUT_H
+#pragma once
 
 #include "crc8.h"
 #include "settings.h"
@@ -19,7 +18,6 @@ struct i2cMemorySettingsLayout : core::base::Pod<i2cMemorySettingsLayout> {
     }
 } __attribute__((packed));
 
-
 struct i2cMemoryStateLayout : core::base::Pod<i2cMemoryStateLayout> {
     uint8_t marker;
     uint16_t temperature;
@@ -35,7 +33,3 @@ struct i2cMemoryStateLayout : core::base::Pod<i2cMemoryStateLayout> {
     }
 } __attribute__((packed));
 static_assert(sizeof(i2cMemoryStateLayout) == 4, "");
-
-
-
-#endif //SOLDERINGSTATION_STORAGE_LAYOUT_H

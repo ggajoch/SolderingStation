@@ -1,5 +1,4 @@
-#ifndef SOLDERINGSTATION_SETTINGS_H
-#define SOLDERINGSTATION_SETTINGS_H
+#pragma once
 
 #include "storage/base.h"
 
@@ -26,6 +25,4 @@ struct Settings : base::Pod<Settings> {
 
 extern Settings settings;
 
-}
-
-#endif //SOLDERINGSTATION_SETTINGS_H
+}  // namespace core

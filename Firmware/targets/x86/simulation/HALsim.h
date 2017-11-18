@@ -1,5 +1,4 @@
-#ifndef TARGETS_SIMULATION_HALSIM_H_
-#define TARGETS_SIMULATION_HALSIM_H_
+#pragma once
 
 #include "HAL.h"
 #include <queue>
@@ -16,5 +15,3 @@ namespace Encoder {
 }  // namespace Encoder
 
 }  // namespace HAL
-
-#endif  // TARGETS_SIMULATION_HALSIM_H_

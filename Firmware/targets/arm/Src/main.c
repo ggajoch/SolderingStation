@@ -41,6 +41,7 @@
 #include "gpio.h"
 
 /* USER CODE BEGIN Includes */
+#include "core_support.h"
 /* USER CODE END Includes */
 
 /* Private variables ---------------------------------------------------------*/
@@ -90,17 +91,6 @@ int main(void)
   MX_IWDG_Init();
 
   /* USER CODE BEGIN 2 */
-    HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
-    __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, 2001);
-    HAL_TIM_PWM_Start(&htim3, LCD_BACKLIGHT_CHANNEL);
-    HAL_TIM_PWM_Start(&htim4, LCD_CONTRAST_CHANNEL);
-
-    HAL_ADC_Start(&hadc1);
-    __HAL_UART_ENABLE_IT(&huart1, UART_IT_RXNE);
-
-    HAL_IWDG_Start(&hiwdg);
-
-    void MY_main();
     MY_main();
   /* USER CODE END 2 */
 

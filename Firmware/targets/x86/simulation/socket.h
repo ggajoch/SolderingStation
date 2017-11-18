@@ -1,5 +1,4 @@
-#ifndef SOLDERINGSTATION_SOCKET_H
-#define SOLDERINGSTATION_SOCKET_H
+#pragma once
 
 #include <boost/asio.hpp>
 #include <iostream>
@@ -12,5 +11,3 @@ extern tcp::socket *uart_socket;
 
 void socket_write(const char *);
 void network_thread();
-
-#endif //SOLDERINGSTATION_SOCKET_H

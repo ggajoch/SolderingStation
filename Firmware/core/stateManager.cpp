@@ -1,9 +1,9 @@
 #include <cstdio>
 
 #include "HAL.h"
-#include "storage/persistent_state.h"
-#include "stateManager.h"
 #include "core.h"
+#include "stateManager.h"
+#include "storage/persistent_state.h"
 
 namespace core {
 namespace stateManager {

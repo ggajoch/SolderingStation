@@ -1,5 +1,4 @@
-#ifndef TARGETS_SIMULATION_PLANTMODEL_H_
-#define TARGETS_SIMULATION_PLANTMODEL_H_
+#pragma once
 
 class TipModel {
  public:
@@ -49,5 +48,3 @@ class TipModel {
 
     bool randomAir = true;
 };
-
-#endif  // TARGETS_SIMULATION_PLANTMODEL_H_

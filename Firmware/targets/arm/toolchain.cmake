@@ -19,3 +19,6 @@ CMAKE_FORCE_CXX_COMPILER(${CXX} GNU)
 set(CMAKE_EXECUTABLE_FORMAT ELF)
 
 find_program(CLANG_FORMAT NAMES clang-format HINTS $ENV{CLANG_PATH})
+
+message(STATUS "Using C compiler from ${CMAKE_C_COMPILER}")
+message(STATUS "Using C++ compiler from ${CMAKE_CXX_COMPILER}")

@@ -1,6 +1,6 @@
 #include "settings.h"
-#include "config.h"
 #include "HAL.h"
+#include "config.h"
 
 #include "layout.h"
 

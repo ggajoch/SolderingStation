@@ -1,5 +1,4 @@
-#ifndef CORE_PID_H_
-#define CORE_PID_H_
+#pragma once
 
 #include <cmath>
 #include "settings.h"
@@ -24,9 +23,7 @@ class PID {
         error = target - temp;
 
         float diff = error - prevError;
-        float pwr = settings.pidParams.Kp * error +
-                    settings.pidParams.Ki * (integral + error) +
-                    settings.pidParams.Kd * diff;
+        float pwr = settings.pidParams.Kp * error + settings.pidParams.Ki * (integral + error) + settings.pidParams.Kd * diff;
 
         if (lowerLimit < pwr && pwr < upperLimit) {
             integral += error;
@@ -56,5 +53,3 @@ class PID {
 };
 
 }  // namespace core
-
-#endif  // CORE_PID_H_

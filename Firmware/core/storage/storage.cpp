@@ -1,11 +1,11 @@
 #include "storage.h"
+#include "com.h"
 #include "config.h"
 #include "stateManager.h"
 #include "timer.h"
-#include "com.h"
 
-#include "settings.h"
 #include "persistent_state.h"
+#include "settings.h"
 #include "state.h"
 
 namespace core {

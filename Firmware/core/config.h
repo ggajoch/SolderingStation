@@ -1,5 +1,4 @@
-#ifndef CORE_CONFIG_H_
-#define CORE_CONFIG_H_
+#pragma once
 
 #include <chrono>
 
@@ -23,8 +22,5 @@ enum class MemoryType : uint16_t {
 
 constexpr static MemoryType memory_type = MemoryType::MEM_24C01;
 
-
 }  // namespace config
 }  // namespace core
-
-#endif  // CORE_CONFIG_H_

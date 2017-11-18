@@ -3,9 +3,8 @@
 #include <storage/storage.h>
 
 #include "HAL.h"
-#include "stateManager.h"
 #include "com.h"
-#include "storage/persistent_state.h"
+#include "stateManager.h"
 
 namespace core {
 namespace display {
@@ -13,7 +12,8 @@ namespace display {
 void tick() {
     char line1[17], line2[17];
 
-    std::snprintf(line1, 17,
+    snprintf(line1,
+        17,
         "%3d/%3d %c   %3d%%",
         static_cast<int>(temp),
         core::persistent_state.target,

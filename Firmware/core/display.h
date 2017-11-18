@@ -1,5 +1,4 @@
-#ifndef CORE_DISPLAY_H_
-#define CORE_DISPLAY_H_
+#pragma once
 
 namespace core {
 namespace display {
@@ -10,5 +9,3 @@ void setDisplaySettings(float backlightPercentage, float contrastPercentage);
 
 }  // namespace display
 }  // namespace core
-
-#endif  // CORE_DISPLAY_H_

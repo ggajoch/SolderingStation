@@ -1,5 +1,4 @@
-#ifndef CORE_HAL_H_
-#define CORE_HAL_H_
+#pragma once
 
 #include <gsl/span>
 
@@ -33,5 +32,3 @@ void get(uint16_t address, gsl::span<std::uint8_t> data);
 }  // namespace Memory
 
 }  // namespace HAL
-
-#endif  // CORE_HAL_H_

@@ -1,5 +1,4 @@
-#ifndef CORE_TIMER_H_
-#define CORE_TIMER_H_
+#pragma once
 
 #include "config.h"
 
@@ -11,5 +10,3 @@ std::chrono::milliseconds now();
 
 }  // namespace timer
 }  // namespace core
-
-#endif  // CORE_TIMER_H_

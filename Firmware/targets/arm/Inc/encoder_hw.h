@@ -1,5 +1,4 @@
-#ifndef TARGETS_ARM_INC_ENCODER_HW_H_
-#define TARGETS_ARM_INC_ENCODER_HW_H_
+#pragma once
 
 #ifdef __cplusplus
 extern "C" {
@@ -11,5 +10,3 @@ void encoder10kHzTickISR();
 #ifdef __cplusplus
 }
 #endif
-
-#endif  // TARGETS_ARM_INC_ENCODER_HW_H_

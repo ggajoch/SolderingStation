@@ -1,5 +1,4 @@
-#ifndef SOLDERINGSTATION_CORE_SUPPORT_H
-#define SOLDERINGSTATION_CORE_SUPPORT_H
+#pragma once
 
 #include <stdbool.h>
 
@@ -15,5 +14,3 @@ void HAL_CmdCallback(char* buf);
 #ifdef __cplusplus
 }
 #endif
-
-#endif  // SOLDERINGSTATION_CORE_SUPPORT_H

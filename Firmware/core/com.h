@@ -1,5 +1,4 @@
-#ifndef CORE_COM_H_
-#define CORE_COM_H_
+#pragma once
 
 namespace core {
 namespace com {
@@ -10,5 +9,3 @@ void tick();
 
 }  // namespace com
 }  // namespace core
-
-#endif  // CORE_COM_H_

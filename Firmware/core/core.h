@@ -1,5 +1,4 @@
-#ifndef CORE_CORE_H_
-#define CORE_CORE_H_
+#pragma once
 
 #include "pid.h"
 #include "storage/persistent_state.h"
@@ -15,5 +14,3 @@ extern float temp, power;
 extern PersistentState persistent_state;
 
 }  // namespace core
-
-#endif  // CORE_CORE_H_

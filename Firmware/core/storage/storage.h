@@ -1,5 +1,4 @@
-#ifndef CORE_STORAGE_H_
-#define CORE_STORAGE_H_
+#pragma once
 
 #include <cstdint>
 #include <cstring>
@@ -21,5 +20,3 @@ void tick();
 
 }  // namespace storage
 }  // namespace core
-
-#endif  // CORE_STORAGE_H_

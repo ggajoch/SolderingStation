@@ -1,5 +1,4 @@
-#ifndef TARGETS_UNITTESTS_PLANTMODEL_H_
-#define TARGETS_UNITTESTS_PLANTMODEL_H_
+#pragma once
 
 #include <cstdlib>
 #include <ctime>
@@ -51,5 +50,3 @@ class TipModel {
 
     bool randomAir;
 };
-
-#endif  // TARGETS_UNITTESTS_PLANTMODEL_H_

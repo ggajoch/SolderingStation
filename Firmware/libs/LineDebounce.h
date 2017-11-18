@@ -1,5 +1,4 @@
-#ifndef LIBS_LINEDEBOUNCE_H_
-#define LIBS_LINEDEBOUNCE_H_
+#pragma once
 
 #include <cstdint>
 
@@ -71,5 +70,3 @@ class LineDebounce {
 };
 }  // namespace debouncer
 }  // namespace libs
-
-#endif  // LIBS_LINEDEBOUNCE_H_

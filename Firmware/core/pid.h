@@ -1,5 +1,4 @@
-#ifndef CORE_PID_H_
-#define CORE_PID_H_
+#pragma once
 
 #include <cmath>
 #include "settings.h"
@@ -54,5 +53,3 @@ class PID {
 };
 
 }  // namespace core
-
-#endif  // CORE_PID_H_

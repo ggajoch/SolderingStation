@@ -1,5 +1,4 @@
-#ifndef SOLDERINGSTATION_PERSISTENTSTATE_H
-#define SOLDERINGSTATION_PERSISTENTSTATE_H
+#pragma once
 
 #include <cstring>
 #include <gsl/span>
@@ -19,5 +18,3 @@ struct PersistentState {
 };
 
 }  // namespace core
-
-#endif  // SOLDERINGSTATION_PERSISTENTSTATE_H

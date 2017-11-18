@@ -1,5 +1,4 @@
-#ifndef TARGETS_UNITTESTS_HALMOCK_H_
-#define TARGETS_UNITTESTS_HALMOCK_H_
+#pragma once
 
 #include <queue>
 #include "config.h"
@@ -33,5 +32,3 @@ extern std::array<uint8_t, static_cast<uint16_t>(core::config::memory_type)> tab
 }  // namespace Memory
 
 }  // namespace HAL
-
-#endif  // TARGETS_UNITTESTS_HALMOCK_H_

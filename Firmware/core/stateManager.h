@@ -1,5 +1,4 @@
-#ifndef CORE_SLEEPMANAGER_H_
-#define CORE_SLEEPMANAGER_H_
+#pragma once
 
 #include <cstdint>
 
@@ -22,5 +21,3 @@ void config_command_received(Command cmd);
 
 }  // namespace stateManager
 }  // namespace core
-
-#endif  // CORE_SLEEPMANAGER_H_

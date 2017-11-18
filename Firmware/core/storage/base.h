@@ -1,5 +1,4 @@
-#ifndef SOLDERINGSTATION_BASE_H
-#define SOLDERINGSTATION_BASE_H
+#pragma once
 
 #include <cstring>
 #include <gsl/span>
@@ -25,5 +24,3 @@ struct Pod {
 
 }  // namespace base
 }  // namespace core
-
-#endif  // SOLDERINGSTATION_BASE_H

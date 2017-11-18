@@ -1,5 +1,4 @@
-#ifndef LIBS_CLI_H_
-#define LIBS_CLI_H_
+#pragma once
 
 #include <gsl/span>
 
@@ -36,5 +35,3 @@ bool parse_line(char* line);
 
 }  // namespace CLI
 }  // namespace libs
-
-#endif  // LIBS_CLI_H_

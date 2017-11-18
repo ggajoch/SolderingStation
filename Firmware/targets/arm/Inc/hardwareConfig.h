@@ -1,5 +1,4 @@
-#ifndef TARGETS_ARM_INC_HARDWARECONFIG_H_
-#define TARGETS_ARM_INC_HARDWARECONFIG_H_
+#pragma once
 
 #if __cplusplus
 namespace config {
@@ -13,5 +12,3 @@ constexpr static unsigned int memory_timeout_ms = 50;
 #endif
 
 #define CONFIG_USART1_buffer_size 100
-
-#endif  // TARGETS_ARM_INC_HARDWARECONFIG_H_

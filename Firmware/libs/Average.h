@@ -1,5 +1,4 @@
-#ifndef LIBS_AVERAGE_H_
-#define LIBS_AVERAGE_H_
+#pragma once
 
 #include <array>
 
@@ -43,5 +42,3 @@ class Average {
 };
 
 }  // namespace libs
-
-#endif  // LIBS_AVERAGE_H_

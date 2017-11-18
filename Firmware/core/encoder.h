@@ -1,5 +1,4 @@
-#ifndef CORE_ENCODER_H_
-#define CORE_ENCODER_H_
+#pragma once
 
 namespace core {
 namespace encoder {
@@ -8,5 +7,3 @@ void tick();
 
 }  // namespace encoder
 }  // namespace core
-
-#endif  // CORE_ENCODER_H_

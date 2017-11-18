@@ -1,18 +1,20 @@
 from PyQt4 import QtGui
 from ConnectToDevice import ConnectionThread
 import time
+import logging
 
 
 class ConnectionManager(object):
     def __init__(self, main):
+        self.log = logging.getLogger('ConnectionManager')
         self.main = main
         self.device = None
         self.connection_thread = ConnectionThread(None)
 
         self._ui_device_disconnected()
 
-
     def parse_config(self, string):
+            self.log.info("Parsing config [{}]".format(str(string)))
             arr = str(string).split()
 
             self.main.ui.setpointSpinBox.setValue(int(arr[1]))
@@ -33,15 +35,23 @@ class ConnectionManager(object):
             time.sleep(0.5)
             self.main.ui.brightnessSpinBox.valueChanged.emit(float(arr[7]))
 
+            self.log.info("Parsing config successful")
 
     def connection_update(self, status, msg):
+        self.log.info("Connection update: {} {}".format(status, msg))
         if status == 0:
+            try:
+                self.parse_config(msg)
+            except Exception as e:
+                self.log.error("Exception {} during parsing config [{}]".format(e, msg))
+                self.connection_thread.at_failed()
+                self.connection_update(2, "Incorrect response from device! [" + msg + "]")
+                return
+
             self.main.change_status(self.main.Status.Connected)
             self.device.line_received_signal.connect(self.main.line_parse)
 
             self.device.finished.connect(self.device_disconnected)
-
-            self.parse_config(msg)
 
             for enable in self.main.disabled_when_disconnected:
                 enable.setDisabled(False)
@@ -49,16 +59,24 @@ class ConnectionManager(object):
             for disable in self.main.disabled_when_connected:
                 disable.setDisabled(True)
 
+            self.log.info("Device connected")
+
         elif status == 1:
+            self.log.info("Waiting for device")
             self.main.change_status(self.main.Status.WaitingForDevice)
 
         elif status == 2:
+            self.log.error("Connection failed {}".format(msg))
             self.device = None
             self.main.change_status(self.main.Status.Disconnected)
             QtGui.QMessageBox.warning(self.main, "Connection failed", msg)
+            self._ui_device_disconnected()
 
     def connect(self, device):
         assert(self.device is None)
+
+        for enable in self.main.disabled_when_connected:
+            enable.setDisabled(True)
 
         self.device = device
 
@@ -82,7 +100,6 @@ class ConnectionManager(object):
 
         for disable in self.main.disabled_when_disconnected:
             disable.setDisabled(True)
-
 
     def disconnect(self):
         assert (self.device is not None)

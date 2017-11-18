@@ -31,6 +31,9 @@ class StartQT4(QtGui.QMainWindow):
         self.ui.brightnessSpinBox.valueChanged.connect(self.update_display)
         self.ui.contrastSpinBox.valueChanged.connect(self.update_display)
 
+        self.ui.connectSimulatorButton.pressed.connect(self.connect_simulator)
+        self.ui.disconnectButton.pressed.connect(self.disconnect)
+
         self.disabled_when_disconnected = (
             self.ui.setpointSpinBox,
             self.ui.offsetSpinBox, self.ui.gainSpinBox,
@@ -42,29 +45,23 @@ class StartQT4(QtGui.QMainWindow):
             self.ui.connectSimulatorButton,
         )
 
-        self.ui.connectSimulatorButton.pressed.connect(self.connect_simulator)
-        self.ui.disconnectButton.pressed.connect(self.disconnect)
-
         self.setup_graph_menu()
         self.setup_graph_curves()
 
         self.plot_update_timer = QtCore.QTimer(self)
         self.plot_update_timer.timeout.connect(self.update_graph)
-        self.plot_update_timer.start(50)
+        self.plot_update_timer.start(20)
 
         self.status_update_timer = QtCore.QTimer(self)
         self.status_update_timer.timeout.connect(self.update_status)
         self.status_update_timer.setSingleShot(True)
         self.status_update_timer.start(0)
 
-
         self.status_label = QtGui.QLabel("")
         self.statusBar().addWidget(self.status_label)
         self.statusBar().addWidget(QtGui.QLabel(""), 1)
         self.mode_label = QtGui.QLabel("")
         self.statusBar().addWidget(self.mode_label, 0)
-
-        self.got_point = False
 
         self.connection_manager = ConnectionManager(self)
 
@@ -88,9 +85,8 @@ class StartQT4(QtGui.QMainWindow):
         self.mode_label.setStyleSheet(' QLabel {color: %s}' % mode[1])
 
     def update_status(self):
-        if self.got_point:
-            self.got_point = False
-        else:
+        # if timer expired that means there is no data from device
+        if not self.status_update_timer.isActive():
             self.change_mode(self.Mode.NoData)
 
         self.status_update_timer.stop()
@@ -181,7 +177,6 @@ class StartQT4(QtGui.QMainWindow):
             self.curves[index]['y'].append(val)
 
         self.changed = True
-        self.got_point = True
         self.update_status()
 
     def update_graph(self):
@@ -249,7 +244,7 @@ class StartQT4(QtGui.QMainWindow):
 
     def update_display(self, _):
         self.send("disp {} {}".format(self.ui.brightnessSpinBox.value(),
-                                     self.ui.contrastSpinBox.value()))
+                                      self.ui.contrastSpinBox.value()))
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)

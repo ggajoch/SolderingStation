@@ -15,7 +15,7 @@
 
 using namespace std::chrono_literals;
 
-TipModel model(true);
+TipModel model(false);
 
 WINDOW *window;
 
@@ -108,12 +108,12 @@ int main() {
 
     core::setup();
 
-    handle_serial("pid 1 0.05 0");
+/*    handle_serial("pid 1 0.05 0");
     core::tick();
     handle_serial("tip 0 0.1");
     core::tick();
     handle_serial("disp 0 0");
-    core::tick();
+    core::tick();*/
 
     std::thread tick_thread(tick);
     std::thread network_thread(::network_thread);

@@ -34,7 +34,7 @@ class TipModel {
     }
 
     double airLossNow() {
-        return airLoss*(Ttip - Tboard) + (randomAir ? (std::rand() % 200 - 100) : 0);
+        return airLoss*(Ttip - Tboard) + (randomAir ? (std::rand() % 20 - 10) : 0);
     }
 
     void tick(float pwr) {

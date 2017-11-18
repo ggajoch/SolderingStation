@@ -27,6 +27,6 @@ script:
   - cmake --version
   - mkdir Firmware/build
   - cd Firmware/build
-  - cmake .. -DTARGET_PLATFORM:STRING=x86
+  - cmake .. -DTARGET_PLATFORM:STRING=x86 -DCMAKE_BUILD_TYPE=Debug
   - make -j5
   - ./build/x86/bin/unit_tests

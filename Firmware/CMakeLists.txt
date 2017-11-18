@@ -25,9 +25,6 @@ SET(CMAKE_C_FLAGS_DEBUG  "-O0 -g")
 
 include(${PLATFORM_PATH}/settings.cmake)
 
-if(${TARGET_PLATFORM} STREQUAL "x86")
-  include(CodeCoverage.cmake)
-endif()
 
 set(OUTPUT_PATH ${CMAKE_CURRENT_BINARY_DIR}/build/${TARGET_PLATFORM})
 set(REPORTS_PATH ${OUTPUT_PATH}/reports)

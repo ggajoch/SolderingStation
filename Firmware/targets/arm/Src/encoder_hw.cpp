@@ -2,10 +2,10 @@
 
 #include "stm32f1xx_hal.h"
 
-#include "hardwareConfig.h"
-#include "encoder_hw.h"
-#include "LineDebounce.h"
 #include "HAL.h"
+#include "LineDebounce.h"
+#include "encoder_hw.h"
+#include "hardwareConfig.h"
 
 volatile int encoderCount = 0;
 

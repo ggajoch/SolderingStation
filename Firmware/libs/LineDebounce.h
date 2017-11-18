@@ -69,7 +69,7 @@ class LineDebounce {
         }
     }
 };
-}
-}
+}  // namespace debouncer
+}  // namespace libs
 
 #endif  // LIBS_LINEDEBOUNCE_H_

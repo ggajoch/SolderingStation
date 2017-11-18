@@ -3,8 +3,8 @@
 
 #include "CLI.h"
 #include "HAL.h"
-#include "storage/persistent_state.h"
 #include "core.h"
+#include "storage/persistent_state.h"
 
 namespace core {
 namespace com {
@@ -38,7 +38,7 @@ void tick() {
 namespace HAL {
 namespace Com {
 
-void handler(char *data) {
+void handler(char* data) {
     core::com::rxCommandPtr = data;
 }
 

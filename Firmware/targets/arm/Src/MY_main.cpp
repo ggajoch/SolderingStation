@@ -1,9 +1,9 @@
 #include <stdint.h>
 
-#include "usart.h"
-#include "tim.h"
 #include "adc.h"
 #include "iwdg.h"
+#include "tim.h"
+#include "usart.h"
 
 #include "hd44780.h"
 

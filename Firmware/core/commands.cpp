@@ -4,8 +4,8 @@
 #include "com.h"
 #include "core.h"
 #include "display.h"
-#include "storage/persistent_state.h"
 #include "stateManager.h"
+#include "storage/persistent_state.h"
 
 namespace core {
 namespace commands {
@@ -73,8 +73,7 @@ class Display : public Command {
     }
 
     void callback(const gsl::span<char*> parameters) override {
-        core::display::setDisplaySettings(static_cast<float>(std::atof(parameters[0])),
-                                          static_cast<float>(std::atof(parameters[1])));
+        core::display::setDisplaySettings(static_cast<float>(std::atof(parameters[0])), static_cast<float>(std::atof(parameters[1])));
         core::stateManager::config_command_received(core::stateManager::Command::Display);
     }
 };
@@ -97,14 +96,7 @@ void setup() {
     static Display display;
     static Ping ping;
 
-    static Command* commands[] = {
-        &setTemperature,
-        &setPIDCoefficients,
-        &setTipScaling,
-        &sendConfig,
-        &ping,
-        &display
-    };
+    static Command* commands[] = {&setTemperature, &setPIDCoefficients, &setTipScaling, &sendConfig, &ping, &display};
     libs::CLI::set_commands(gsl::span<Command*>(commands));
 }
 

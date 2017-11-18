@@ -23,7 +23,6 @@ enum class MemoryType : uint16_t {
 
 constexpr static MemoryType memory_type = MemoryType::MEM_24C01;
 
-
 }  // namespace config
 }  // namespace core
 

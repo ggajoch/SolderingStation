@@ -16,4 +16,4 @@ void HAL_CmdCallback(char* buf);
 }
 #endif
 
-#endif //SOLDERINGSTATION_CORE_SUPPORT_H
+#endif  // SOLDERINGSTATION_CORE_SUPPORT_H

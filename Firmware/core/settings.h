@@ -26,6 +26,6 @@ struct Settings : base::Pod<Settings> {
 
 extern Settings settings;
 
-}
+}  // namespace core
 
-#endif //SOLDERINGSTATION_SETTINGS_H
+#endif  // SOLDERINGSTATION_SETTINGS_H

@@ -5,9 +5,9 @@
 #include <cstring>
 #include <gsl/span>
 #include "core.h"
+#include "display.h"
 #include "pid.h"
 #include "tempSensor.h"
-#include "display.h"
 
 namespace core {
 namespace storage {

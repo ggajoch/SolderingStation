@@ -6,8 +6,8 @@ extern "C" {
 #endif
 
 #include <stdint.h>
-#include "stm32f1xx_hal.h"
 #include "main.h"
+#include "stm32f1xx_hal.h"
 
 /**
  * @brief  Initializes HD44780 LCD
@@ -104,10 +104,8 @@ void TM_HD44780_CreateChar(uint8_t location, uint8_t* data);
  */
 void TM_HD44780_PutCustom(uint8_t x, uint8_t y, uint8_t location);
 
-
 #ifdef __cplusplus
 }
 #endif
 
 #endif  // TARGETS_ARM_INC_HD44780_H_
-

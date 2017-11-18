@@ -1,5 +1,5 @@
-#include <algorithm>
 #include "encoder.h"
+#include <algorithm>
 #include "HAL.h"
 #include "core.h"
 

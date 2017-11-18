@@ -1,8 +1,8 @@
-#include <experimental/optional>
 #include "state.h"
+#include <experimental/optional>
 #include "HAL.h"
-#include "layout.h"
 #include "config.h"
+#include "layout.h"
 
 static_assert(sizeof(i2cMemorySettingsLayout) % 8 == 0, "Settings have to be 8-byte padded");
 static_assert(sizeof(i2cMemoryStateLayout) == 4, "State needs to be 4-byte length");
@@ -10,15 +10,15 @@ static_assert(sizeof(i2cMemoryStateLayout) == 4, "State needs to be 4-byte lengt
 constexpr static uint16_t max_slot() {
     constexpr uint16_t start_address = sizeof(i2cMemorySettingsLayout);
     constexpr uint16_t size = static_cast<uint16_t>(core::config::memory_type);
-    static_assert((size-start_address) % sizeof(i2cMemoryStateLayout) == 0, "");
+    static_assert((size - start_address) % sizeof(i2cMemoryStateLayout) == 0, "");
 
-    return (size-start_address)/sizeof(i2cMemoryStateLayout);
+    return (size - start_address) / sizeof(i2cMemoryStateLayout);
 }
 
 uint16_t slot_to_address(uint16_t slot) {
     uint16_t start_address = sizeof(i2cMemorySettingsLayout);
 
-    return start_address + sizeof(i2cMemoryStateLayout)*slot;
+    return start_address + sizeof(i2cMemoryStateLayout) * slot;
 }
 
 i2cMemoryStateLayout stateLayout;
@@ -44,7 +44,7 @@ void save_slot(uint16_t slot, i2cMemoryStateLayout data) {
 
 bool find_state(uint16_t& slot, uint16_t& temperature) {
     bool found = false;
-    for(uint16_t i = 0; i < max_slot(); ++i) {
+    for (uint16_t i = 0; i < max_slot(); ++i) {
         if (correct_marker(i)) {
             if (get_slot(i)) {
                 slot = i;
@@ -56,7 +56,7 @@ bool find_state(uint16_t& slot, uint16_t& temperature) {
         }
     }
 
-    for(uint16_t i = slot+1; i < max_slot(); ++i) {
+    for (uint16_t i = slot + 1; i < max_slot(); ++i) {
         if (correct_marker(i)) {
             erase_slot(i);
         }

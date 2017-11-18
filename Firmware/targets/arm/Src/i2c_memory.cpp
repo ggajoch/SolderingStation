@@ -1,7 +1,7 @@
 #include <cstdlib>
 
-#include "i2c.h"
 #include "hardwareConfig.h"
+#include "i2c.h"
 #include "i2c_memory.h"
 #include "iwdg.h"
 
@@ -14,33 +14,22 @@ uint8_t get_i2c_address(uint16_t memory_address) {
 }
 
 void write_block(uint16_t address, gsl::span<const uint8_t> data) {
-    HAL_I2C_Mem_Write(&hi2c1,
-                      get_i2c_address(address),
-                      address & 0xFF,
-                      0x01,
-                      const_cast<uint8_t*>(data.data()),
-                      data.size(),
-                      config::memory_timeout_ms);
+    HAL_I2C_Mem_Write(
+        &hi2c1, get_i2c_address(address), address & 0xFF, 0x01, const_cast<uint8_t*>(data.data()), data.size(), config::memory_timeout_ms);
     HAL_IWDG_Refresh(&hiwdg);
     HAL_Delay(5);
 }
 
 void read_block(uint16_t address, gsl::span<uint8_t> data) {
-    HAL_I2C_Mem_Read(&hi2c1,
-                     get_i2c_address(address),
-                     address & 0xFF,
-                     0x01,
-                     data.data(),
-                     data.size(),
-                     config::memory_timeout_ms);
+    HAL_I2C_Mem_Read(&hi2c1, get_i2c_address(address), address & 0xFF, 0x01, data.data(), data.size(), config::memory_timeout_ms);
     HAL_IWDG_Refresh(&hiwdg);
     HAL_Delay(5);
 }
 
-template<typename Operation, typename Data>
+template <typename Operation, typename Data>
 void i2cMemoryBlockOperation(Operation operation, uint16_t address, gsl::span<Data> data) {
     // at least one block
-    while(data.size() >= 8) {
+    while (data.size() >= 8) {
         // operation on first 8 bytes
         operation(address, data.first(8));
 

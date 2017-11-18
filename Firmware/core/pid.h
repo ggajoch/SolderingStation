@@ -24,9 +24,7 @@ class PID {
         error = target - temp;
 
         float diff = error - prevError;
-        float pwr = settings.pidParams.Kp * error +
-                    settings.pidParams.Ki * (integral + error) +
-                    settings.pidParams.Kd * diff;
+        float pwr = settings.pidParams.Kp * error + settings.pidParams.Ki * (integral + error) + settings.pidParams.Kd * diff;
 
         if (lowerLimit < pwr && pwr < upperLimit) {
             integral += error;

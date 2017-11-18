@@ -36,11 +36,9 @@
 #include "stm32f1xx_it.h"
 
 /* USER CODE BEGIN 0 */
-#include "stm32f1xx_hal_uart.h"
-
+#include "core_support.h"
 #include "encoder_hw.h"
-volatile uint8_t tickTimeElapsed = 0;
-
+#include "hardwareConfig.h"
 /* USER CODE END 0 */
 
 /* External variables --------------------------------------------------------*/
@@ -182,7 +180,7 @@ void SysTick_Handler(void)
     static int cnt = 0;
     if (cnt++ == 100) {
         cnt = 0;
-        tickTimeElapsed = 1;
+        tickTimeElapsed = true;
     }
   /* USER CODE END SysTick_IRQn 1 */
 }
@@ -214,8 +212,7 @@ void TIM2_IRQHandler(void)
 void USART1_IRQHandler(void)
 {
   /* USER CODE BEGIN USART1_IRQn 0 */
-	#define USART1_buffer_size 100
-    static char USART1_buffer[USART1_buffer_size];
+    static char USART1_buffer[CONFIG_USART1_buffer_size];
     static uint8_t USART1_buffer_cnt = 0;
 
     uint32_t tmp_flag = 0, tmp_it_source = 0;
@@ -230,10 +227,9 @@ void USART1_IRQHandler(void)
         if (now == '\n') {
             USART1_buffer[USART1_buffer_cnt - 1] = '\0';
             USART1_buffer_cnt = 0;
-            void HAL_CmdCallback(char* buf);
             HAL_CmdCallback(USART1_buffer);
         }
-        if (USART1_buffer_cnt >= USART1_buffer_size){
+        if (USART1_buffer_cnt >= CONFIG_USART1_buffer_size){
         	USART1_buffer_cnt = 0;
         }
     }

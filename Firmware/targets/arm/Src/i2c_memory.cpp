@@ -1,46 +1,64 @@
+#include <cstdlib>
+
+#include "i2c.h"
+#include "hardwareConfig.h"
 #include "i2c_memory.h"
 #include "iwdg.h"
 
-#include "com.h"
-#include "core.h"
+uint8_t get_i2c_address(uint16_t memory_address) {
+    uint8_t page = static_cast<uint8_t>(memory_address >> 8);
+    page &= 0b111;
 
-#include "HAL.h"
-
-uint16_t divCeli(uint16_t a, uint16_t b) {
-    uint16_t value = a / b;
-    if (a % b > 0) {
-        value += 1;
-    }
-    return value;
+    uint8_t address_7b = config::memory_base_address | page;
+    return (address_7b << 1);
 }
 
-void i2cMemoryWriteBlock(uint16_t address, uint16_t dataSize, uint8_t* data) {
+void write_block(uint16_t address, gsl::span<const uint8_t> data) {
+    HAL_I2C_Mem_Write(&hi2c1,
+                      get_i2c_address(address),
+                      address & 0xFF,
+                      0x01,
+                      const_cast<uint8_t*>(data.data()),
+                      data.size(),
+                      config::memory_timeout_ms);
     HAL_IWDG_Refresh(&hiwdg);
-    for (unsigned int i = 0; i < divCeli(dataSize, 8); i++) {
-        HAL_I2C_Mem_Write(&hi2c1,
-            MEMORY_BASE_ADDRESS + ((address / 128) & 0b00001110),
-            address % 256,
-            0x01,
-            &data[i * 8],
-            dataSize > (i + 1) * 8 ? 8 : dataSize - i * 8,
-            MEMORY_TIMEOUT_MS);
+    HAL_Delay(5);
+}
+
+void read_block(uint16_t address, gsl::span<uint8_t> data) {
+    HAL_I2C_Mem_Read(&hi2c1,
+                     get_i2c_address(address),
+                     address & 0xFF,
+                     0x01,
+                     data.data(),
+                     data.size(),
+                     config::memory_timeout_ms);
+    HAL_IWDG_Refresh(&hiwdg);
+    HAL_Delay(5);
+}
+
+template<typename Operation, typename Data>
+void i2cMemoryBlockOperation(Operation operation, uint16_t address, gsl::span<Data> data) {
+    // at least one block
+    while(data.size() >= 8) {
+        // operation on first 8 bytes
+        operation(address, data.first(8));
+
+        // skip first 8 bytes
+        data = data.subspan(8);
         address += 8;
-        HAL_IWDG_Refresh(&hiwdg);
-        HAL_Delay(5);
+    }
+
+    // anything left in the buffer?
+    if (data.size() > 0) {
+        operation(address, data);
     }
 }
 
-void i2cMemoryReadBlock(uint16_t address, uint16_t dataSize, uint8_t* data) {
-    HAL_IWDG_Refresh(&hiwdg);
-    for (unsigned int i = 0; i < divCeli(dataSize, 8); i++) {
-        HAL_I2C_Mem_Read(&hi2c1,
-            MEMORY_BASE_ADDRESS + ((address / 128) & 0b00001110),
-            address % 256,
-            0x01,
-            &data[i * 8],
-            dataSize > (i + 1) * 8 ? 8 : dataSize - i * 8,
-            MEMORY_TIMEOUT_MS);
-        address += 8;
-        HAL_IWDG_Refresh(&hiwdg);
-    }
+void i2cMemoryWriteBlock(uint16_t address, gsl::span<const uint8_t> data) {
+    i2cMemoryBlockOperation(write_block, address, data);
+}
+
+void i2cMemoryReadBlock(uint16_t address, gsl::span<uint8_t> data) {
+    i2cMemoryBlockOperation(read_block, address, data);
 }

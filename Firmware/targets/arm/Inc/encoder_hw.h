@@ -5,13 +5,7 @@
 extern "C" {
 #endif
 
-#include <stdint.h>
-#include "stm32f1xx_hal.h"
-#include "main.h"
-
-void encoderInit();
 int encoderGetCountAndReset();
-
 void encoder10kHzTickISR();
 
 #ifdef __cplusplus

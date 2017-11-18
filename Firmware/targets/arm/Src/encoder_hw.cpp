@@ -1,12 +1,10 @@
-#include "encoder_hw.h"
+#include <stdint.h>
 
-#include "stm32f1xx_hal_gpio.h"
-#include "stm32f1xx_hal_tim.h"
-#include "tim.h"
-
-#include "LineDebounce.h"
+#include "stm32f1xx_hal.h"
 
 #include "hardwareConfig.h"
+#include "encoder_hw.h"
+#include "LineDebounce.h"
 #include "HAL.h"
 
 volatile int encoderCount = 0;
@@ -15,22 +13,18 @@ struct State {
     bool p, n;
 };
 
-void encoderInit() {
-    HAL_TIM_Base_Start_IT(&htim2);
-}
-
 int encoderGetCountAndReset() {
     __disable_irq();
-    int toReturn = encoderCount / ENCODER_PRESC;
+    int toReturn = encoderCount / config::encoder_prescaler;
     if (toReturn != 0)
         encoderCount = 0;
     __enable_irq();
     return toReturn;
 }
 
-libs::debouncer::LineDebounce<ENCODER_DEBOUNCE_STABLE> EncoderDebouncedLineP;
-libs::debouncer::LineDebounce<ENCODER_DEBOUNCE_STABLE> EncoderDebouncedLineN;
-libs::debouncer::LineDebounce<BUTTON_DEBOUNCE_STABLE> ButtonDebouncedLine;
+libs::debouncer::LineDebounce<config::encouder_debounce_stable> EncoderDebouncedLineP;
+libs::debouncer::LineDebounce<config::encouder_debounce_stable> EncoderDebouncedLineN;
+libs::debouncer::LineDebounce<config::button_debounce_stable> ButtonDebouncedLine;
 
 void encoder10kHzTickISR() {
     State now;

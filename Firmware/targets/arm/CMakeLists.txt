@@ -7,19 +7,34 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wno-strict-prototypes")
 include(Drivers/allowed_warnings.cmake)
 
 set(SOURCES_GENERATED
+	Inc/adc.h
+	Inc/gpio.h
+	Inc/i2c.h
+	Inc/iwdg.h
+	Inc/main.h
+	Inc/stm32f1xx_hal_conf.h
+	Inc/stm32f1xx_it.h
+	Inc/tim.h
+	Inc/usart.h
+
 	Src/adc.c
 	Src/gpio.c
+	Src/i2c.c
+	Src/iwdg.c
 	Src/main.c
 	Src/stm32f1xx_hal_msp.c
 	Src/stm32f1xx_it.c
 	Src/tim.c
 	Src/usart.c
-	Src/i2c.c
-	Src/iwdg.c
 )
 
 set(SOURCES_PROJECT
-	Src/coreSupport.cpp
+	Inc/core_support.h
+	Inc/encoder_hw.h
+	Inc/hardwareConfig.h
+	Inc/hd44780.h
+	Inc/i2c_memory.h
+
 	Src/HAL.cpp
 	Src/hd44780.c
 	Src/MY_main.cpp
@@ -29,10 +44,10 @@ set(SOURCES_PROJECT
 )
 
 include_directories(
-	"Inc"
-	"Drivers/CMSIS/Device/ST/STM32F1xx/Include"
-	"Drivers/CMSIS/Include"
-	"Drivers/STM32F1xx_HAL_Driver/Drivers/STM32F1xx_HAL_Driver/Inc"
+	Inc
+	Drivers/CMSIS/Device/ST/STM32F1xx/Include
+	Drivers/CMSIS/Include
+	Drivers/STM32F1xx_HAL_Driver/Drivers/STM32F1xx_HAL_Driver/Inc
 )
 
 set(SOURCES

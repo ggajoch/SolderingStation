@@ -21,6 +21,9 @@ std::vector<CLITest_*> testCommands;
 std::array<char*, 50> params;
 gsl::span<char*> rx_params;
 
+// workaround for GSL size working incorrectly
+#define GSL_SPAN_SIZE(x) (size_t)(x.end()-x.begin())
+
 struct CLITest_ : Command {
     explicit CLITest_(const char* name) : Command(name), callbacked(false) {
         testCommands.push_back(this);
@@ -160,13 +163,13 @@ void test(T first, Args... args) {
     int nArg = sizeof...(args) + 1;
     actualTesting = 0;
 
-    EXPECT_EQ(rx_params.size(), nArg);
+    EXPECT_EQ(GSL_SPAN_SIZE(rx_params), nArg);
     testX(nArg, first, args...);
     EXPECT_EQ(actualTesting, nArg);
 }
 
 void testVec(std::vector<char*> params) {
-    EXPECT_EQ(params.size(), rx_params.size());
+    EXPECT_EQ(params.size(), GSL_SPAN_SIZE(rx_params));
     for (int i = 0; i < params.size(); ++i) {
         EXPECT_STREQ(rx_params[i], params[i]);
     }

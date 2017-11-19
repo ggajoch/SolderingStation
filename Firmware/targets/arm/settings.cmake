@@ -5,7 +5,7 @@ set(CMCU "-mcpu=cortex-m3 -mthumb -mfloat-abi=soft")
 set(RANDOM_DEFS "-DUSE_HAL_DRIVER -DSTM32F103xB")
 
 set(CMAKE_C_FLAGS "-std=gnu11 ${CWARN} ${CTUNING} ${CMCU} ${RANDOM_DEFS}")
-set(CMAKE_CXX_FLAGS "-std=gnu++1z -fno-exceptions -fno-rtti ${CXXWARN} ${CTUNING} ${CMCU} ${RANDOM_DEFS}")
+set(CMAKE_CXX_FLAGS "-std=gnu++14 -fno-exceptions -fno-rtti ${CXXWARN} ${CTUNING} ${CMCU} ${RANDOM_DEFS}")
 set(CMAKE_CXX_STANDARD 14)
 
 set(PLATFORM_LINKER_SCRIPT ${CMAKE_CURRENT_LIST_DIR}/STM32F103C8Tx_FLASH.ld)

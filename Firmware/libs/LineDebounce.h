@@ -25,7 +25,7 @@ class LineDebounce {
                 break;
             case State::TRANSITION:
                 this->state = State::STABLE;
-            //[[fallthrough]];
+            // fallthrough
             case State::STABLE:
                 tickStable(now);
                 break;

@@ -14,6 +14,8 @@ extern uint8_t config_send_from_pc;
 
 class StateManager : public ::testing::Test {
     void SetUp() {
+        core::setup();
+
         core::stateManager::config_send_from_pc = 0;
         core::persistent_state.target = 1;
         HAL::Tip::set_temperature(60);

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>815</width>
+    <width>684</width>
     <height>427</height>
    </rect>
   </property>
@@ -20,6 +20,25 @@
    <layout class="QVBoxLayout" name="verticalLayout_2">
     <item>
      <layout class="QGridLayout" name="gridLayout">
+      <item row="2" column="3">
+       <widget class="QPushButton" name="connectSerialButton">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>150</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Connect</string>
+        </property>
+       </widget>
+      </item>
       <item row="1" column="4">
        <widget class="QLabel" name="label_3">
         <property name="maximumSize">
@@ -173,25 +192,6 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="3">
-       <widget class="QPushButton" name="connectSimulatorButton">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>150</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Connect Simulator</string>
-        </property>
-       </widget>
-      </item>
       <item row="3" column="3">
        <widget class="QPushButton" name="disconnectButton">
         <property name="text">
@@ -257,18 +257,19 @@
         </property>
        </widget>
       </item>
-      <item row="1" column="12">
-       <spacer name="horizontalSpacer">
-        <property name="orientation">
-         <enum>Qt::Horizontal</enum>
+      <item row="1" column="3">
+       <widget class="QLineEdit" name="deviceTextEdit">
+        <property name="placeholderText">
+         <string>Serial port</string>
         </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>40</width>
-          <height>20</height>
-         </size>
+       </widget>
+      </item>
+      <item row="3" column="11">
+       <widget class="QPushButton" name="connectSimulatorButton">
+        <property name="text">
+         <string>Simulator</string>
         </property>
-       </spacer>
+       </widget>
       </item>
      </layout>
     </item>
@@ -317,7 +318,6 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>connectSimulatorButton</tabstop>
   <tabstop>disconnectButton</tabstop>
   <tabstop>setpointSpinBox</tabstop>
   <tabstop>KpSpinBox</tabstop>

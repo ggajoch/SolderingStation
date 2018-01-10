@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'main_window.ui'
 #
-# Created by: PyQt4 UI code generator 4.11.4
+# Created by: PyQt4 UI code generator 4.12.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -25,7 +25,7 @@ except AttributeError:
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName(_fromUtf8("MainWindow"))
-        MainWindow.resize(815, 427)
+        MainWindow.resize(684, 427)
         self.centralwidget = QtGui.QWidget(MainWindow)
         self.centralwidget.setLayoutDirection(QtCore.Qt.LeftToRight)
         self.centralwidget.setObjectName(_fromUtf8("centralwidget"))
@@ -33,6 +33,15 @@ class Ui_MainWindow(object):
         self.verticalLayout_2.setObjectName(_fromUtf8("verticalLayout_2"))
         self.gridLayout = QtGui.QGridLayout()
         self.gridLayout.setObjectName(_fromUtf8("gridLayout"))
+        self.connectSerialButton = QtGui.QPushButton(self.centralwidget)
+        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.connectSerialButton.sizePolicy().hasHeightForWidth())
+        self.connectSerialButton.setSizePolicy(sizePolicy)
+        self.connectSerialButton.setMaximumSize(QtCore.QSize(150, 16777215))
+        self.connectSerialButton.setObjectName(_fromUtf8("connectSerialButton"))
+        self.gridLayout.addWidget(self.connectSerialButton, 2, 3, 1, 1)
         self.label_3 = QtGui.QLabel(self.centralwidget)
         self.label_3.setMaximumSize(QtCore.QSize(55, 16777215))
         self.label_3.setObjectName(_fromUtf8("label_3"))
@@ -101,15 +110,6 @@ class Ui_MainWindow(object):
         self.setpointSpinBox.setSingleStep(5.0)
         self.setpointSpinBox.setObjectName(_fromUtf8("setpointSpinBox"))
         self.gridLayout.addWidget(self.setpointSpinBox, 1, 5, 1, 1)
-        self.connectSimulatorButton = QtGui.QPushButton(self.centralwidget)
-        sizePolicy = QtGui.QSizePolicy(QtGui.QSizePolicy.Minimum, QtGui.QSizePolicy.Minimum)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.connectSimulatorButton.sizePolicy().hasHeightForWidth())
-        self.connectSimulatorButton.setSizePolicy(sizePolicy)
-        self.connectSimulatorButton.setMaximumSize(QtCore.QSize(150, 16777215))
-        self.connectSimulatorButton.setObjectName(_fromUtf8("connectSimulatorButton"))
-        self.gridLayout.addWidget(self.connectSimulatorButton, 1, 3, 1, 1)
         self.disconnectButton = QtGui.QPushButton(self.centralwidget)
         self.disconnectButton.setObjectName(_fromUtf8("disconnectButton"))
         self.gridLayout.addWidget(self.disconnectButton, 3, 3, 1, 1)
@@ -136,8 +136,12 @@ class Ui_MainWindow(object):
         self.contrastSpinBox.setMaximum(100.0)
         self.contrastSpinBox.setObjectName(_fromUtf8("contrastSpinBox"))
         self.gridLayout.addWidget(self.contrastSpinBox, 2, 11, 1, 1)
-        spacerItem = QtGui.QSpacerItem(40, 20, QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Minimum)
-        self.gridLayout.addItem(spacerItem, 1, 12, 1, 1)
+        self.deviceTextEdit = QtGui.QLineEdit(self.centralwidget)
+        self.deviceTextEdit.setObjectName(_fromUtf8("deviceTextEdit"))
+        self.gridLayout.addWidget(self.deviceTextEdit, 1, 3, 1, 1)
+        self.connectSimulatorButton = QtGui.QPushButton(self.centralwidget)
+        self.connectSimulatorButton.setObjectName(_fromUtf8("connectSimulatorButton"))
+        self.gridLayout.addWidget(self.connectSimulatorButton, 3, 11, 1, 1)
         self.verticalLayout_2.addLayout(self.gridLayout)
         self.widget = PlotWidget(self.centralwidget)
         self.widget.setObjectName(_fromUtf8("widget"))
@@ -161,7 +165,6 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
-        MainWindow.setTabOrder(self.connectSimulatorButton, self.disconnectButton)
         MainWindow.setTabOrder(self.disconnectButton, self.setpointSpinBox)
         MainWindow.setTabOrder(self.setpointSpinBox, self.KpSpinBox)
         MainWindow.setTabOrder(self.KpSpinBox, self.KiSpinBox)
@@ -174,16 +177,18 @@ class Ui_MainWindow(object):
 
     def retranslateUi(self, MainWindow):
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow", None))
+        self.connectSerialButton.setText(_translate("MainWindow", "Connect", None))
         self.label_3.setText(_translate("MainWindow", "Setpoint:", None))
         self.label_5.setText(_translate("MainWindow", "Gain:", None))
         self.label_4.setText(_translate("MainWindow", "Offset:", None))
         self.label_8.setText(_translate("MainWindow", "Kd:", None))
         self.label_7.setText(_translate("MainWindow", "Ki:", None))
         self.label_6.setText(_translate("MainWindow", "Kp:", None))
-        self.connectSimulatorButton.setText(_translate("MainWindow", "Connect Simulator", None))
         self.disconnectButton.setText(_translate("MainWindow", "Disconnect", None))
         self.label_2.setText(_translate("MainWindow", "Contrast:", None))
         self.label.setText(_translate("MainWindow", "Brightness:", None))
+        self.deviceTextEdit.setPlaceholderText(_translate("MainWindow", "Serial port", None))
+        self.connectSimulatorButton.setText(_translate("MainWindow", "Simulator", None))
         self.actionSimulator.setText(_translate("MainWindow", "Simulator", None))
         self.actionDisconnect.setText(_translate("MainWindow", "Disconnect", None))
         self.actionTip_Calibration.setText(_translate("MainWindow", "Tip Calibration", None))

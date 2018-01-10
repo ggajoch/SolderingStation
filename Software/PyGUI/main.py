@@ -7,6 +7,7 @@ import logging
 
 from ConnectionManager import ConnectionManager
 from connection_socket import SocketConnection
+from connection_serial import SerialConnection
 
 
 class StartQT4(QtGui.QMainWindow):
@@ -31,6 +32,7 @@ class StartQT4(QtGui.QMainWindow):
         self.ui.brightnessSpinBox.valueChanged.connect(self.update_display)
         self.ui.contrastSpinBox.valueChanged.connect(self.update_display)
 
+        self.ui.connectSerialButton.pressed.connect(self.connect_serial)
         self.ui.connectSimulatorButton.pressed.connect(self.connect_simulator)
         self.ui.disconnectButton.pressed.connect(self.disconnect)
 
@@ -42,7 +44,8 @@ class StartQT4(QtGui.QMainWindow):
             self.ui.disconnectButton
         )
         self.disabled_when_connected = (
-            self.ui.connectSimulatorButton,
+            self.ui.connectSerialButton,
+            self.ui.connectSimulatorButton
         )
 
         self.setup_graph_menu()
@@ -221,6 +224,10 @@ class StartQT4(QtGui.QMainWindow):
     def connect_simulator(self):
         self.log.info("Connect to Simulator")
         self.connection_manager.connect(SocketConnection())
+
+    def connect_serial(self):
+        self.log.info("Connect to serial " + self.ui.deviceTextEdit.text())
+        self.connection_manager.connect(SerialConnection(self.ui.deviceTextEdit.text()))
 
     def disconnect(self):
         self.connection_manager.disconnect()

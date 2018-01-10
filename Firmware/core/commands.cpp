@@ -25,13 +25,14 @@ class SetTemperature : public Command {
 
 class SetPIDCoefficients : public Command {
  public:
-    SetPIDCoefficients() : Command("pid", 3) {
+    SetPIDCoefficients() : Command("pid", 4) {
     }
 
     void callback(const gsl::span<char*> parameters) override {
         settings.pidParams.Kp = static_cast<float>(std::atof(parameters[0]));
         settings.pidParams.Ki = static_cast<float>(std::atof(parameters[1]));
         settings.pidParams.Kd = static_cast<float>(std::atof(parameters[2]));
+        settings.pidParams.max_power = static_cast<float>(std::atof(parameters[3]));
         core::pid.reset();
         core::stateManager::config_command_received(core::stateManager::Command::Pid);
     }

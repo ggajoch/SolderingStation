@@ -81,8 +81,8 @@ TEST(Storage, tickShouldSaveSettings) {
 
     EXPECT_FLOAT_EQ(settings_read->pidParams.Kp, 75.6);
 
-    // memory unchanged from byte 32
-    for(int i = 32; i < HAL::Memory::table.size(); ++i) {
+    // memory unchanged from byte 40
+    for(int i = 40; i < HAL::Memory::table.size(); ++i) {
         EXPECT_EQ(HAL::Memory::table.at(i), 0xFF);
     }
 }

@@ -8,6 +8,9 @@
 #include "storage/state.h"
 #include "storage/layout.h"
 
+
+constexpr static size_t size_of_settings = 40;
+
 void clear_memory() {
     std::fill(HAL::Memory::table.begin(), HAL::Memory::table.end(), 0xFF);
 }
@@ -28,10 +31,10 @@ TEST(State, readCorrectValue) {
     state.crc = state.calculate_crc();
 
     clear_memory();
-    HAL::Memory::table[32+10*4+0] = state.as_span()[0];
-    HAL::Memory::table[32+10*4+1] = state.as_span()[1];
-    HAL::Memory::table[32+10*4+2] = state.as_span()[2];
-    HAL::Memory::table[32+10*4+3] = state.as_span()[3];
+    HAL::Memory::table[size_of_settings+10*4+0] = state.as_span()[0];
+    HAL::Memory::table[size_of_settings+10*4+1] = state.as_span()[1];
+    HAL::Memory::table[size_of_settings+10*4+2] = state.as_span()[2];
+    HAL::Memory::table[size_of_settings+10*4+3] = state.as_span()[3];
 
     core::setup();
 
@@ -46,10 +49,10 @@ TEST(State, readIncorrectMarker) {
 
 
     clear_memory();
-    HAL::Memory::table[32+10*4+0] = state.as_span()[0];
-    HAL::Memory::table[32+10*4+1] = state.as_span()[1];
-    HAL::Memory::table[32+10*4+2] = state.as_span()[2];
-    HAL::Memory::table[32+10*4+3] = state.as_span()[3];
+    HAL::Memory::table[size_of_settings+10*4+0] = state.as_span()[0];
+    HAL::Memory::table[size_of_settings+10*4+1] = state.as_span()[1];
+    HAL::Memory::table[size_of_settings+10*4+2] = state.as_span()[2];
+    HAL::Memory::table[size_of_settings+10*4+3] = state.as_span()[3];
 
     core::persistent_state.target = 10;
 
@@ -66,10 +69,10 @@ TEST(State, readIncorrectCRC) {
 
 
     clear_memory();
-    HAL::Memory::table[32+10*4+0] = state.as_span()[0];
-    HAL::Memory::table[32+10*4+1] = state.as_span()[1];
-    HAL::Memory::table[32+10*4+2] = state.as_span()[2];
-    HAL::Memory::table[32+10*4+3] = state.as_span()[3];
+    HAL::Memory::table[size_of_settings+10*4+0] = state.as_span()[0];
+    HAL::Memory::table[size_of_settings+10*4+1] = state.as_span()[1];
+    HAL::Memory::table[size_of_settings+10*4+2] = state.as_span()[2];
+    HAL::Memory::table[size_of_settings+10*4+3] = state.as_span()[3];
 
     core::persistent_state.target = 10;
 
@@ -146,8 +149,8 @@ void save(uint16_t value) {
     EXPECT_TRUE(core::storage::stateIsSaved());
 }
 
-static gsl::span<i2cMemoryStateLayout> ptr{reinterpret_cast<i2cMemoryStateLayout*>(HAL::Memory::table.data()+32),
-                                           (static_cast<uint16_t>(core::config::memory_type)-32)/4};
+static gsl::span<i2cMemoryStateLayout> ptr{reinterpret_cast<i2cMemoryStateLayout*>(HAL::Memory::table.data()+size_of_settings),
+                                           (static_cast<uint16_t>(core::config::memory_type)-size_of_settings)/4};
 
 void check(uint16_t slot, uint8_t marker, uint16_t temperature, uint8_t crc) {
     EXPECT_EQ(ptr[slot].marker, marker);
@@ -160,10 +163,10 @@ TEST(State, whenMemoryEmptyShouldSaveToLowestSlot) {
 
     save(0);
 
-    EXPECT_EQ(HAL::Memory::table[32], 0);
-    EXPECT_EQ(HAL::Memory::table[33], 0);
-    EXPECT_EQ(HAL::Memory::table[34], 0);
-    EXPECT_EQ(HAL::Memory::table[35], 0);
+    EXPECT_EQ(HAL::Memory::table[size_of_settings], 0);
+    EXPECT_EQ(HAL::Memory::table[size_of_settings+1], 0);
+    EXPECT_EQ(HAL::Memory::table[size_of_settings+2], 0);
+    EXPECT_EQ(HAL::Memory::table[size_of_settings+3], 0);
 
     check(0, 0, 0, 0);
 }

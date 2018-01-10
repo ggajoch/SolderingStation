@@ -28,6 +28,7 @@ class StartQT4(QtGui.QMainWindow):
         self.ui.KpSpinBox.valueChanged.connect(self.update_pid)
         self.ui.KiSpinBox.valueChanged.connect(self.update_pid)
         self.ui.KdSpinBox.valueChanged.connect(self.update_pid)
+        self.ui.maxPowerSpinBox.valueChanged.connect(self.update_pid)
 
         self.ui.brightnessSpinBox.valueChanged.connect(self.update_display)
         self.ui.contrastSpinBox.valueChanged.connect(self.update_display)
@@ -39,7 +40,7 @@ class StartQT4(QtGui.QMainWindow):
         self.disabled_when_disconnected = (
             self.ui.setpointSpinBox,
             self.ui.offsetSpinBox, self.ui.gainSpinBox,
-            self.ui.KpSpinBox, self.ui.KiSpinBox, self.ui.KdSpinBox,
+            self.ui.KpSpinBox, self.ui.KiSpinBox, self.ui.KdSpinBox, self.ui.maxPowerSpinBox,
             self.ui.brightnessSpinBox, self.ui.contrastSpinBox,
             self.ui.disconnectButton
         )
@@ -245,9 +246,10 @@ class StartQT4(QtGui.QMainWindow):
                                   self.ui.gainSpinBox.value()))
 
     def update_pid(self, _):
-        self.send("pid {} {} {}".format(self.ui.KpSpinBox.value(),
-                                        self.ui.KiSpinBox.value(),
-                                        self.ui.KdSpinBox.value()))
+        self.send("pid {} {} {} {}".format(self.ui.KpSpinBox.value(),
+                                           self.ui.KiSpinBox.value(),
+                                           self.ui.KdSpinBox.value(),
+                                           self.ui.maxPowerSpinBox.value()))
 
     def update_display(self, _):
         self.send("disp {} {}".format(self.ui.brightnessSpinBox.value(),

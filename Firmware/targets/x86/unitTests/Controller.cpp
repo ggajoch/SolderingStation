@@ -76,7 +76,7 @@ TEST(Controller, blank_memory_setup) {
     EXPECT_FLOAT_EQ(core::persistent_state.target, 10.0);
     EXPECT_FLOAT_EQ(core::pid.target, 0.0);
 
-    parse("pid 0.1 0.2 0.3");
+    parse("pid 0.1 0.2 0.3 0.4");
     core::tick();
 
     EXPECT_TRUE(core::stateManager::sleep);
@@ -86,6 +86,7 @@ TEST(Controller, blank_memory_setup) {
     EXPECT_FLOAT_EQ(core::settings.pidParams.Kp, 0.1);
     EXPECT_FLOAT_EQ(core::settings.pidParams.Ki, 0.2);
     EXPECT_FLOAT_EQ(core::settings.pidParams.Kd, 0.3);
+    EXPECT_FLOAT_EQ(core::settings.pidParams.max_power, 0.4);
     EXPECT_FLOAT_EQ(core::pid.target, 0.0);
 
     parse("disp 10.1 20.2");
@@ -98,6 +99,7 @@ TEST(Controller, blank_memory_setup) {
     EXPECT_FLOAT_EQ(core::settings.pidParams.Kp, 0.1);
     EXPECT_FLOAT_EQ(core::settings.pidParams.Ki, 0.2);
     EXPECT_FLOAT_EQ(core::settings.pidParams.Kd, 0.3);
+    EXPECT_FLOAT_EQ(core::settings.pidParams.max_power, 0.4);
     EXPECT_FLOAT_EQ(core::settings.display.backlight, 10.1);
     EXPECT_FLOAT_EQ(core::settings.display.contrast, 20.2);
     EXPECT_FLOAT_EQ(core::pid.target, 0.0);
@@ -112,6 +114,7 @@ TEST(Controller, blank_memory_setup) {
     EXPECT_FLOAT_EQ(core::settings.pidParams.Kp, 0.1);
     EXPECT_FLOAT_EQ(core::settings.pidParams.Ki, 0.2);
     EXPECT_FLOAT_EQ(core::settings.pidParams.Kd, 0.3);
+    EXPECT_FLOAT_EQ(core::settings.pidParams.max_power, 0.4);
     EXPECT_FLOAT_EQ(core::settings.tipParams.offset, 1.1);
     EXPECT_FLOAT_EQ(core::settings.tipParams.gain, 2.2);
     EXPECT_FLOAT_EQ(core::pid.target, 0.0);
@@ -126,6 +129,7 @@ TEST(Controller, blank_memory_setup) {
     EXPECT_FLOAT_EQ(core::settings.pidParams.Kp, 0.1);
     EXPECT_FLOAT_EQ(core::settings.pidParams.Ki, 0.2);
     EXPECT_FLOAT_EQ(core::settings.pidParams.Kd, 0.3);
+    EXPECT_FLOAT_EQ(core::settings.pidParams.max_power, 0.4);
     EXPECT_FLOAT_EQ(core::settings.tipParams.offset, 1.1);
     EXPECT_FLOAT_EQ(core::settings.tipParams.gain, 2.2);
     EXPECT_FLOAT_EQ(core::pid.target, 0.0);
@@ -140,6 +144,7 @@ TEST(Controller, blank_memory_setup) {
     EXPECT_FLOAT_EQ(core::settings.pidParams.Kp, 0.1);
     EXPECT_FLOAT_EQ(core::settings.pidParams.Ki, 0.2);
     EXPECT_FLOAT_EQ(core::settings.pidParams.Kd, 0.3);
+    EXPECT_FLOAT_EQ(core::settings.pidParams.max_power, 0.4);
     EXPECT_FLOAT_EQ(core::settings.tipParams.offset, 1.1);
     EXPECT_FLOAT_EQ(core::settings.tipParams.gain, 2.2);
     EXPECT_FLOAT_EQ(core::pid.target, 10.0-0.5);
@@ -154,6 +159,7 @@ TEST(Controller, blank_memory_setup) {
     EXPECT_FLOAT_EQ(core::settings.pidParams.Kp, 0.1);
     EXPECT_FLOAT_EQ(core::settings.pidParams.Ki, 0.2);
     EXPECT_FLOAT_EQ(core::settings.pidParams.Kd, 0.3);
+    EXPECT_FLOAT_EQ(core::settings.pidParams.max_power, 0.4);
     EXPECT_FLOAT_EQ(core::settings.tipParams.offset, 1.1);
     EXPECT_FLOAT_EQ(core::settings.tipParams.gain, 2.2);
     EXPECT_FLOAT_EQ(core::pid.target, 0.0);

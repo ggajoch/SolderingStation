@@ -12,6 +12,8 @@ TEST(plantTip, simplesoldering) {
     pid.target = 300;
     core::settings.pidParams.Kp = 10;
     core::settings.pidParams.Ki = 4;
+    core::settings.pidParams.Kd = 0;
+    core::settings.pidParams.max_power = 100.0;
     pid.upperLimit = 100;
     pid.integral = 0;
 

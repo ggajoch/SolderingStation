@@ -42,8 +42,11 @@ class PID {
     float constrain(float val) {
         if (val < lowerLimit)
             return lowerLimit;
-        if (val > upperLimit)
-            return upperLimit;
+
+        auto upper = std::min(upperLimit, settings.pidParams.max_power);
+        if (val > upper)
+            return upper;
+
         return val;
     }
 

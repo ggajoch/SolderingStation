@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "gtest/gtest.h"
 
 #include "pid.h"
@@ -8,6 +10,7 @@ void reset() {
     core::settings.pidParams.Kp = 0;
     core::settings.pidParams.Ki = 0;
     core::settings.pidParams.Kd = 0;
+    core::settings.pidParams.max_power = 1e6;
 }
 
 TEST(PID, setup) {
@@ -138,5 +141,20 @@ TEST(PID, antiWindup) {
         EXPECT_GT(pid.integral, pid.lowerLimit);
 
         temp += 0.1;
+    }
+}
+
+TEST(PID, powerLimit) {
+    core::PID pid;
+    reset();
+    core::settings.pidParams.Kp = -1;
+    core::settings.pidParams.max_power = 15.7;
+    pid.target = 0;
+    pid.lowerLimit = -1e6f;
+    pid.upperLimit = 1e6f;
+    EXPECT_NEAR(pid.tick(0), 0, eps);
+    for (float i = -500; i <= 500; i += 0.7) {
+        float expected = std::min(i, 15.7f);
+        EXPECT_NEAR(pid.tick(i), expected, eps);
     }
 }

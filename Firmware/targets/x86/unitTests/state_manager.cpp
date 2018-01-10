@@ -183,7 +183,7 @@ TEST_F(StateManager, send_config) {
     EXPECT_FALSE(core::stateManager::configuration_correct);
     check_idle();
 
-    send_cmd("pid 0.1 154.23 193.45");
+    send_cmd("pid 0.1 154.23 193.45 14.52");
 
     core::tick();
     EXPECT_EQ(core::stateManager::config_send_from_pc, 0b1);

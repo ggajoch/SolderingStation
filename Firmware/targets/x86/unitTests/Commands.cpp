@@ -68,15 +68,17 @@ TEST_F(Commands, setTemperature) {
 
 TEST_F(Commands, setPIDCoefficients) {
     for(auto foo : {parse, parse_tick}) {
-        foo("pid 1 2 3");
+        foo("pid 1 2 3 47");
         EXPECT_FLOAT_EQ(core::settings.pidParams.Kp, 1);
         EXPECT_FLOAT_EQ(core::settings.pidParams.Ki, 2);
         EXPECT_FLOAT_EQ(core::settings.pidParams.Kd, 3);
+        EXPECT_FLOAT_EQ(core::settings.pidParams.max_power, 47);
 
-        foo("pid 33.3 22.2 11.1");
+        foo("pid 33.3 22.2 11.1 123.45");
         EXPECT_FLOAT_EQ(core::settings.pidParams.Kp, 33.3);
         EXPECT_FLOAT_EQ(core::settings.pidParams.Ki, 22.2);
         EXPECT_FLOAT_EQ(core::settings.pidParams.Kd, 11.1);
+        EXPECT_FLOAT_EQ(core::settings.pidParams.max_power, 123.45);
     }
 }
 

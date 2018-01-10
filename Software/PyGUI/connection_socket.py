@@ -29,10 +29,11 @@ class SocketConnection(QtCore.QThread):
         while True:
             try:
                 s = self.socket.recv(1000)
+                s = s.decode("utf-8")
+                s = s.strip()
                 if s == '':
                     # empty string - broken socket
                     raise socket.error()
-                s = s.strip()
                 self.line_received_signal.emit(s)
             except socket.error as e:
                 self.log.info("Socket error {}".format(e))
@@ -40,7 +41,7 @@ class SocketConnection(QtCore.QThread):
 
     def send(self, text):
         self.log.debug("Sending {}".format(text))
-        self.socket.send(str(text))
+        self.socket.send(str(text).encode())
 
     def active(self):
         return self.isRunning()

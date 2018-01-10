@@ -49,7 +49,7 @@ class ConnectionThread(QtCore.QThread):
             self.device.start()
             self.connection_update_signal.emit(1, "")
 
-            for _ in xrange(4):
+            for _ in range(4):
                 self.device.send("ping\n")
                 time.sleep(5)
 

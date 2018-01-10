@@ -4,7 +4,6 @@
 #include <thread>
 #include <cassert>
 #include <config.h>
-#include <ncurses.h>
 #include "com.h"
 
 #include "HAL.h"
@@ -15,6 +14,7 @@
 #include "plantModel.h"
 
 #include "socket.h"
+#include <ncurses.h>
 
 extern WINDOW *window;
 extern TipModel model;

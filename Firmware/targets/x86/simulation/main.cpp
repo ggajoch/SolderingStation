@@ -9,9 +9,9 @@
 #include "com.h"
 #include "plantModel.h"
 
-#include <ncurses.h>
 
 #include "socket.h"
+#include <ncurses.h>
 
 using namespace std::chrono_literals;
 

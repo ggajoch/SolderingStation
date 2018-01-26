@@ -27,7 +27,10 @@ void tick() {
     } else if (stateManager::in_stand) {
         std::strncpy(line2, "     STAND      ", 17);
     } else {
-        int lastBarElement = static_cast<int>(16.0 * power / 100.0);
+        int lastBarElement = 0;
+        if (core::settings.pidParams.max_power > 0.1) {
+            lastBarElement = static_cast<int>(16.0 * power / core::settings.pidParams.max_power);
+        }
         for (int i = 0; i < 16; ++i) {
             line2[i] = (i < lastBarElement) ? '#' : ' ';
         }

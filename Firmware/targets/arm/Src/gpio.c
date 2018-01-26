@@ -4,8 +4,13 @@
   * Description        : This file provides code for the configuration
   *                      of all used GPIO pins.
   ******************************************************************************
+  ** This notice applies to any and all portions of this file
+  * that are not between comment pairs USER CODE BEGIN and
+  * USER CODE END. Other portions of this file, whether 
+  * inserted by the user or by software development tools
+  * are owned by their respective copyright owners.
   *
-  * COPYRIGHT(c) 2016 STMicroelectronics
+  * COPYRIGHT(c) 2018 STMicroelectronics
   *
   * Redistribution and use in source and binary forms, with or without modification,
   * are permitted provided that the following conditions are met:
@@ -62,6 +67,11 @@ void MX_GPIO_Init(void)
   __HAL_RCC_GPIOA_CLK_ENABLE();
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
+  /*Configure GPIO pin Output Level */
+  HAL_GPIO_WritePin(GPIOB, LCD_D7_Pin|LCD_D6_Pin|LCD_D5_Pin|LCD_D4_Pin 
+                          |LCD_D3_Pin|LCD_D2_Pin|LCD_D1_Pin|LCD_D0_Pin 
+                          |LCD_EN_Pin|LCD_RS_Pin, GPIO_PIN_RESET);
+
   /*Configure GPIO pins : PCPin PCPin PCPin */
   GPIO_InitStruct.Pin = ENC_B_Pin|ENC_N_Pin|ENC_P_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
@@ -83,11 +93,6 @@ void MX_GPIO_Init(void)
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
   HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
-
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOB, LCD_D7_Pin|LCD_D6_Pin|LCD_D5_Pin|LCD_D4_Pin 
-                          |LCD_D3_Pin|LCD_D2_Pin|LCD_D1_Pin|LCD_D0_Pin 
-                          |LCD_EN_Pin|LCD_RS_Pin, GPIO_PIN_RESET);
 
 }
 

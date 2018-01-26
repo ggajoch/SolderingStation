@@ -15,7 +15,7 @@
 volatile bool tickTimeElapsed = false;
 
 void MY_main() {
-    HAL_IWDG_Start(&hiwdg);
+    HAL_IWDG_Init(&hiwdg);
     HAL_IWDG_Refresh(&hiwdg);
 
     GPIO_InitTypeDef pin;

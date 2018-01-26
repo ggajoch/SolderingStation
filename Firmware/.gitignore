@@ -2,3 +2,6 @@
 build
 external/googletest
 external/cpplint.py
+targets/arm/.cproject
+targets/arm/.project
+targets/arm/SolderingStation.xml

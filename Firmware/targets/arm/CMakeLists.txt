@@ -24,8 +24,11 @@ set(SOURCES_GENERATED
 	Src/main.c
 	Src/stm32f1xx_hal_msp.c
 	Src/stm32f1xx_it.c
+	Src/system_stm32f1xx.c
 	Src/tim.c
 	Src/usart.c
+
+	startup/startup_stm32f103xb.s
 )
 
 set(SOURCES_PROJECT

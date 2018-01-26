@@ -1,5 +1,6 @@
 #include <cstdio>
 #include <cstring>
+#include <Drivers/CMSIS/Device/ST/STM32F1xx/Include/stm32f103xb.h>
 
 #include "HAL.h"
 #include "com.h"
@@ -36,25 +37,27 @@ void write(char line1[17], char line2[17]) {
 
 namespace Tip {
 void setHeating(float percent) {
-    if (percent < 0.1) {
-        GPIO_InitTypeDef pin;
-        pin.Pin = GPIO_PIN_8;
-        pin.Pull = GPIO_PULLUP;
-        pin.Speed = GPIO_SPEED_LOW;
-        pin.Mode = GPIO_MODE_OUTPUT_PP;
+    GPIO_InitTypeDef pin;
+    pin.Pin = GPIO_PIN_8;
+    pin.Pull = GPIO_PULLUP;
+    pin.Speed = GPIO_SPEED_FREQ_HIGH;
+    pin.Mode = GPIO_MODE_OUTPUT_PP;
 
-        HAL_GPIO_Init(GPIOA, &pin);
-        HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);
+    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);
+    HAL_GPIO_Init(GPIOA, &pin);
+    HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);
 
-    } else {
+    if (percent > 0.01) {
+        uint32_t PWMvalue = 20.0f * percent;
+        pin.Mode = GPIO_MODE_AF_PP;
+
         MX_TIM1_Init();
         HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_1);
 
-        uint32_t PWMvalue = 2000.0f - 20.0f * percent;
         __HAL_TIM_SET_COMPARE(&htim1, TIM_CHANNEL_1, PWMvalue);
-    }
 
-    //        core::com::printf("HEATING: %f\n", percent);
+        HAL_GPIO_Init(GPIOA, &pin);
+    }
 }
 
 uint16_t readRaw() {

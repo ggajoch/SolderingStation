@@ -56,11 +56,12 @@ class SendConfig : public Command {
     }
 
     void callback(const gsl::span<char*>) override {
-        core::com::printf("conf %d %.2f %.2f %.2f %.2f %.2f %.2f %.2f\n",
+        core::com::printf("conf %d %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f\n",
             core::persistent_state.target,
             settings.pidParams.Kp,
             settings.pidParams.Ki,
             settings.pidParams.Kd,
+            settings.pidParams.max_power,
             settings.tipParams.offset,
             settings.tipParams.gain,
             core::settings.display.backlight,

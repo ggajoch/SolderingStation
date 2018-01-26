@@ -21,19 +21,20 @@ class ConnectionManager(object):
             self.main.ui.KpSpinBox.setValue(float(arr[2]))
             self.main.ui.KiSpinBox.setValue(float(arr[3]))
             self.main.ui.KdSpinBox.setValue(float(arr[4]))
-            self.main.ui.offsetSpinBox.setValue(float(arr[5]))
-            self.main.ui.gainSpinBox.setValue(float(arr[6]))
-            self.main.ui.brightnessSpinBox.setValue(float(arr[7]))
-            self.main.ui.contrastSpinBox.setValue(float(arr[8]))
+            self.main.ui.maxPowerSpinBox.setValue(float(arr[5]))
+            self.main.ui.offsetSpinBox.setValue(float(arr[6]))
+            self.main.ui.gainSpinBox.setValue(float(arr[7]))
+            self.main.ui.brightnessSpinBox.setValue(float(arr[8]))
+            self.main.ui.contrastSpinBox.setValue(float(arr[9]))
 
             time.sleep(0.5)
-            self.main.ui.KpSpinBox.valueChanged.emit(float(arr[2]))
+            self.main.ui.KpSpinBox.valueChanged.emit(self.main.ui.KpSpinBox.value())
 
             time.sleep(0.5)
-            self.main.ui.offsetSpinBox.valueChanged.emit(float(arr[5]))
+            self.main.ui.offsetSpinBox.valueChanged.emit(self.main.ui.offsetSpinBox.value())
 
             time.sleep(0.5)
-            self.main.ui.brightnessSpinBox.valueChanged.emit(float(arr[7]))
+            self.main.ui.brightnessSpinBox.valueChanged.emit(self.main.ui.brightnessSpinBox.value())
 
             self.log.info("Parsing config successful")
 

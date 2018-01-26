@@ -20,7 +20,7 @@ void read() {
         com::printf("Incorrect setting in memory, fallback to defaults\n");
         core::stateManager::configuration_correct = false;
 
-        core::settings.pidParams = {.Kp = 0.0, .Ki = 0.0, .Kd = 0.0, .max_power = 50};
+        core::settings.pidParams = {.Kp = 0.0, .Ki = 0.0, .Kd = 0.0, .max_power = 0.0};
         core::settings.tipParams = {.offset = 0, .gain = 0.0};
         core::settings.display.contrast = 27.5;
         core::settings.display.backlight = 100;

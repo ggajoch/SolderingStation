@@ -25,6 +25,7 @@ class StateManager : public ::testing::Test {
         core::stateManager::sleep = false;
         HAL::Tip::in_stand = false;
         core::settings.pidParams.Kp = 100;
+        core::settings.pidParams.max_power = 100;
         core::persistent_state.target = 101;
 
         HAL::Tip::set_temperature(100);

@@ -22,7 +22,9 @@ struct Settings : base::Pod<Settings> {
     PidParams pidParams;
     TipParams tipParams;
     Display display;
-    float _padding_;
+
+    uint16_t sleep_temperature;
+    uint16_t stand_temperature;
 } __attribute__((packed));
 
 extern Settings settings;

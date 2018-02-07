@@ -11,7 +11,6 @@ class PID {
  public:
     float target;
     float lowerLimit, upperLimit;
-
     PID() {
         target = 0;
         this->lowerLimit = 0;
@@ -20,34 +19,31 @@ class PID {
     }
 
     float tick(float temp) {
+        float actualUpperLimit = std::min(upperLimit, settings.pidParams.max_power);
+
         error = target - temp;
 
         float diff = error - prevError;
         float pwr = settings.pidParams.Kp * error + settings.pidParams.Ki * (integral + error) + settings.pidParams.Kd * diff;
 
-        if (lowerLimit < pwr && pwr < upperLimit) {
+        if (lowerLimit < pwr && pwr < actualUpperLimit) {
             integral += error;
         }
 
         prevError = error;
 
-        return constrain(pwr);
+        if (pwr < lowerLimit)
+            return lowerLimit;
+
+        if (pwr > actualUpperLimit)
+            return actualUpperLimit;
+
+        return pwr;
     }
 
     void reset() {
         this->integral = 0;
         this->prevError = 0;
-    }
-
-    float constrain(float val) {
-        if (val < lowerLimit)
-            return lowerLimit;
-
-        auto upper = std::min(upperLimit, settings.pidParams.max_power);
-        if (val > upper)
-            return upper;
-
-        return val;
     }
 
     float error;

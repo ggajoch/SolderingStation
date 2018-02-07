@@ -40,7 +40,7 @@ class StateManager : public ::testing::Test {
         for(int i = 0; i < 10; ++i) {
             core::tick();
             EXPECT_STREQ(HAL::Display::line1, " 60/101 *     0%");
-            EXPECT_FLOAT_EQ(core::pid.target, 0);
+            EXPECT_FLOAT_EQ(core::pid.target, -0.5);
             EXPECT_FLOAT_EQ(core::power, 0);
             EXPECT_FLOAT_EQ(HAL::Tip::heatingPercentage, 0);
         }
@@ -65,7 +65,7 @@ TEST_F(StateManager, sleep) {
     core::stateManager::sleep = true;
 
     core::tick();
-    EXPECT_STREQ(HAL::Display::line2, "     SLEEP      ");
+    EXPECT_STREQ(HAL::Display::line2, "     sleep      ");
 
     check_idle();
 }
@@ -74,7 +74,7 @@ TEST_F(StateManager, in_stand) {
     HAL::Tip::in_stand = true;
 
     core::tick();
-    EXPECT_STREQ(HAL::Display::line2, "     STAND      ");
+    EXPECT_STREQ(HAL::Display::line2, "     stand      ");
 
     check_idle();
 }
@@ -206,7 +206,16 @@ TEST_F(StateManager, send_config) {
     core::tick();
 
     EXPECT_EQ(core::stateManager::config_send_from_pc, 0b111);
-    EXPECT_STREQ(HAL::Display::line2, "     SLEEP      ");
+    EXPECT_STREQ(HAL::Display::line2, "   CONNECT PC   ");
+    EXPECT_FALSE(core::stateManager::configuration_correct);
+    check_idle();
+
+    send_cmd("stdby 0 10");
+
+    core::tick();
+
+    EXPECT_EQ(core::stateManager::config_send_from_pc, 0b1111);
+    EXPECT_STREQ(HAL::Display::line2, "     sleep      ");
     EXPECT_TRUE(core::stateManager::configuration_correct);
     check_idle();
 }

@@ -97,7 +97,7 @@ TEST_F(Commands, setTipScaling) {
 TEST_F(Commands, sendConfig) {
     char buf[100];
     std::sprintf(buf,
-        "conf %d %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f\n",
+        "conf %d %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %u %u\n",
         core::persistent_state.target,
         core::settings.pidParams.Kp,
         core::settings.pidParams.Ki,
@@ -106,7 +106,9 @@ TEST_F(Commands, sendConfig) {
         core::settings.tipParams.offset,
         core::settings.tipParams.gain,
         core::settings.display.backlight,
-        core::settings.display.contrast);
+        core::settings.display.contrast,
+        core::settings.sleep_temperature,
+        core::settings.stand_temperature);
 
     parse("conf");
     HAL::Com::checkLastLine(buf);

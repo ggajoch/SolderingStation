@@ -10,7 +10,7 @@ namespace core {
 namespace display {
 
 void tick() {
-    char line1[17], line2[17];
+    char line1[17], line2[17] = {' '};
 
     snprintf(line1,
         17,
@@ -23,23 +23,26 @@ void tick() {
     if (!stateManager::configuration_correct) {
         std::strncpy(line2, "   CONNECT PC   ", 17);
     } else if (stateManager::sleep) {
-        std::strncpy(line2, "     SLEEP      ", 17);
+        std::strncpy(line2, "     sleep      ", 17);
     } else if (stateManager::in_stand) {
-        std::strncpy(line2, "     STAND      ", 17);
+        std::strncpy(line2, "     stand      ", 17);
     } else {
-        int lastBarElement = 0;
-        if (core::settings.pidParams.max_power > 0.1) {
-            lastBarElement = static_cast<int>(16.0 * power / core::settings.pidParams.max_power);
+        std::strncpy(line2, "                ", 17);
+    }
+
+    int lastBarElement = 0;
+    if (core::settings.pidParams.max_power > 0.1) {
+        lastBarElement = static_cast<int>(16.0 * power / core::settings.pidParams.max_power);
+    }
+    for (int i = 0; i < lastBarElement; ++i) {
+        if (isalpha(line2[i])) {
+            line2[i] = std::toupper(line2[i]);
+        } else {
+            line2[i] = '#';
         }
-        for (int i = 0; i < 16; ++i) {
-            line2[i] = (i < lastBarElement) ? '#' : ' ';
-        }
-        line2[16] = '\0';
     }
 
     HAL::Display::write(line1, line2);
-
-    com::printf("DISP |%s%s|\n", line1, line2);
 }
 
 void setDisplaySettings(float backlightPercentage, float contrastPercentage) {

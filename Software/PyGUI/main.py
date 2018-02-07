@@ -33,6 +33,9 @@ class StartQT4(QtGui.QMainWindow):
         self.ui.brightnessSpinBox.valueChanged.connect(self.update_display)
         self.ui.contrastSpinBox.valueChanged.connect(self.update_display)
 
+        self.ui.sleepTemperatureSpinBox.valueChanged.connect(self.update_standby_temperatures)
+        self.ui.standTemperatureSpinBox.valueChanged.connect(self.update_standby_temperatures)
+
         self.ui.connectSerialButton.pressed.connect(self.connect_serial)
         self.ui.connectSimulatorButton.pressed.connect(self.connect_simulator)
         self.ui.disconnectButton.pressed.connect(self.disconnect)
@@ -254,6 +257,11 @@ class StartQT4(QtGui.QMainWindow):
     def update_display(self, _):
         self.send("disp {} {}".format(self.ui.brightnessSpinBox.value(),
                                       self.ui.contrastSpinBox.value()))
+
+    def update_standby_temperatures(self, _):
+        self.send("stdby {} {}".format(self.ui.sleepTemperatureSpinBox.value(),
+                                       self.ui.standTemperatureSpinBox.value()))
+
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)

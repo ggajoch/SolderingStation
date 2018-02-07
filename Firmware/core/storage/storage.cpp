@@ -24,6 +24,8 @@ void read() {
         core::settings.tipParams = {.offset = 0, .gain = 0.0};
         core::settings.display.contrast = 27.5;
         core::settings.display.backlight = 100;
+        core::settings.sleep_temperature = 0;
+        core::settings.stand_temperature = 0;
     } else {
         com::printf("Setting from memory loaded\n");
         core::stateManager::configuration_correct = true;

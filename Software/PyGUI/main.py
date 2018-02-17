@@ -231,7 +231,7 @@ class StartQT4(QtGui.QMainWindow):
 
     def connect_serial(self):
         self.log.info("Connect to serial " + self.ui.deviceTextEdit.text())
-        self.connection_manager.connect(SerialConnection(self.ui.deviceTextEdit.text()))
+        self.connection_manager.connect(SerialConnection(str(self.ui.deviceTextEdit.text())))
 
     def disconnect(self):
         self.connection_manager.disconnect()

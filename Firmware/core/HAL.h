@@ -23,7 +23,8 @@ void handler(char* data);  // implemented in core
 
 namespace Encoder {
 int getCountAndReset();
-void buttonHandler();  // implemented in core
+void buttonPressedHandler();  // implemented in core
+void buttonReleasedHandler();  // implemented in core
 }  // namespace Encoder
 
 namespace Memory {

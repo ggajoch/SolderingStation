@@ -54,6 +54,9 @@ void encoder10kHzTickISR() {
     ButtonDebouncedLine.tick(btn);
 
     if (ButtonDebouncedLine.getState() == libs::debouncer::State::TRANSITION && ButtonDebouncedLine.getValue() == false) {
-        HAL::Encoder::buttonHandler();
+        HAL::Encoder::buttonPressedHandler();
+    }
+    if (ButtonDebouncedLine.getState() == libs::debouncer::State::TRANSITION && ButtonDebouncedLine.getValue() == true) {
+        HAL::Encoder::buttonReleasedHandler();
     }
 }

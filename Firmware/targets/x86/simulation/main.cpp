@@ -31,7 +31,7 @@ void parse_sim_command(std::string command) {
     } else if (cmd == "stand") {
         is >> HAL::Tip::inStandFlag;
     } else if (cmd == "button") {
-        HAL::Encoder::buttonHandler();
+        HAL::Encoder::buttonPressedHandler();
     }
 }
 
@@ -54,8 +54,8 @@ void tick() {
     }
 }
 
-void handle_mouse(int x, int y) {
-    if (y == 0) {
+void handle_mouse(int x, int y, mmask_t event) {
+    if (event & BUTTON1_PRESSED && y == 0) {
         if (x >= 25 && x < 30) {
             // LEFT
             HAL::Encoder::count--;
@@ -66,11 +66,17 @@ void handle_mouse(int x, int y) {
         }
         if (x >= 45 && x < 53) {
             // BUTTON
-            HAL::Encoder::buttonHandler();
+            HAL::Encoder::buttonPressedHandler();
         }
         if (x >= 55 && x < 63) {
             // STAND
             HAL::Tip::inStandFlag = !HAL::Tip::inStandFlag;
+        }
+    }
+    if (event & BUTTON1_RELEASED && y == 0) {
+        if (x >= 45 && x < 53) {
+            // BUTTON
+            HAL::Encoder::buttonReleasedHandler();
         }
     }
 }
@@ -126,12 +132,12 @@ int main() {
         } else if(ch == KEY_LEFT) {
             HAL::Encoder::count--;
         } else if(ch == KEY_DOWN) {
-            HAL::Encoder::buttonHandler();
+            HAL::Encoder::buttonPressedHandler();
         } else if(ch == 'r') {
             core::setup();
         } else if(ch == KEY_MOUSE) {
-            if(getmouse(&event) == OK && event.bstate & BUTTON1_CLICKED) {
-                handle_mouse(event.x, event.y);
+            if(getmouse(&event) == OK) {
+                handle_mouse(event.x, event.y, event.bstate);
             }
         } else {
             mvwprintw(window, 1, 0, "                                                  ");

@@ -22,10 +22,12 @@ void tick() {
 
     if (!stateManager::configuration_correct) {
         std::strncpy(line2, "   CONNECT PC   ", 17);
+    } else if (stateManager::off) {
+        std::strncpy(line2, "      OFF       ", 17);
     } else if (stateManager::sleep) {
         std::strncpy(line2, "     sleep      ", 17);
     } else if (stateManager::in_stand) {
-        std::strncpy(line2, "     stand      ", 17);
+        std::strncpy(line2, "    in stand    ", 17);
     } else {
         std::strncpy(line2, "                ", 17);
     }

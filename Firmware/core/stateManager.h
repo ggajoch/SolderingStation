@@ -5,7 +5,7 @@
 namespace core {
 namespace stateManager {
 
-extern bool sleep, in_stand, configuration_correct;
+extern bool off, sleep, in_stand, configuration_correct;
 
 void tick();
 

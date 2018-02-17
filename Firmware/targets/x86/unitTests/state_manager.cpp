@@ -74,9 +74,19 @@ TEST_F(StateManager, in_stand) {
     HAL::Tip::in_stand = true;
 
     core::tick();
-    EXPECT_STREQ(HAL::Display::line2, "     stand      ");
+    EXPECT_STREQ(HAL::Display::line2, "    in stand    ");
 
     check_idle();
+}
+
+TEST_F(StateManager, off) {
+    core::stateManager::off = true;
+
+    core::tick();
+    EXPECT_STREQ(HAL::Display::line2, "      OFF       ");
+
+    check_idle();
+    core::stateManager::off = false;
 }
 
 TEST_F(StateManager, configuration_incorrect) {
@@ -218,4 +228,60 @@ TEST_F(StateManager, send_config) {
     EXPECT_STREQ(HAL::Display::line2, "     sleep      ");
     EXPECT_TRUE(core::stateManager::configuration_correct);
     check_idle();
+}
+
+
+TEST_F(StateManager, on_off) {
+    core::stateManager::off = false;
+    core::stateManager::sleep = true;
+
+    core::tick();
+    {
+        HAL::Encoder::buttonPressedHandler();
+        HAL::Encoder::buttonReleasedHandler();
+
+        core::tick();
+
+        EXPECT_EQ(false, core::stateManager::off);
+        EXPECT_EQ(false, core::stateManager::sleep);
+    }
+
+    {
+        HAL::Encoder::buttonPressedHandler();
+        for(int i = 0; i < 10; ++i) {
+            core::tick();
+        }
+
+        HAL::Encoder::buttonReleasedHandler();
+        core::tick();
+
+        EXPECT_EQ(false, core::stateManager::off);
+        EXPECT_EQ(true, core::stateManager::sleep);
+    }
+
+    {
+        HAL::Encoder::buttonPressedHandler();
+        for(int i = 0; i < 12; ++i) {
+            core::tick();
+        }
+
+        HAL::Encoder::buttonReleasedHandler();
+        core::tick();
+
+        EXPECT_EQ(true, core::stateManager::off);
+        EXPECT_EQ(false, core::stateManager::sleep);
+    }
+
+    {
+        HAL::Encoder::buttonPressedHandler();
+        for(int i = 0; i < 12; ++i) {
+            core::tick();
+        }
+
+        HAL::Encoder::buttonReleasedHandler();
+        core::tick();
+
+        EXPECT_EQ(false, core::stateManager::off);
+        EXPECT_EQ(false, core::stateManager::sleep);
+    }
 }

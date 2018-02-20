@@ -9,7 +9,7 @@
  * table-based algorithm would be faster, but for only a few bytes it isn't
  * worth the code size. */
 std::uint8_t crc8(const gsl::span<std::uint8_t> data_in) {
-    int len = data_in.length();
+    int len = data_in.size();
     const uint8_t* data = data_in.data();
     unsigned crc = 0;
     int i, j;

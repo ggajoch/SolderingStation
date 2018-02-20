@@ -95,7 +95,7 @@ void get(uint16_t address, gsl::span<std::uint8_t> data) {
     }
     printf("\n");
     ASSERT_LE(address + data.size(), table.size());
-    std::copy(table.begin()+address, table.begin()+address+data.length(), data.begin());
+    std::copy(table.begin()+address, table.begin()+address+data.size(), data.begin());
 }
 }  // namespace Memory
 

@@ -93,7 +93,7 @@ void set(uint16_t address, gsl::span<const std::uint8_t> data) {
 void get(uint16_t address, gsl::span<std::uint8_t> data) {
 //    printf("READ from %d: ", address);
     assert(address + data.size() <= table.size());
-    std::copy(table.begin()+address, table.begin()+address+data.length(), data.begin());
+    std::copy(table.begin()+address, table.begin()+address+data.size(), data.begin());
 //    for(auto x: data) {
 //        printf("%d ", x);
 //    }

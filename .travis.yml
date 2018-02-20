@@ -5,6 +5,7 @@ dist: trusty
 before_install:
   # C++14
   - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+  - sudo add-apt-repository -y ppa:team-gcc-arm-embedded/ppa
   - sudo apt-get update -qq
 
 install:
@@ -12,21 +13,25 @@ install:
   - sudo apt-get install -qq g++-5
   - sudo apt-get remove cmake
   - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-5 90
-  - sudo apt-get install libboost-all-dev
+  - sudo apt-get install libboost-all-dev gcc-arm-embedded
 
 script:
   - wget https://cmake.org/files/v3.9/cmake-3.9.6.tar.gz
   - tar xf cmake-3.9.6.tar.gz
   - cd cmake-3.9.6
-  - ./configure
-  - make -j5
-  - sudo make install
+  - ./configure > /dev/null
+  - make -j5 > /dev/null
+  - sudo make install > /dev/null
   - cd ..
   - sudo unlink /usr/bin/gcc && sudo ln -s /usr/bin/gcc-5 /usr/bin/gcc
   - gcc --version
+  - arm-none-eabi-gcc --version
   - cmake --version
   - mkdir Firmware/build
   - cd Firmware/build
   - cmake .. -DTARGET_PLATFORM:STRING=x86 -DCMAKE_BUILD_TYPE=Debug
-  - make -j5
+  - make -j3
   - ./build/x86/bin/unit_tests
+  - yes | rm -rf *
+  - cmake .. -DTARGET_PLATFORM:STRING=arm -DCMAKE_BUILD_TYPE=Release
+  - make -j3

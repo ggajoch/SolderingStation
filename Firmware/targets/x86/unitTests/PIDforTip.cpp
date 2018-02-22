@@ -9,7 +9,7 @@ TEST(plantTip, simplesoldering) {
     TipModel model;
     core::PID pid;
 
-    pid.target = 300;
+    pid.target = 299.5;
     core::settings.pidParams.Kp = 10;
     core::settings.pidParams.Ki = 4;
     core::settings.pidParams.Kd = 0;
@@ -28,7 +28,7 @@ TEST(plantTip, simplesoldering) {
 
     EXPECT_NEAR(model.Ttip, 300, 0.1);
 
-    pid.target = 350;
+    pid.target = 349.5;
 
     for (int sec = 0; sec < 10; sec++) {
         for (int tick = 0; tick < 10; tick++) {

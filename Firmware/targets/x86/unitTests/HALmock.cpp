@@ -29,7 +29,6 @@ void write(char line1_[17], char line2_[17]) {
 namespace Tip {
 float heatingPercentage;
 void setHeating(float percent) {
-    printf("HEATING: %f\n", percent);
     heatingPercentage = percent;
 }
 
@@ -63,7 +62,6 @@ void checkLastLine(const char* line) {
 }
 
 void puts(const char* data) {
-    std::printf("data: |%s|\n", data);
     std::strcpy(lastLine, data);
 }
 }  // namespace Com
@@ -80,20 +78,10 @@ int getCountAndReset() {
 namespace Memory {
 std::array<uint8_t, static_cast<uint16_t>(core::config::memory_type)> table;
 void set(uint16_t address, gsl::span<const std::uint8_t> data) {
-    printf("SAVE to %d: ", address);
-    for(auto x: data) {
-        printf("%d ", x);
-    }
-    printf("\n");
     ASSERT_LE(address + data.size(), table.size());
     std::copy(data.begin(), data.end(), table.begin()+address);
 }
 void get(uint16_t address, gsl::span<std::uint8_t> data) {
-    printf("READ from %d: ", address);
-    for(auto x: data) {
-        printf("%d ", x);
-    }
-    printf("\n");
     ASSERT_LE(address + data.size(), table.size());
     std::copy(table.begin()+address, table.begin()+address+data.size(), data.begin());
 }

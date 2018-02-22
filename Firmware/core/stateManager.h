@@ -5,18 +5,32 @@
 namespace core {
 namespace stateManager {
 
-extern bool off, sleep, in_stand, configuration_correct;
+enum class State {
+    InvalidConfig,
+    Off,
+    Sleep,
+    InStand,
+    On,
 
+    Count,
+};
+
+extern State state;
+
+void init();
 void tick();
 
+// clang-format off
 enum class Command : std::uint8_t {
-    Pid                 = 0b0001,
-    Tip                 = 0b0010,
-    Display             = 0b0100,
-    StandbyTemperatures = 0b1000,
+    Pid                 = 0b00001,
+    Tip                 = 0b00010,
+    Display             = 0b00100,
+    StandbyTemperatures = 0b01000,
+    Timeouts            = 0b10000,
 
-    Correct             = 0b1111,
+    Correct             = 0b11111,
 };
+// clang-format on
 
 void config_command_received(Command cmd);
 

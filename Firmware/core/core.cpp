@@ -15,6 +15,7 @@ Settings settings;
 
 void setup() {
     HAL::Tip::setHeating(0);
+    stateManager::init();
     commands::setup();
     storage::read();
 }

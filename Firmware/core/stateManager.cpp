@@ -1,4 +1,3 @@
-#include <cstdio>
 #include <chrono>
 #include <experimental/optional>
 
@@ -12,79 +11,185 @@ using namespace std::chrono_literals;
 namespace core {
 namespace stateManager {
 
-bool off = true, sleep = false, in_stand;
-bool configuration_correct = false;
-uint8_t config_send_from_pc = 0;
+State state;
+bool in_stand;
 
-bool button_pressed, button_released;
-std::experimental::optional<std::chrono::milliseconds> time_when_pressed;
+enum class Event {
+    ConfigurationReceived,
+    ButtonPressed,
+    ButtonHeld,
+    AnyUserAction,
+    TimeoutToSleep,
+    TimeoutToOff,
 
-template<typename T>
-void clamp(uint16_t& temp_limit, T limit) {
-    if (limit < temp_limit) {
-        temp_limit = limit;
+    // two actions below are invoked in every iteration
+    // as transition is defined by state not by edge
+    InStand,
+    NotInStand,
+
+    Count,
+};
+
+constexpr static auto _invalid_config = State::InvalidConfig;
+constexpr static auto _off = State::Off;
+constexpr static auto _sleep = State::Sleep;
+constexpr static auto _in_stand = State::InStand;
+constexpr static auto _on = State::On;
+
+// clang-format off
+std::array<std::array<State, static_cast<int>(Event::Count)>, static_cast<int>(State::Count)> transitions = {{
+//                 ConfigurationReceived, ButtonPressed,         ButtonHeld,            AnyUserAction,         TimeoutToSleep,        TimeoutToOff           InStand,               NotInStand
+//                {---------------------, ---------------------, ---------------------, ---------------------, ---------------------, ---------------------, ---------------------, ---------------------}
+//                {                     ,                      ,                      ,                      ,                      ,                      ,                      ,                      }
+/*InvalidConfig*/ {_off                 , _invalid_config      , _invalid_config      , _invalid_config      , _invalid_config      , _invalid_config      , _invalid_config      , _invalid_config      },
+/*     Off     */ {_off                 , _off                 , _on                  , _off                 , _off                 , _off                 , _off                 , _off                 },
+/*    Sleep    */ {_sleep               , _on                  , _off                 , _on                  , _sleep               , _off                 , _sleep               , _sleep               },
+/*   InStand   */ {_in_stand            , _sleep               , _off                 , _in_stand            , _sleep               , _off                 , _in_stand            , _on                  },
+/*     On      */ {_on                  , _sleep               , _off                 , _on                  , _sleep               , _off                 , _in_stand            , _on                  }
+}};
+// clang-format on
+
+std::array<Event, 10> events;
+uint8_t events_to_process;
+
+void add_event(Event event) {
+    if (events_to_process < events.size()) {
+        events[events_to_process++] = event;
     }
 }
 
-void tick() {
-    static auto old_in_stand = false;
-    in_stand = HAL::Tip::inStand();
-    if (in_stand != old_in_stand) {
-        core::pid.reset();
+void process_events() {
+    for (int i = 0; i < events_to_process; ++i) {
+        if (static_cast<unsigned>(state) < transitions.size() && static_cast<unsigned>(events[i]) < transitions[static_cast<int>(state)].size()) {
+            state = transitions[static_cast<unsigned>(state)][static_cast<unsigned>(events[i])];
+        }
     }
-    old_in_stand = in_stand;
+    events_to_process = 0;
+}
 
-    if (config_send_from_pc == static_cast<uint8_t>(Command::Correct)) {
-        configuration_correct = true;
+template <typename T>
+class ChangeObserver {
+    T last_val;
+    void (*foo)();
+
+ public:
+    constexpr ChangeObserver(void (*foo)()) noexcept : foo{foo} {
     }
+
+    void check(T val) {
+        if (last_val != val) {
+            foo();
+            last_val = val;
+        }
+    }
+};
+
+std::chrono::milliseconds last_action_time;
+void reset_timeouts() {
+    last_action_time = timer::now();
+}
+void process_timeouts() {
+    if (settings.timeouts.sleep != 0 && timer::now() > last_action_time + std::chrono::minutes(settings.timeouts.sleep)) {
+        add_event(Event::TimeoutToSleep);
+    }
+    if (settings.timeouts.off != 0 && timer::now() > last_action_time + std::chrono::minutes(settings.timeouts.off)) {
+        add_event(Event::TimeoutToOff);
+    }
+}
+
+bool button_pressed, button_released;
+static void process_button() {
+    static std::experimental::optional<std::chrono::milliseconds> button_hold_timeout;
 
     if (button_pressed) {
         button_pressed = false;
-        core::stateManager::time_when_pressed = core::timer::now();
+        reset_timeouts();
+        button_hold_timeout = core::timer::now() + 500ms;
     }
 
-    // button held for more than 1s
-    if (time_when_pressed && core::timer::now() - *time_when_pressed > 1s) {
-        time_when_pressed = {};
-        core::stateManager::off = !core::stateManager::off;
-        core::pid.reset();
-    }
-
-    // button released - handle sleep event
     if (button_released) {
+        reset_timeouts();
         button_released = false;
-        if (time_when_pressed) {
-            core::stateManager::sleep = !core::stateManager::sleep;
-            core::stateManager::time_when_pressed = {};
-            core::pid.reset();
+        if (button_hold_timeout) {
+            button_hold_timeout = {};
+
+            add_event(Event::ButtonPressed);
         }
     }
 
-    uint16_t temp_limit = std::numeric_limits<uint16_t>::max();
-
-    if (!configuration_correct) {
-        clamp(temp_limit, 0);
+    if (button_hold_timeout && button_hold_timeout < core::timer::now()) {
+        button_hold_timeout = {};
+        add_event(Event::ButtonHeld);
     }
+}
 
-    if (off) {
-        clamp(temp_limit, 0);
-        sleep = false;
+void any_action() {
+    add_event(Event::AnyUserAction);
+    reset_timeouts();
+}
+
+static void process_user_events() {
+    static ChangeObserver<uint16_t> target_observer(any_action);
+    static ChangeObserver<bool> in_stand_observer(any_action);
+
+    target_observer.check(core::persistent_state.target);
+
+    in_stand = HAL::Tip::inStand();
+    in_stand_observer.check(in_stand);
+
+    process_button();
+
+    add_event(in_stand ? Event::InStand : Event::NotInStand);
+
+    process_timeouts();
+}
+
+static void set_temperature() {
+    static ChangeObserver<State> state_observer([]() { pid.reset(); });
+    state_observer.check(state);
+
+    switch (state) {
+        case State::InvalidConfig:
+        case State::Off:
+            core::pid.target = 0.0f;
+            break;
+
+        case State::Sleep:
+            core::pid.target = core::settings.sleep_temperature;
+            break;
+
+        case State::InStand:
+            core::pid.target = core::settings.stand_temperature;
+            break;
+
+        case State::On:
+            core::pid.target = core::persistent_state.target;
+            break;
+        default:
+            break;
     }
+}
 
-    if (in_stand) {
-        clamp(temp_limit, core::settings.stand_temperature);
-    }
+static uint8_t config_send_from_pc;
 
-    if (sleep) {
-        clamp(temp_limit, core::settings.sleep_temperature);
-    }
+void init() {
+    config_send_from_pc = 0;
+}
 
-    // 0.5 to follow temperature between full degrees
-    core::pid.target = std::min(core::persistent_state.target, temp_limit) - 0.5f;
+void tick() {
+    process_user_events();
+
+    process_events();
+
+    set_temperature();
 }
 
 void config_command_received(Command cmd) {
     config_send_from_pc |= static_cast<uint8_t>(cmd);
+
+    if (config_send_from_pc == static_cast<uint8_t>(Command::Correct)) {
+        add_event(Event::ConfigurationReceived);
+    }
 }
 
 }  // namespace stateManager

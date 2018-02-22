@@ -1,28 +1,22 @@
 #include <stateManager.h>
+#include <timer.h>
 #include "gtest/gtest.h"
 
 #include "HALmock.h"
 #include "core.h"
 #include "display.h"
 
-// hack to get access to internal type
-namespace core {
-namespace stateManager {
-extern uint8_t config_send_from_pc;
-}
-}
+using namespace core::stateManager;
 
 class StateManager : public ::testing::Test {
     void SetUp() {
         core::setup();
 
-        core::stateManager::config_send_from_pc = 0;
+        
         core::persistent_state.target = 1;
         HAL::Tip::set_temperature(60);
         core::tick();
 
-        core::stateManager::configuration_correct = true;
-        core::stateManager::sleep = false;
         HAL::Tip::in_stand = false;
         core::settings.pidParams.Kp = 100;
         core::settings.pidParams.max_power = 100;
@@ -32,151 +26,12 @@ class StateManager : public ::testing::Test {
         core::settings.tipParams.offset = 10;
         core::settings.tipParams.gain = 0.5;
 
-        check_running();
-    }
-
- public:
-    void check_idle() {
-        for(int i = 0; i < 10; ++i) {
-            core::tick();
-            EXPECT_STREQ(HAL::Display::line1, " 60/101 *     0%");
-            EXPECT_FLOAT_EQ(core::pid.target, -0.5);
-            EXPECT_FLOAT_EQ(core::power, 0);
-            EXPECT_FLOAT_EQ(HAL::Tip::heatingPercentage, 0);
-        }
-    }
-
-    void check_running() {
-        for(int i = 0; i < 10; ++i) {
-            core::tick();
-
-            char tmp[17];
-            sprintf(tmp, " 60/101 *   %3d%%", (int)core::power);
-            EXPECT_STREQ(HAL::Display::line1, tmp);
-
-            EXPECT_GT(core::power, 0);
-            EXPECT_GT(HAL::Tip::heatingPercentage, 0);
-            EXPECT_FLOAT_EQ(core::pid.target, 101.0 - 0.5);
-        }
+        core::tick();
+        core::tick();
     }
 };
 
-TEST_F(StateManager, sleep) {
-    core::stateManager::sleep = true;
 
-    core::tick();
-    EXPECT_STREQ(HAL::Display::line2, "     sleep      ");
-
-    check_idle();
-}
-
-TEST_F(StateManager, in_stand) {
-    HAL::Tip::in_stand = true;
-
-    core::tick();
-    EXPECT_STREQ(HAL::Display::line2, "    in stand    ");
-
-    check_idle();
-}
-
-TEST_F(StateManager, off) {
-    core::stateManager::off = true;
-
-    core::tick();
-    EXPECT_STREQ(HAL::Display::line2, "      OFF       ");
-
-    check_idle();
-    core::stateManager::off = false;
-}
-
-TEST_F(StateManager, configuration_incorrect) {
-    core::stateManager::configuration_correct = false;
-
-    core::tick();
-    EXPECT_STREQ(HAL::Display::line2, "   CONNECT PC   ");
-
-    check_idle();
-}
-
-TEST_F(StateManager, state_running) {
-    core::settings.tipParams.offset = 0;
-    core::settings.tipParams.gain = 1;
-
-    core::power = 0;
-    core::temp = 0;
-    core::persistent_state.target = 0;
-    core::display::tick();
-    EXPECT_STREQ(HAL::Display::line1, "  0/  0 *     0%");
-    EXPECT_STREQ(HAL::Display::line2, "                ");
-
-    core::power = 6.249;
-    core::temp = 999;
-    core::persistent_state.target = 999;
-    core::display::tick();
-    EXPECT_STREQ(HAL::Display::line1, "999/999 *     6%");
-    EXPECT_STREQ(HAL::Display::line2, "                ");
-
-    core::power = 6.25;
-    core::temp = 1;
-    core::persistent_state.target = 150;
-    core::display::tick();
-    EXPECT_STREQ(HAL::Display::line1, "  1/150 *     6%");
-    EXPECT_STREQ(HAL::Display::line2, "#               ");
-
-    core::power = 6.99;
-    core::temp = 87;
-    core::persistent_state.target = 56;
-    core::display::tick();
-    EXPECT_STREQ(HAL::Display::line1, " 87/ 56 *     6%");
-    EXPECT_STREQ(HAL::Display::line2, "#               ");
-
-    core::power = 7;
-    core::temp = 60;
-    core::persistent_state.target = 101;
-    core::display::tick();
-    EXPECT_STREQ(HAL::Display::line1, " 60/101 *     7%");
-    EXPECT_STREQ(HAL::Display::line2, "#               ");
-
-    core::power = 12.499;
-    core::display::tick();
-    EXPECT_STREQ(HAL::Display::line1, " 60/101 *    12%");
-    EXPECT_STREQ(HAL::Display::line2, "#               ");
-
-    core::power = 12.5;
-    core::display::tick();
-    EXPECT_STREQ(HAL::Display::line1, " 60/101 *    12%");
-    EXPECT_STREQ(HAL::Display::line2, "##              ");
-
-    core::power = 18.749;
-    core::display::tick();
-    EXPECT_STREQ(HAL::Display::line1, " 60/101 *    18%");
-    EXPECT_STREQ(HAL::Display::line2, "##              ");
-
-    core::power = 18.75;
-    core::display::tick();
-    EXPECT_STREQ(HAL::Display::line1, " 60/101 *    18%");
-    EXPECT_STREQ(HAL::Display::line2, "###             ");
-
-    core::power = 24.99;
-    core::display::tick();
-    EXPECT_STREQ(HAL::Display::line1, " 60/101 *    24%");
-    EXPECT_STREQ(HAL::Display::line2, "###             ");
-
-    core::power = 25;
-    core::display::tick();
-    EXPECT_STREQ(HAL::Display::line1, " 60/101 *    25%");
-    EXPECT_STREQ(HAL::Display::line2, "####            ");
-
-    core::power = 99.99;
-    core::display::tick();
-    EXPECT_STREQ(HAL::Display::line1, " 60/101 *    99%");
-    EXPECT_STREQ(HAL::Display::line2, "############### ");
-
-    core::power = 100;
-    core::display::tick();
-    EXPECT_STREQ(HAL::Display::line1, " 60/101 *   100%");
-    EXPECT_STREQ(HAL::Display::line2, "################");
-}
 
 void send_cmd(const char * line) {
     static char tmp[100];
@@ -185,103 +40,206 @@ void send_cmd(const char * line) {
 }
 
 TEST_F(StateManager, send_config) {
-    core::stateManager::configuration_correct = false;
-    core::stateManager::sleep = true;
-
-    core::tick();
-    EXPECT_EQ(core::stateManager::config_send_from_pc, 0);
-    EXPECT_STREQ(HAL::Display::line2, "   CONNECT PC   ");
-    EXPECT_FALSE(core::stateManager::configuration_correct);
-    check_idle();
-
     send_cmd("pid 0.1 154.23 193.45 14.52");
-
     core::tick();
-    EXPECT_EQ(core::stateManager::config_send_from_pc, 0b1);
-    EXPECT_STREQ(HAL::Display::line2, "   CONNECT PC   ");
-    EXPECT_FALSE(core::stateManager::configuration_correct);
-    check_idle();
+    EXPECT_EQ(State::InvalidConfig, state);
 
     send_cmd("disp 10 0.5");
-
     core::tick();
-
-    EXPECT_EQ(core::stateManager::config_send_from_pc, 0b101);
-    EXPECT_STREQ(HAL::Display::line2, "   CONNECT PC   ");
-    EXPECT_FALSE(core::stateManager::configuration_correct);
-    check_idle();
+    EXPECT_EQ(State::InvalidConfig, state);
 
     send_cmd("tip 10 0.5");
-
     core::tick();
+    EXPECT_EQ(State::InvalidConfig, state);
 
-    EXPECT_EQ(core::stateManager::config_send_from_pc, 0b111);
-    EXPECT_STREQ(HAL::Display::line2, "   CONNECT PC   ");
-    EXPECT_FALSE(core::stateManager::configuration_correct);
-    check_idle();
+    send_cmd("timeouts 1 1");
+    core::tick();
+    EXPECT_EQ(State::InvalidConfig, state);
 
     send_cmd("stdby 0 10");
-
     core::tick();
-
-    EXPECT_EQ(core::stateManager::config_send_from_pc, 0b1111);
-    EXPECT_STREQ(HAL::Display::line2, "     sleep      ");
-    EXPECT_TRUE(core::stateManager::configuration_correct);
-    check_idle();
+    EXPECT_EQ(State::Off, state);
 }
 
 
 TEST_F(StateManager, on_off) {
-    core::stateManager::off = false;
-    core::stateManager::sleep = true;
+    state = State::Off;
+
+    {
+        HAL::Encoder::buttonPressedHandler();
+        for(int i = 0; i < 5; ++i) {
+            core::tick();
+        }
+
+        HAL::Encoder::buttonReleasedHandler();
+        core::tick();
+
+        EXPECT_EQ(State::Off, state);
+    }
+
+    {
+        HAL::Encoder::buttonPressedHandler();
+        for(int i = 0; i < 7; ++i) {
+            core::tick();
+        }
+
+        HAL::Encoder::buttonReleasedHandler();
+        core::tick();
+
+        EXPECT_EQ(State::On, state);
+    }
+
+    {
+        HAL::Encoder::buttonPressedHandler();
+        for(int i = 0; i < 7; ++i) {
+            core::tick();
+        }
+
+        HAL::Encoder::buttonReleasedHandler();
+        core::tick();
+
+        EXPECT_EQ(State::Off, state);
+    }
+}
+
+TEST_F(StateManager, stand_detection) {
+    // test spec - from, where if not in stand, where if in stand
+
+    std::initializer_list<std::array<State, 3>> testspec
+            {{State::InvalidConfig, State::InvalidConfig, State::InvalidConfig},
+             {State::Off,           State::Off,           State::Off},
+             {State::Sleep,         State::On,            State::InStand},
+             {State::InStand,       State::On,            State::InStand},
+             {State::On,            State::On,            State::InStand}};
+
+
+    for(auto test : testspec) {
+        state = test[0];
+
+        HAL::Tip::in_stand = false;
+        core::tick();
+        EXPECT_EQ(test[1], state);
+
+        state = test[0];
+
+        HAL::Tip::in_stand = true;
+        core::tick();
+        EXPECT_EQ(test[2], state);
+    }
+}
+
+TEST_F(StateManager, button_short_press) {
+    // test spec - from, where if button short pressed
+
+    std::initializer_list<std::array<State, 2>> testspec =
+            {{State::InvalidConfig, State::InvalidConfig},
+             {State::Off,           State::Off},
+             {State::Sleep,         State::On},
+             {State::InStand,       State::Sleep},
+             {State::On,            State::Sleep}};
+
+
+    for(auto test : testspec) {
+        state = test[0];
+
+        HAL::Encoder::buttonPressedHandler();
+        HAL::Encoder::buttonReleasedHandler();
+
+        core::tick();
+        EXPECT_EQ(test[1], state);
+    }
+}
+
+TEST_F(StateManager, button_long_press) {
+    // test spec - from, where if button long pressed
+
+    std::initializer_list<std::array<State, 2>> testspec =
+            {{State::InvalidConfig, State::InvalidConfig},
+             {State::Off,           State::On},
+             {State::Sleep,         State::Off},
+             {State::InStand,       State::Off},
+             {State::On,            State::Off}};
+
+
+    for(auto test : testspec) {
+        state = test[0];
+
+        HAL::Encoder::buttonPressedHandler();
+        for(int i = 0; i < 100; ++i) {
+            core::tick();
+        }
+        HAL::Encoder::buttonReleasedHandler();
+
+        core::tick();
+        EXPECT_EQ(test[1], state);
+    }
+}
+
+namespace core {
+namespace stateManager {
+extern std::chrono::milliseconds last_action_time;
+}
+}
+
+using namespace std::chrono_literals;
+
+TEST_F(StateManager, reset_timeout) {
+    auto check = [](bool resetting, auto foo) {
+        last_action_time = 0ms;
+
+        core::tick();
+        core::tick();
+
+        foo();
+        auto now = core::timer::now();
+        core::tick();
+
+        EXPECT_EQ(resetting?now:0ms, last_action_time);
+    };
+
+    check(true, [](){
+        HAL::Encoder::buttonPressedHandler();
+    });
+
+    check(true, [](){
+        HAL::Encoder::buttonReleasedHandler();
+    });
+
+    check(true, [](){
+        core::persistent_state.target += 5;
+    });
+
+    HAL::Tip::in_stand = false;
+    check(true, [](){
+        HAL::Tip::in_stand = true;
+    });
+
+    HAL::Tip::in_stand = true;
+    check(true, [](){
+        HAL::Tip::in_stand = false;
+    });
+}
+
+TEST_F(StateManager, timeout) {
+    core::settings.timeouts.sleep = 2;
+    core::settings.timeouts.off = 3;
+
+    HAL::Encoder::buttonPressedHandler();
+    HAL::Encoder::buttonReleasedHandler();
+    core::tick();
+
+    state = State::On;
+
+    for (int i = 0; i < 2*60*10; ++i) {
+        core::tick();
+        EXPECT_EQ(State::On, state);
+    }
+
+    for (int i = 0; i < 60*10; ++i) {
+        core::tick();
+        EXPECT_EQ(State::Sleep, state);
+    }
 
     core::tick();
-    {
-        HAL::Encoder::buttonPressedHandler();
-        HAL::Encoder::buttonReleasedHandler();
-
-        core::tick();
-
-        EXPECT_EQ(false, core::stateManager::off);
-        EXPECT_EQ(false, core::stateManager::sleep);
-    }
-
-    {
-        HAL::Encoder::buttonPressedHandler();
-        for(int i = 0; i < 10; ++i) {
-            core::tick();
-        }
-
-        HAL::Encoder::buttonReleasedHandler();
-        core::tick();
-
-        EXPECT_EQ(false, core::stateManager::off);
-        EXPECT_EQ(true, core::stateManager::sleep);
-    }
-
-    {
-        HAL::Encoder::buttonPressedHandler();
-        for(int i = 0; i < 12; ++i) {
-            core::tick();
-        }
-
-        HAL::Encoder::buttonReleasedHandler();
-        core::tick();
-
-        EXPECT_EQ(true, core::stateManager::off);
-        EXPECT_EQ(false, core::stateManager::sleep);
-    }
-
-    {
-        HAL::Encoder::buttonPressedHandler();
-        for(int i = 0; i < 12; ++i) {
-            core::tick();
-        }
-
-        HAL::Encoder::buttonReleasedHandler();
-        core::tick();
-
-        EXPECT_EQ(false, core::stateManager::off);
-        EXPECT_EQ(false, core::stateManager::sleep);
-    }
+    EXPECT_EQ(State::Off, state);
 }

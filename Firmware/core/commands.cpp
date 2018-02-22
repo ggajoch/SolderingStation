@@ -56,7 +56,7 @@ class SendConfig : public Command {
     }
 
     void callback(const gsl::span<char*>) override {
-        core::com::printf("conf %d %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %u %u\n",
+        core::com::printf("conf %d %.2f %.2f %.2f %u %.2f %.2f %.2f %.2f %u %u %u %u\n",
             core::persistent_state.target,
             settings.pidParams.Kp,
             settings.pidParams.Ki,
@@ -67,7 +67,9 @@ class SendConfig : public Command {
             core::settings.display.backlight,
             core::settings.display.contrast,
             core::settings.sleep_temperature,
-            core::settings.stand_temperature);
+            core::settings.stand_temperature,
+            core::settings.timeouts.sleep,
+            core::settings.timeouts.off);
     }
 };
 
@@ -94,6 +96,18 @@ class StandbyTemperatures : public Command {
     }
 };
 
+class SetTimeouts : public Command {
+ public:
+    SetTimeouts() : Command("timeouts", 2) {
+    }
+
+    void callback(const gsl::span<char*> parameters) override {
+        core::settings.timeouts.sleep = static_cast<uint8_t>(std::atoi(parameters[0]));
+        core::settings.timeouts.off = static_cast<uint8_t>(std::atoi(parameters[1]));
+        core::stateManager::config_command_received(core::stateManager::Command::Timeouts);
+    }
+};
+
 class Ping : public Command {
  public:
     Ping() : Command("ping", 0) {
@@ -111,9 +125,11 @@ void setup() {
     static SendConfig sendConfig;
     static Display display;
     static StandbyTemperatures standbyTemperatures;
+    static SetTimeouts setTimeouts;
     static Ping ping;
 
-    static Command* commands[] = {&setTemperature, &setPIDCoefficients, &setTipScaling, &sendConfig, &standbyTemperatures, &ping, &display};
+    static Command* commands[] = {
+        &setTemperature, &setPIDCoefficients, &setTipScaling, &sendConfig, &standbyTemperatures, &setTimeouts, &ping, &display};
     libs::CLI::set_commands(gsl::span<Command*>(commands));
 }
 

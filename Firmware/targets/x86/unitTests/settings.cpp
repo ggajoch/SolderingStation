@@ -71,7 +71,7 @@ TEST(Storage, tickShouldSaveSettings) {
     std::fill(HAL::Memory::table.begin(), HAL::Memory::table.end(), 0xFF);
     EXPECT_FALSE(getSettings());
 
-    core::stateManager::configuration_correct = true;
+    core::stateManager::state = core::stateManager::State::On;
     core::settings.pidParams.Kp = 75.6;
 
     core::storage::tick();
@@ -91,7 +91,7 @@ TEST(Storage, tickSettingsShouldntBeSavedWhenConfigurationIsInvalid) {
     std::fill(HAL::Memory::table.begin(), HAL::Memory::table.end(), 0);
     EXPECT_FALSE(getSettings());
 
-    core::stateManager::configuration_correct = false;
+    core::stateManager::state = core::stateManager::State::InvalidConfig;
     core::settings.pidParams.Kp = 75.6;
 
     core::storage::tick();
@@ -103,11 +103,11 @@ TEST(Storage, tickSettingsShouldntBeSavedWhenConfigurationIsInvalid) {
 TEST(Storage, readInvalidSettingsDefaultConfig) {
     std::fill(HAL::Memory::table.begin(), HAL::Memory::table.end(), 0);
 
-    core::stateManager::configuration_correct = true;
+    core::stateManager::state = core::stateManager::State::On;
 
     core::setup();
 
-    EXPECT_FALSE(core::stateManager::configuration_correct);
+    EXPECT_EQ(core::stateManager::State::InvalidConfig, core::stateManager::state);
     EXPECT_FLOAT_EQ(core::settings.pidParams.Kp, 0);
     EXPECT_FLOAT_EQ(core::settings.pidParams.Ki, 0);
     EXPECT_FLOAT_EQ(core::settings.pidParams.Kd, 0);

@@ -28,18 +28,23 @@ class ConnectionManager(object):
             self.main.ui.contrastSpinBox.setValue(float(arr[9]))
             self.main.ui.sleepTemperatureSpinBox.setValue(int(arr[10]))
             self.main.ui.standTemperatureSpinBox.setValue(int(arr[11]))
+            self.main.ui.sleepTimeoutSpinBox.setValue(int(arr[12]))
+            self.main.ui.offTimeoutSpinBox.setValue(int(arr[13]))
 
-            time.sleep(0.5)
+            time.sleep(0.2)
             self.main.ui.KpSpinBox.valueChanged.emit(self.main.ui.KpSpinBox.value())
 
-            time.sleep(0.5)
+            time.sleep(0.2)
             self.main.ui.offsetSpinBox.valueChanged.emit(self.main.ui.offsetSpinBox.value())
 
-            time.sleep(0.5)
+            time.sleep(0.2)
             self.main.ui.brightnessSpinBox.valueChanged.emit(self.main.ui.brightnessSpinBox.value())
 
-            time.sleep(0.5)
+            time.sleep(0.2)
             self.main.ui.sleepTemperatureSpinBox.valueChanged.emit(self.main.ui.sleepTemperatureSpinBox.value())
+
+            time.sleep(0.2)
+            self.main.ui.sleepTimeoutSpinBox.valueChanged.emit(self.main.ui.sleepTimeoutSpinBox.value())
 
             self.log.info("Parsing config successful")
 

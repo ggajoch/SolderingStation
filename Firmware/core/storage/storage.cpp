@@ -18,20 +18,22 @@ void read() {
     auto settings = getSettings();
     if (!settings) {
         com::printf("Incorrect setting in memory, fallback to defaults\n");
-        core::stateManager::configuration_correct = false;
 
-        core::settings.pidParams = {.Kp = 0.0, .Ki = 0.0, .Kd = 0.0, .max_power = 0.0};
+        core::settings.pidParams = {.Kp = 0.0, .Ki = 0.0, .Kd = 0.0, .max_power = 0};
         core::settings.tipParams = {.offset = 0, .gain = 0.0};
         core::settings.display.contrast = 27.5;
         core::settings.display.backlight = 100;
         core::settings.sleep_temperature = 0;
         core::settings.stand_temperature = 0;
+
+        core::stateManager::state = core::stateManager::State::InvalidConfig;
     } else {
         com::printf("Setting from memory loaded\n");
-        core::stateManager::configuration_correct = true;
         core::settings = *settings;
 
         settingsInMemory = *settings;
+
+        core::stateManager::state = core::stateManager::State::Off;
     }
 
     core::display::setDisplaySettings(core::settings.display.backlight, core::settings.display.contrast);
@@ -65,7 +67,7 @@ void tick() {
         saveState(stateInMemory);
     }
 
-    if (core::settings != settingsInMemory && core::stateManager::configuration_correct) {
+    if (core::settings != settingsInMemory && core::stateManager::state != core::stateManager::State::InvalidConfig) {
         settingsInMemory = core::settings;
         storeSettings(core::settings);
     }

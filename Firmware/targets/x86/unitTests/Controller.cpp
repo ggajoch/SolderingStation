@@ -5,13 +5,6 @@
 #include "config.h"
 #include "core.h"
 
-// hack to get access to internal type
-namespace core {
-namespace stateManager {
-extern uint8_t config_send_from_pc;
-}
-}
-
 TEST(Controller, setup) {
     HAL::Tip::heatingPercentage = 10;
     core::setup();
@@ -48,7 +41,6 @@ TEST(Controller, averaging) {
     HAL::Tip::rawTemperatureData.push(50);
     for (int i = 1; i < core::config::tempAverages; ++i) {
         HAL::Tip::rawTemperatureData.push(i);
-        printf("%d ", i);
     }
     EXPECT_EQ(HAL::Tip::rawTemperatureData.size(), 100);
 
@@ -62,86 +54,46 @@ TEST(Controller, averaging) {
 TEST(Controller, blank_memory_setup) {
     std::fill(HAL::Memory::table.begin(), HAL::Memory::table.end(), 0xFF);
     HAL::Tip::in_stand = true;
-    core::stateManager::config_send_from_pc = 0;
 
     core::setup();
+
+    HAL::Encoder::buttonPressedHandler();
+    core::tick();
+    HAL::Encoder::buttonReleasedHandler();
+    core::tick();
+
 
     parse("temp 200");
     core::tick();
 
-    EXPECT_FALSE(core::stateManager::sleep);
-    EXPECT_TRUE(core::stateManager::off);
-    EXPECT_FALSE(core::stateManager::configuration_correct);
-    EXPECT_TRUE(core::stateManager::in_stand);
-    EXPECT_EQ(core::stateManager::config_send_from_pc, 0);
-    EXPECT_FLOAT_EQ(core::persistent_state.target, 200.0);
-    EXPECT_FLOAT_EQ(core::pid.target, -0.5);
+    using namespace core::stateManager;
+
+    EXPECT_EQ(State::InvalidConfig, state);
 
     parse("pid 0.1 0.2 0.3 0.4");
     core::tick();
 
-    EXPECT_FALSE(core::stateManager::sleep);
-    EXPECT_TRUE(core::stateManager::off);
-    EXPECT_FALSE(core::stateManager::configuration_correct);
-    EXPECT_TRUE(core::stateManager::in_stand);
-    EXPECT_EQ(core::stateManager::config_send_from_pc, 0b01);
-    EXPECT_FLOAT_EQ(core::settings.pidParams.Kp, 0.1);
-    EXPECT_FLOAT_EQ(core::settings.pidParams.Ki, 0.2);
-    EXPECT_FLOAT_EQ(core::settings.pidParams.Kd, 0.3);
-    EXPECT_FLOAT_EQ(core::settings.pidParams.max_power, 0.4);
-    EXPECT_FLOAT_EQ(core::pid.target, -0.5);
+    EXPECT_EQ(State::InvalidConfig, state);
 
     parse("disp 10.1 20.2");
     core::tick();
 
-    EXPECT_FALSE(core::stateManager::sleep);
-    EXPECT_TRUE(core::stateManager::off);
-    EXPECT_FALSE(core::stateManager::configuration_correct);
-    EXPECT_TRUE(core::stateManager::in_stand);
-    EXPECT_EQ(core::stateManager::config_send_from_pc, 0b101);
-    EXPECT_FLOAT_EQ(core::settings.pidParams.Kp, 0.1);
-    EXPECT_FLOAT_EQ(core::settings.pidParams.Ki, 0.2);
-    EXPECT_FLOAT_EQ(core::settings.pidParams.Kd, 0.3);
-    EXPECT_FLOAT_EQ(core::settings.pidParams.max_power, 0.4);
-    EXPECT_FLOAT_EQ(core::settings.display.backlight, 10.1);
-    EXPECT_FLOAT_EQ(core::settings.display.contrast, 20.2);
-    EXPECT_FLOAT_EQ(core::pid.target, -0.5);
+    EXPECT_EQ(State::InvalidConfig, state);
 
     parse("tip 1.1 2.2");
     core::tick();
 
-    EXPECT_FALSE(core::stateManager::sleep);
-    EXPECT_TRUE(core::stateManager::off);
-    EXPECT_FALSE(core::stateManager::configuration_correct);
-    EXPECT_TRUE(core::stateManager::in_stand);
-    EXPECT_EQ(core::stateManager::config_send_from_pc, 0b111);
-    EXPECT_FLOAT_EQ(core::settings.pidParams.Kp, 0.1);
-    EXPECT_FLOAT_EQ(core::settings.pidParams.Ki, 0.2);
-    EXPECT_FLOAT_EQ(core::settings.pidParams.Kd, 0.3);
-    EXPECT_FLOAT_EQ(core::settings.pidParams.max_power, 0.4);
-    EXPECT_FLOAT_EQ(core::settings.tipParams.offset, 1.1);
-    EXPECT_FLOAT_EQ(core::settings.tipParams.gain, 2.2);
-    EXPECT_FLOAT_EQ(core::pid.target, -0.5);
-    EXPECT_FLOAT_EQ(core::settings.sleep_temperature, 0);
-    EXPECT_FLOAT_EQ(core::settings.stand_temperature, 0);
+    EXPECT_EQ(State::InvalidConfig, state);
 
     parse("stdby 17.9 100");
     core::tick();
 
-    EXPECT_FALSE(core::stateManager::sleep);
-    EXPECT_TRUE(core::stateManager::off);
-    EXPECT_TRUE(core::stateManager::configuration_correct);
-    EXPECT_TRUE(core::stateManager::in_stand);
-    EXPECT_EQ(core::stateManager::config_send_from_pc, 0b1111);
-    EXPECT_FLOAT_EQ(core::settings.pidParams.Kp, 0.1);
-    EXPECT_FLOAT_EQ(core::settings.pidParams.Ki, 0.2);
-    EXPECT_FLOAT_EQ(core::settings.pidParams.Kd, 0.3);
-    EXPECT_FLOAT_EQ(core::settings.pidParams.max_power, 0.4);
-    EXPECT_FLOAT_EQ(core::settings.tipParams.offset, 1.1);
-    EXPECT_FLOAT_EQ(core::settings.tipParams.gain, 2.2);
-    EXPECT_FLOAT_EQ(core::pid.target, -0.5);
-    EXPECT_FLOAT_EQ(core::settings.sleep_temperature, 17);
-    EXPECT_FLOAT_EQ(core::settings.stand_temperature, 100);
+    EXPECT_EQ(State::InvalidConfig, state);
+
+    parse("timeouts 10 255");
+    core::tick();
+
+    EXPECT_EQ(State::Off, state);
 
     HAL::Encoder::buttonPressedHandler();
     for(int i = 0; i < 100; ++i) {
@@ -150,50 +102,19 @@ TEST(Controller, blank_memory_setup) {
     HAL::Encoder::buttonReleasedHandler();
     core::tick();
 
-    EXPECT_FALSE(core::stateManager::sleep);
-    EXPECT_FALSE(core::stateManager::off);
-    EXPECT_TRUE(core::stateManager::configuration_correct);
-    EXPECT_TRUE(core::stateManager::in_stand);
-    EXPECT_EQ(core::stateManager::config_send_from_pc, 0b1111);
-    EXPECT_FLOAT_EQ(core::settings.pidParams.Kp, 0.1);
-    EXPECT_FLOAT_EQ(core::settings.pidParams.Ki, 0.2);
-    EXPECT_FLOAT_EQ(core::settings.pidParams.Kd, 0.3);
-    EXPECT_FLOAT_EQ(core::settings.pidParams.max_power, 0.4);
-    EXPECT_FLOAT_EQ(core::settings.tipParams.offset, 1.1);
-    EXPECT_FLOAT_EQ(core::settings.tipParams.gain, 2.2);
-    EXPECT_FLOAT_EQ(core::pid.target, 99.5);
+    EXPECT_EQ(State::InStand, state);
+    EXPECT_FLOAT_EQ(core::pid.target, 100.0);
 
     HAL::Tip::in_stand = false;
     core::tick();
 
-    EXPECT_FALSE(core::stateManager::sleep);
-    EXPECT_FALSE(core::stateManager::off);
-    EXPECT_TRUE(core::stateManager::configuration_correct);
-    EXPECT_FALSE(core::stateManager::in_stand);
-    EXPECT_EQ(core::stateManager::config_send_from_pc, 0b1111);
-    EXPECT_FLOAT_EQ(core::settings.pidParams.Kp, 0.1);
-    EXPECT_FLOAT_EQ(core::settings.pidParams.Ki, 0.2);
-    EXPECT_FLOAT_EQ(core::settings.pidParams.Kd, 0.3);
-    EXPECT_FLOAT_EQ(core::settings.pidParams.max_power, 0.4);
-    EXPECT_FLOAT_EQ(core::settings.tipParams.offset, 1.1);
-    EXPECT_FLOAT_EQ(core::settings.tipParams.gain, 2.2);
-    EXPECT_FLOAT_EQ(core::pid.target, 200.0-0.5);
+    EXPECT_EQ(State::On, state);
+    EXPECT_FLOAT_EQ(core::pid.target, 200.0);
 
     HAL::Encoder::buttonPressedHandler();
-    core::tick();
     HAL::Encoder::buttonReleasedHandler();
     core::tick();
 
-    EXPECT_TRUE(core::stateManager::sleep);
-    EXPECT_FALSE(core::stateManager::off);
-    EXPECT_TRUE(core::stateManager::configuration_correct);
-    EXPECT_FALSE(core::stateManager::in_stand);
-    EXPECT_EQ(core::stateManager::config_send_from_pc, 0b1111);
-    EXPECT_FLOAT_EQ(core::settings.pidParams.Kp, 0.1);
-    EXPECT_FLOAT_EQ(core::settings.pidParams.Ki, 0.2);
-    EXPECT_FLOAT_EQ(core::settings.pidParams.Kd, 0.3);
-    EXPECT_FLOAT_EQ(core::settings.pidParams.max_power, 0.4);
-    EXPECT_FLOAT_EQ(core::settings.tipParams.offset, 1.1);
-    EXPECT_FLOAT_EQ(core::settings.tipParams.gain, 2.2);
-    EXPECT_FLOAT_EQ(core::pid.target, 16.5);
+    EXPECT_EQ(State::Sleep, state);
+    EXPECT_FLOAT_EQ(core::pid.target, 17);
 }

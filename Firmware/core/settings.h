@@ -7,8 +7,8 @@ namespace core {
 struct Settings : base::Pod<Settings> {
     struct PidParams {
         float Kp, Ki, Kd;
-        float max_power;
-    };
+        uint16_t max_power;
+    } __attribute__((packed));
 
     struct TipParams {
         float offset, gain;
@@ -19,13 +19,21 @@ struct Settings : base::Pod<Settings> {
         float backlight;
     };
 
-    PidParams pidParams;
+    struct Timeouts {
+        uint8_t sleep;
+        uint8_t off;
+    };
+
     TipParams tipParams;
     Display display;
+    PidParams pidParams;
+    Timeouts timeouts;
 
     uint16_t sleep_temperature;
     uint16_t stand_temperature;
 } __attribute__((packed));
+
+static_assert(sizeof(Settings) == 36, "Verify size!");
 
 extern Settings settings;
 

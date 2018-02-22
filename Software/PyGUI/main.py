@@ -36,6 +36,9 @@ class StartQT4(QtGui.QMainWindow):
         self.ui.sleepTemperatureSpinBox.valueChanged.connect(self.update_standby_temperatures)
         self.ui.standTemperatureSpinBox.valueChanged.connect(self.update_standby_temperatures)
 
+        self.ui.sleepTimeoutSpinBox.valueChanged.connect(self.update_timeouts)
+        self.ui.offTimeoutSpinBox.valueChanged.connect(self.update_timeouts)
+
         self.ui.connectSerialButton.pressed.connect(self.connect_serial)
         self.ui.connectSimulatorButton.pressed.connect(self.connect_simulator)
         self.ui.disconnectButton.pressed.connect(self.disconnect)
@@ -45,6 +48,8 @@ class StartQT4(QtGui.QMainWindow):
             self.ui.offsetSpinBox, self.ui.gainSpinBox,
             self.ui.KpSpinBox, self.ui.KiSpinBox, self.ui.KdSpinBox, self.ui.maxPowerSpinBox,
             self.ui.brightnessSpinBox, self.ui.contrastSpinBox,
+            self.ui.sleepTemperatureSpinBox,self.ui.standTemperatureSpinBox,
+            self.ui.sleepTimeoutSpinBox, self.ui.offTimeoutSpinBox,
             self.ui.disconnectButton
         )
         self.disabled_when_connected = (
@@ -261,6 +266,10 @@ class StartQT4(QtGui.QMainWindow):
     def update_standby_temperatures(self, _):
         self.send("stdby {} {}".format(self.ui.sleepTemperatureSpinBox.value(),
                                        self.ui.standTemperatureSpinBox.value()))
+
+    def update_timeouts(self, _):
+        self.send("timeouts {} {}".format(self.ui.sleepTimeoutSpinBox.value(),
+                                          self.ui.offTimeoutSpinBox.value()))
 
 
 if __name__ == "__main__":

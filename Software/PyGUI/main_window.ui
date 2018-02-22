@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1094</width>
-    <height>427</height>
+    <width>1189</width>
+    <height>440</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -20,25 +20,6 @@
    <layout class="QVBoxLayout" name="verticalLayout_2">
     <item>
      <layout class="QGridLayout" name="gridLayout">
-      <item row="2" column="3">
-       <widget class="QPushButton" name="connectSerialButton">
-        <property name="sizePolicy">
-         <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
-          <horstretch>0</horstretch>
-          <verstretch>0</verstretch>
-         </sizepolicy>
-        </property>
-        <property name="maximumSize">
-         <size>
-          <width>150</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>Connect</string>
-        </property>
-       </widget>
-      </item>
       <item row="2" column="8">
        <widget class="QLabel" name="label_5">
         <property name="text">
@@ -50,19 +31,19 @@
        <widget class="QDoubleSpinBox" name="offsetSpinBox">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
-          <horstretch>70</horstretch>
+          <horstretch>0</horstretch>
           <verstretch>0</verstretch>
          </sizepolicy>
         </property>
         <property name="minimumSize">
          <size>
-          <width>70</width>
+          <width>0</width>
           <height>0</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>70</width>
+          <width>16777215</width>
           <height>16777215</height>
          </size>
         </property>
@@ -110,13 +91,13 @@
        <widget class="QDoubleSpinBox" name="KpSpinBox">
         <property name="minimumSize">
          <size>
-          <width>70</width>
+          <width>0</width>
           <height>0</height>
          </size>
         </property>
         <property name="maximumSize">
          <size>
-          <width>70</width>
+          <width>16777215</width>
           <height>16777215</height>
          </size>
         </property>
@@ -239,24 +220,17 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="5">
-       <widget class="QDoubleSpinBox" name="maxPowerSpinBox">
-        <property name="maximum">
-         <double>100.000000000000000</double>
-        </property>
-       </widget>
-      </item>
       <item row="2" column="12">
        <widget class="QLabel" name="label_10">
         <property name="text">
-         <string>Stand temperature:</string>
+         <string>Stand temp:</string>
         </property>
        </widget>
       </item>
       <item row="1" column="12">
        <widget class="QLabel" name="label_11">
         <property name="text">
-         <string>Sleep temperature:</string>
+         <string>Sleep temp:</string>
         </property>
        </widget>
       </item>
@@ -290,7 +264,7 @@
         </property>
         <property name="minimumSize">
          <size>
-          <width>70</width>
+          <width>0</width>
           <height>0</height>
          </size>
         </property>
@@ -312,7 +286,7 @@
         </property>
         <property name="minimumSize">
          <size>
-          <width>70</width>
+          <width>0</width>
           <height>0</height>
          </size>
         </property>
@@ -321,10 +295,80 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="13">
+      <item row="2" column="14">
+       <widget class="QLabel" name="label_12">
+        <property name="text">
+         <string>Off timeout [min]:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="14">
+       <widget class="QLabel" name="label_13">
+        <property name="text">
+         <string>Sleep timeout [min]:</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="15">
+       <widget class="QSpinBox" name="offTimeoutSpinBox">
+        <property name="toolTip">
+         <string extracomment="0 - turned off"/>
+        </property>
+        <property name="maximum">
+         <number>255</number>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="15">
+       <widget class="QSpinBox" name="sleepTimeoutSpinBox">
+        <property name="toolTip">
+         <string extracomment="0 - turned off"/>
+        </property>
+        <property name="maximum">
+         <number>255</number>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="14">
+       <widget class="QLabel" name="label_14">
+        <property name="text">
+         <string>(0 min - disable)</string>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="5">
+       <widget class="QSpinBox" name="maxPowerSpinBox">
+        <property name="maximum">
+         <number>100</number>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="4">
        <widget class="QPushButton" name="connectSimulatorButton">
         <property name="text">
          <string>Simulator</string>
+        </property>
+       </widget>
+      </item>
+      <item row="2" column="3">
+       <widget class="QPushButton" name="connectSerialButton">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Minimum">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>Connect</string>
         </property>
        </widget>
       </item>

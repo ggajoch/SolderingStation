@@ -19,9 +19,9 @@ class PID {
     }
 
     float tick(float temp) {
-        float actualUpperLimit = std::min(upperLimit, settings.pidParams.max_power);
+        float actualUpperLimit = std::min(upperLimit, static_cast<float>(settings.pidParams.max_power));
 
-        error = target - temp;
+        error = target + 0.5f - temp;
 
         float diff = error - prevError;
         float pwr = settings.pidParams.Kp * error + settings.pidParams.Ki * (integral + error) + settings.pidParams.Kd * diff;

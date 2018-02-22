@@ -20,13 +20,13 @@ void tick() {
         storage::stateIsSaved() ? ' ' : '*',
         static_cast<int>(power));
 
-    if (!stateManager::configuration_correct) {
+    if (stateManager::state == stateManager::State::InvalidConfig) {
         std::strncpy(line2, "   CONNECT PC   ", 17);
-    } else if (stateManager::off) {
+    } else if (stateManager::state == stateManager::State::Off) {
         std::strncpy(line2, "      OFF       ", 17);
-    } else if (stateManager::sleep) {
+    } else if (stateManager::state == stateManager::State::Sleep) {
         std::strncpy(line2, "     sleep      ", 17);
-    } else if (stateManager::in_stand) {
+    } else if (stateManager::state == stateManager::State::InStand) {
         std::strncpy(line2, "    in stand    ", 17);
     } else {
         std::strncpy(line2, "                ", 17);

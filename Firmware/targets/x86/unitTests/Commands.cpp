@@ -74,11 +74,11 @@ TEST_F(Commands, setPIDCoefficients) {
         EXPECT_FLOAT_EQ(core::settings.pidParams.Kd, 3);
         EXPECT_FLOAT_EQ(core::settings.pidParams.max_power, 47);
 
-        foo("pid 33.3 22.2 11.1 123.45");
+        foo("pid 33.3 22.2 11.1 123");
         EXPECT_FLOAT_EQ(core::settings.pidParams.Kp, 33.3);
         EXPECT_FLOAT_EQ(core::settings.pidParams.Ki, 22.2);
         EXPECT_FLOAT_EQ(core::settings.pidParams.Kd, 11.1);
-        EXPECT_FLOAT_EQ(core::settings.pidParams.max_power, 123.45);
+        EXPECT_FLOAT_EQ(core::settings.pidParams.max_power, 123);
     }
 }
 
@@ -94,26 +94,6 @@ TEST_F(Commands, setTipScaling) {
     }
 }
 
-TEST_F(Commands, sendConfig) {
-    char buf[100];
-    std::sprintf(buf,
-        "conf %d %.2f %.2f %.2f %.2f %.2f %.2f %.2f %.2f %u %u\n",
-        core::persistent_state.target,
-        core::settings.pidParams.Kp,
-        core::settings.pidParams.Ki,
-        core::settings.pidParams.Kd,
-        core::settings.pidParams.max_power,
-        core::settings.tipParams.offset,
-        core::settings.tipParams.gain,
-        core::settings.display.backlight,
-        core::settings.display.contrast,
-        core::settings.sleep_temperature,
-        core::settings.stand_temperature);
-
-    parse("conf");
-    HAL::Com::checkLastLine(buf);
-}
-
 TEST_F(Commands, display) {
     for(auto foo : {parse, parse_tick}) {
         foo("disp 5 7");
@@ -125,6 +105,19 @@ TEST_F(Commands, display) {
         EXPECT_FLOAT_EQ(HAL::Display::contrast, 749.421);
     }
 }
+
+TEST_F(Commands, timeouts) {
+    for(auto foo : {parse, parse_tick}) {
+        foo("timeouts 255 0");
+        EXPECT_EQ(255, core::settings.timeouts.sleep);
+        EXPECT_EQ(0, core::settings.timeouts.off);
+
+        foo("timeouts 58 127");
+        EXPECT_EQ(58, core::settings.timeouts.sleep);
+        EXPECT_EQ(127, core::settings.timeouts.off);
+    }
+}
+
 
 TEST_F(Commands, ping) {
     parse("ping");

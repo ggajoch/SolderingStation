@@ -3,8 +3,7 @@
 #include <cstring>
 #include <gsl/span>
 
-namespace core {
-namespace base {
+namespace core::base {
 
 template <typename Derived>
 struct Pod {
@@ -22,5 +21,4 @@ struct Pod {
     }
 };
 
-}  // namespace base
-}  // namespace core
+}  // namespace core::base

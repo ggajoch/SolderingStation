@@ -1,17 +1,16 @@
-#include <chrono>
 #include <array>
+#include <chrono>
 #include <experimental/optional>
 
 #include "HAL.h"
 #include "core.h"
 #include "stateManager.h"
-#include "timer.h"
 #include "tempSensor.h"
+#include "timer.h"
 
 using namespace std::chrono_literals;
 
-namespace core {
-namespace stateManager {
+namespace core::stateManager {
 
 State state;
 bool in_stand;
@@ -62,7 +61,7 @@ std::array<std::array<State, static_cast<int>(State::Count)>, static_cast<int>(E
 }};
 // clang-format on
 
-}
+}  // namespace transitions
 
 std::array<Event, 10> events;
 uint8_t events_to_process;
@@ -206,11 +205,9 @@ void config_command_received(Command cmd) {
     }
 }
 
-}  // namespace stateManager
-}  // namespace core
+}  // namespace core::stateManager
 
-namespace HAL {
-namespace Encoder {
+namespace HAL::Encoder {
 
 void buttonPressedHandler() {
     core::stateManager::button_pressed = true;
@@ -220,5 +217,4 @@ void buttonReleasedHandler() {
     core::stateManager::button_released = true;
 }
 
-}  // namespace Encoder
-}  // namespace HAL
+}  // namespace HAL::Encoder

@@ -2,11 +2,9 @@
 
 #include "config.h"
 
-namespace core {
-namespace timer {
+namespace core::timer {
 
 void tick();
 std::chrono::milliseconds now();
 
-}  // namespace timer
-}  // namespace core
+}  // namespace core::timer

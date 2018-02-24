@@ -1,10 +1,8 @@
 #pragma once
 
-namespace core {
-namespace tempSensor {
+namespace core::tempSensor {
 
 float getAveragedTemperature();
 bool temperatureInLimits();
 
-}  // namespace tempSensor
-}  // namespace core
+}  // namespace core::tempSensor

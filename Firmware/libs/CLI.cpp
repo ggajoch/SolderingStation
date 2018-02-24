@@ -4,8 +4,7 @@
 
 #include "CLI.h"
 
-namespace libs {
-namespace CLI {
+namespace libs::CLI {
 
 gsl::span<Command*> commands;
 
@@ -54,5 +53,4 @@ bool parse_line(char* line) {
     return false;
 }
 
-}  // namespace CLI
-}  // namespace libs
+}  // namespace libs::CLI

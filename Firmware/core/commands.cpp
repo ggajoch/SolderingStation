@@ -6,19 +6,16 @@
 #include "display.h"
 #include "stateManager.h"
 
-namespace core {
-namespace commands {
+namespace core::commands {
 
 using libs::CLI::Command;
 
-template<typename T,
-         std::enable_if_t<std::is_floating_point<T>::value>* = nullptr>
+template <typename T, std::enable_if_t<std::is_floating_point<T>::value>* = nullptr>
 auto parse(const char* parameter) {
-    return static_cast<T>(std::atof(parameter));;
+    return static_cast<T>(std::atof(parameter));
 }
 
-template<typename T,
-         std::enable_if_t<std::is_integral<T>::value>* = nullptr>
+template <typename T, std::enable_if_t<std::is_integral<T>::value>* = nullptr>
 auto parse(const char* parameter) {
     return static_cast<T>(std::atoi(parameter));
 }
@@ -155,5 +152,4 @@ void setup() {
 
 #undef WRITE
 
-}  // namespace commands
-}  // namespace core
+}  // namespace core::commands

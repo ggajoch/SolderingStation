@@ -6,8 +6,7 @@
 #include "com.h"
 #include "stateManager.h"
 
-namespace core {
-namespace display {
+namespace core::display {
 
 void tick() {
     char line1[17], line2[17] = {' '};
@@ -56,5 +55,4 @@ void setDisplaySettings(uint8_t backlightPercentage, uint8_t contrastPercentage)
     HAL::Display::set(backlightPercentage, contrastPercentage);
 }
 
-}  // namespace display
-}  // namespace core
+}  // namespace core::display

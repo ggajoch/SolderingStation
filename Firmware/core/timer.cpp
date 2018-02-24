@@ -1,7 +1,6 @@
 #include "timer.h"
 
-namespace core {
-namespace timer {
+namespace core::timer {
 
 std::chrono::milliseconds actual{0};
 
@@ -13,5 +12,4 @@ std::chrono::milliseconds now() {
     return actual;
 }
 
-}  // namespace timer
-}  // namespace core
+}  // namespace core::timer

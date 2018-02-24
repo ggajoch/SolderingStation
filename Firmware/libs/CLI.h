@@ -2,8 +2,7 @@
 
 #include <gsl/span>
 
-namespace libs {
-namespace CLI {
+namespace libs::CLI {
 
 constexpr int maximumRequiredArguments = 1001;
 
@@ -33,5 +32,4 @@ class Command {
 void set_commands(gsl::span<Command*> cmds);
 bool parse_line(char* line);
 
-}  // namespace CLI
-}  // namespace libs
+}  // namespace libs::CLI

@@ -3,8 +3,7 @@
 #include "HAL.h"
 #include "core.h"
 
-namespace core {
-namespace encoder {
+namespace core::encoder {
 
 void tick() {
     auto encoder = HAL::Encoder::getCountAndReset();
@@ -21,5 +20,4 @@ void tick() {
     core::persistent_state.target = target;
 }
 
-}  // namespace encoder
-}  // namespace core
+}  // namespace core::encoder

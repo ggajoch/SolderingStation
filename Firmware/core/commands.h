@@ -1,9 +1,7 @@
 #pragma once
 
-namespace core {
-namespace commands {
+namespace core::commands {
 
 void setup();
 
-}  // namespace commands
-}  // namespace core
+}  // namespace core::commands

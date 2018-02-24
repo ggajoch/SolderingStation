@@ -1,11 +1,9 @@
 #pragma once
 
-namespace core {
-namespace com {
+namespace core::com {
 
 int printf(const char* format, ...);
 
 void tick();
 
-}  // namespace com
-}  // namespace core
+}  // namespace core::com

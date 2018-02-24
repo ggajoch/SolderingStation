@@ -2,8 +2,7 @@
 
 #include <cstdint>
 
-namespace core {
-namespace stateManager {
+namespace core::stateManager {
 
 enum class State {
     InvalidConfig,
@@ -35,5 +34,4 @@ enum class Command : std::uint8_t {
 
 void config_command_received(Command cmd);
 
-}  // namespace stateManager
-}  // namespace core
+}  // namespace core::stateManager

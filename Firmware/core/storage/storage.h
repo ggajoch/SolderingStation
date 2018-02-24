@@ -8,8 +8,7 @@
 #include "pid.h"
 #include "tempSensor.h"
 
-namespace core {
-namespace storage {
+namespace core::storage {
 
 void read();
 
@@ -18,5 +17,4 @@ bool stateIsSaved();
 // this function should be invoked on every tick
 void tick();
 
-}  // namespace storage
-}  // namespace core
+}  // namespace core::storage

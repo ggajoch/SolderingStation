@@ -175,10 +175,8 @@ TEST_F(StateManager, button_long_press) {
     }
 }
 
-namespace core {
-namespace stateManager {
+namespace core::stateManager {
 extern std::chrono::milliseconds last_action_time;
-}
 }
 
 using namespace std::chrono_literals;

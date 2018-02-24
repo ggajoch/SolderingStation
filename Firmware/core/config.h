@@ -2,8 +2,7 @@
 
 #include <chrono>
 
-namespace core {
-namespace config {
+namespace core::config {
 
 constexpr static int tempAverages = 100;
 constexpr static std::chrono::milliseconds tickDuration{100};
@@ -22,5 +21,4 @@ enum class MemoryType : uint16_t {
 
 constexpr static MemoryType memory_type = MemoryType::MEM_24C01;
 
-}  // namespace config
-}  // namespace core
+}  // namespace core::config

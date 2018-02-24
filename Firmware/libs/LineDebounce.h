@@ -4,8 +4,8 @@
 
 using std::uint32_t;
 
-namespace libs {
-namespace debouncer {
+namespace libs::debouncer {
+
 enum class State { UNSTABLE, TRANSITION, STABLE };
 
 template <uint32_t debounceTime>
@@ -68,5 +68,5 @@ class LineDebounce {
         }
     }
 };
-}  // namespace debouncer
-}  // namespace libs
+
+}  // namespace libs::debouncer

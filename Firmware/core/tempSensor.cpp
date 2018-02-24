@@ -2,11 +2,10 @@
 #include "Average.h"
 #include "HAL.h"
 #include "config.h"
-#include "settings.h"
 #include "core.h"
+#include "settings.h"
 
-namespace core {
-namespace tempSensor {
+namespace core::tempSensor {
 
 float calcTemperature(int raw_reading) {
     return settings.tip.offset + settings.tip.gain * static_cast<float>(raw_reading);
@@ -27,5 +26,4 @@ bool temperatureInLimits() {
     return (core::temp < settings.tip.max_safe_temperature);
 }
 
-}  // namespace tempSensor
-}  // namespace core
+}  // namespace core::tempSensor

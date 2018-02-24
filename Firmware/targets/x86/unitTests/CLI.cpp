@@ -5,11 +5,10 @@
 #include "HALmock.h"
 #include "core.h"
 
-namespace libs {
-namespace CLI {
+namespace libs::CLI {
 extern gsl::span<Command*> commands;
 }
-}
+
 using libs::CLI::commands;
 using libs::CLI::set_commands;
 using libs::CLI::Command;

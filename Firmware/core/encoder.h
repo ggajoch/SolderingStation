@@ -1,9 +1,7 @@
 #pragma once
 
-namespace core {
-namespace encoder {
+namespace core::encoder {
 
 void tick();
 
-}  // namespace encoder
-}  // namespace core
+}  // namespace core::encoder

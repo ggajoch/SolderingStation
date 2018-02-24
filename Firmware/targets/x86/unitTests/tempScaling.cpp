@@ -7,8 +7,8 @@
 constexpr float eps = 1e-4;
 
 TEST(tempScaling, basic) {
-    core::settings.tipParams.offset = 0;
-    core::settings.tipParams.gain = 1;
+    core::settings.tip.offset = 0;
+    core::settings.tip.gain = 1;
 
 //    libs::Average<float, config::tempAverages> temperatureAverage;
 
@@ -23,8 +23,8 @@ TEST(tempScaling, basic) {
         CLEAR();
     }
 
-    core::settings.tipParams.offset = 1;
-    core::settings.tipParams.gain = 2;
+    core::settings.tip.offset = 1;
+    core::settings.tip.gain = 2;
     CLEAR();
     for (int i = 0; i < 1000; ++i) {
         HAL::Tip::rawTemperatureData.push(i);
@@ -32,8 +32,8 @@ TEST(tempScaling, basic) {
         CLEAR();
     }
 
-    core::settings.tipParams.offset = 20.5;
-    core::settings.tipParams.gain = 0.05;
+    core::settings.tip.offset = 20.5;
+    core::settings.tip.gain = 0.05;
     CLEAR();
     for (int i = 0; i < 1000; ++i) {
         HAL::Tip::rawTemperatureData.push(i);

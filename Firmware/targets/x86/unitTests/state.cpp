@@ -107,6 +107,7 @@ TEST(State, saveAfter100Ticks) {
 }
 
 TEST(State, saveAfterMultiChange) {
+    core::settings.tip.max_safe_temperature = 65000;
     for(int i = 0; i < 200; ++i) {
         core::tick();
     }
@@ -203,6 +204,8 @@ TEST(State, clearingCell) {
 }
 
 TEST(State, checkAllSlotsMarker) {
+    for(int i = 0; i < 100; ++i) core::tick();
+
     clear_memory();
     for(auto slot: ptr) {
         EXPECT_EQ(slot.marker, 0xFF);
@@ -238,6 +241,7 @@ TEST(State, checkAllSlotsMarker) {
         // check readout of correct cell
         core::persistent_state.target = i;
         core::setup();
+        core::settings.tip.max_safe_temperature = 65000;
         EXPECT_EQ(core::persistent_state.target, first_pass(i));
     }
 

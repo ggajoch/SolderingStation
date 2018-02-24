@@ -3,12 +3,13 @@
 #include "HAL.h"
 #include "config.h"
 #include "settings.h"
+#include "core.h"
 
 namespace core {
 namespace tempSensor {
 
 float calcTemperature(int raw_reading) {
-    return settings.tipParams.offset + settings.tipParams.gain * static_cast<float>(raw_reading);
+    return settings.tip.offset + settings.tip.gain * static_cast<float>(raw_reading);
 }
 
 float getAveragedTemperature() {
@@ -20,6 +21,10 @@ float getAveragedTemperature() {
         temperatureAverage.put(temperature);
     }
     return temperatureAverage.get();
+}
+
+bool temperatureInLimits() {
+    return (core::temp < settings.tip.max_safe_temperature);
 }
 
 }  // namespace tempSensor

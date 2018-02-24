@@ -72,14 +72,14 @@ TEST(Storage, tickShouldSaveSettings) {
     EXPECT_FALSE(getSettings());
 
     core::stateManager::state = core::stateManager::State::On;
-    core::settings.pidParams.Kp = 75.6;
+    core::settings.pid.Kp = 75.6;
 
     core::storage::tick();
 
     auto settings_read = getSettings();
     EXPECT_TRUE(settings_read);
 
-    EXPECT_FLOAT_EQ(settings_read->pidParams.Kp, 75.6);
+    EXPECT_FLOAT_EQ(settings_read->pid.Kp, 75.6);
 
     // memory unchanged from byte 40
     for(int i = 40; i < HAL::Memory::table.size(); ++i) {
@@ -92,7 +92,7 @@ TEST(Storage, tickSettingsShouldntBeSavedWhenConfigurationIsInvalid) {
     EXPECT_FALSE(getSettings());
 
     core::stateManager::state = core::stateManager::State::InvalidConfig;
-    core::settings.pidParams.Kp = 75.6;
+    core::settings.pid.Kp = 75.6;
 
     core::storage::tick();
 
@@ -108,11 +108,11 @@ TEST(Storage, readInvalidSettingsDefaultConfig) {
     core::setup();
 
     EXPECT_EQ(core::stateManager::State::InvalidConfig, core::stateManager::state);
-    EXPECT_FLOAT_EQ(core::settings.pidParams.Kp, 0);
-    EXPECT_FLOAT_EQ(core::settings.pidParams.Ki, 0);
-    EXPECT_FLOAT_EQ(core::settings.pidParams.Kd, 0);
-    EXPECT_FLOAT_EQ(core::settings.tipParams.offset, 0);
-    EXPECT_FLOAT_EQ(core::settings.tipParams.gain, 0);
-    EXPECT_FLOAT_EQ(core::settings.display.contrast, 27.5);
+    EXPECT_FLOAT_EQ(core::settings.pid.Kp, 0);
+    EXPECT_FLOAT_EQ(core::settings.pid.Ki, 0);
+    EXPECT_FLOAT_EQ(core::settings.pid.Kd, 0);
+    EXPECT_FLOAT_EQ(core::settings.tip.offset, 0);
+    EXPECT_FLOAT_EQ(core::settings.tip.gain, 0);
+    EXPECT_FLOAT_EQ(core::settings.display.contrast, 27);
     EXPECT_FLOAT_EQ(core::settings.display.backlight, 100);
 }

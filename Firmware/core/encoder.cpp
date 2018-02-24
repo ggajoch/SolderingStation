@@ -10,7 +10,15 @@ void tick() {
     auto encoder = HAL::Encoder::getCountAndReset();
     int target = core::persistent_state.target + encoder * 5;
 
-    core::persistent_state.target = static_cast<uint16_t>(std::max(0, target));
+    if (target < 0) {
+        target = 0;
+    }
+
+    if (target > settings.tip.max_safe_temperature) {
+        target = settings.tip.max_safe_temperature;
+    }
+
+    core::persistent_state.target = target;
 }
 
 }  // namespace encoder

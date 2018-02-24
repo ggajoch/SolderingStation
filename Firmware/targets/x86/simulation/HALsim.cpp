@@ -26,9 +26,9 @@ void delay(uint32_t ms) {
 }
 
 namespace Display {
-    void set(float backlight_percent, float contrast_percent) {
-        mvprintw(3, 0, "backlight: %.2f%%   ", backlight_percent);
-        mvprintw(3, 20, "contrast: %.2f%%   ", contrast_percent);
+    void set(uint8_t backlight_percent, uint8_t contrast_percent) {
+        mvprintw(3, 0, "backlight: %d%%   ", backlight_percent);
+        mvprintw(3, 20, "contrast: %d%%   ", contrast_percent);
         refresh();
     }
 

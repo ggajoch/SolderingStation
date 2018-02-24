@@ -7,7 +7,7 @@
 namespace HAL {
 
 namespace Display {
-extern float backlight, contrast;
+extern uint8_t backlight, contrast;
 extern char line1[17], line2[17];
 }  // namespace Display
 

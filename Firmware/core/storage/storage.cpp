@@ -19,12 +19,13 @@ void read() {
     if (!settings) {
         com::printf("Incorrect setting in memory, fallback to defaults\n");
 
-        core::settings.pidParams = {.Kp = 0.0, .Ki = 0.0, .Kd = 0.0, .max_power = 0};
-        core::settings.tipParams = {.offset = 0, .gain = 0.0};
-        core::settings.display.contrast = 27.5;
+        core::settings.pid = {.Kp = 0.0, .Ki = 0.0, .Kd = 0.0, .max_power = 0};
+        core::settings.tip = {.offset = 0, .gain = 0.0};
+        core::settings.display.contrast = 27;
         core::settings.display.backlight = 100;
         core::settings.sleep_temperature = 0;
         core::settings.stand_temperature = 0;
+        core::settings.tip.max_safe_temperature = 100;
 
         core::stateManager::state = core::stateManager::State::InvalidConfig;
     } else {

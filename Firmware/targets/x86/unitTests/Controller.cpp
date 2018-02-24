@@ -25,8 +25,8 @@ static void parse(const char* cmd) {
 TEST(Controller, averaging) {
     clear();
 
-    core::settings.tipParams.offset = 0;
-    core::settings.tipParams.gain = 1;
+    core::settings.tip.offset = 0;
+    core::settings.tip.gain = 1;
 
     for (int i = 0; i < core::config::tempAverages; ++i) {
         HAL::Tip::rawTemperatureData.push(i % 2);
@@ -56,6 +56,7 @@ TEST(Controller, blank_memory_setup) {
     HAL::Tip::in_stand = true;
 
     core::setup();
+    core::settings.tip.max_safe_temperature = 400;
 
     HAL::Encoder::buttonPressedHandler();
     core::tick();
@@ -80,7 +81,7 @@ TEST(Controller, blank_memory_setup) {
 
     EXPECT_EQ(State::InvalidConfig, state);
 
-    parse("tip 1.1 2.2");
+    parse("tip 1.1 2.2 300");
     core::tick();
 
     EXPECT_EQ(State::InvalidConfig, state);

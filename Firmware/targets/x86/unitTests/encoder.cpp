@@ -5,6 +5,8 @@
 #include "storage/persistent_state.h"
 
 TEST(Encoder, rotation) {
+    core::settings.tip.max_safe_temperature = 65000;
+
     auto test = [](int ticks) {
         auto temp_now = core::persistent_state.target;
 

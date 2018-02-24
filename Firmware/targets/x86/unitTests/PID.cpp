@@ -7,19 +7,19 @@
 constexpr float eps = 1e-2;
 
 void reset() {
-    core::settings.pidParams.Kp = 0;
-    core::settings.pidParams.Ki = 0;
-    core::settings.pidParams.Kd = 0;
-    core::settings.pidParams.max_power = 100;
+    core::settings.pid.Kp = 0;
+    core::settings.pid.Ki = 0;
+    core::settings.pid.Kd = 0;
+    core::settings.pid.max_power = 100;
 }
 
 TEST(PID, setup) {
     core::PID pid;
     reset();
     EXPECT_NEAR(pid.target, 0, eps);
-    EXPECT_NEAR(core::settings.pidParams.Kp, 0, eps);
-    EXPECT_NEAR(core::settings.pidParams.Ki, 0, eps);
-    EXPECT_NEAR(core::settings.pidParams.Kd, 0, eps);
+    EXPECT_NEAR(core::settings.pid.Kp, 0, eps);
+    EXPECT_NEAR(core::settings.pid.Ki, 0, eps);
+    EXPECT_NEAR(core::settings.pid.Kd, 0, eps);
     EXPECT_NEAR(pid.integral, 0, eps);
     EXPECT_NEAR(pid.prevError, 0, eps);
 }
@@ -33,7 +33,7 @@ TEST(PID, noOutput) {
 TEST(PID, proportional) {
     core::PID pid;
     reset();
-    core::settings.pidParams.Kp = -1;
+    core::settings.pid.Kp = -1;
     pid.target = -0.5f;
     pid.lowerLimit = -1e6f;
     pid.upperLimit = 1e6f;
@@ -42,7 +42,7 @@ TEST(PID, proportional) {
         EXPECT_NEAR(pid.tick(i), i, eps);
     }
 
-    core::settings.pidParams.Kp = 1.5f;
+    core::settings.pid.Kp = 1.5f;
     pid.target = 9.5f;
     EXPECT_NEAR(pid.tick(10), 0, eps);
     for (float i = -10; i <= 10; i += 0.07) {
@@ -53,7 +53,7 @@ TEST(PID, proportional) {
 TEST(PID, integral) {
     core::PID pid;
     reset();
-    core::settings.pidParams.Ki = -1.0f/1e3f;
+    core::settings.pid.Ki = -1.0f/1e3f;
     pid.target = -0.5f;
     pid.lowerLimit = -1e6f;
     pid.upperLimit = 1e6f;
@@ -66,7 +66,7 @@ TEST(PID, integral) {
 TEST(PID, derivative) {
     core::PID pid;
     reset();
-    core::settings.pidParams.Kd = -1.0f;
+    core::settings.pid.Kd = -1.0f;
     pid.target = -0.5f;
     pid.lowerLimit = -1e6f;
     pid.upperLimit = 1e6f;
@@ -82,7 +82,7 @@ TEST(PID, limits) {
     core::PID pid;
     reset();
     pid.target = -0.5f;
-    core::settings.pidParams.Kp = -1.0f;
+    core::settings.pid.Kp = -1.0f;
     pid.lowerLimit = -17;
     pid.upperLimit = 85;
     EXPECT_NEAR(pid.tick(0), 0, eps);
@@ -96,8 +96,8 @@ TEST(PID, limits) {
 TEST(PID, antiWindup) {
     core::PID pid;
     reset();
-    core::settings.pidParams.Kp = 1.0f;
-    core::settings.pidParams.Ki = 1.0f;
+    core::settings.pid.Kp = 1.0f;
+    core::settings.pid.Ki = 1.0f;
     pid.target = 9.5;
     pid.lowerLimit = 0;
     pid.upperLimit = 100;
@@ -120,8 +120,8 @@ TEST(PID, antiWindup) {
 TEST(PID, powerLimit) {
     core::PID pid;
     reset();
-    core::settings.pidParams.Kp = -1;
-    core::settings.pidParams.max_power = 15;
+    core::settings.pid.Kp = -1;
+    core::settings.pid.max_power = 15;
     pid.target = -0.5f;
     pid.lowerLimit = -1e6f;
     pid.upperLimit = 1e6f;

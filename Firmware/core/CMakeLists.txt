@@ -9,6 +9,7 @@ add_library(${NAME} INTERFACE)
 
 target_link_libraries(${NAME} INTERFACE
     libs
+    gsl
 )
 
 target_sources(libs

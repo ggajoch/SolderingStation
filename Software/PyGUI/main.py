@@ -24,6 +24,7 @@ class StartQT4(QtGui.QMainWindow):
 
         self.ui.offsetSpinBox.valueChanged.connect(self.update_tip)
         self.ui.gainSpinBox.valueChanged.connect(self.update_tip)
+        self.ui.maxTemperatureSpinBox.valueChanged.connect(self.update_tip)
 
         self.ui.KpSpinBox.valueChanged.connect(self.update_pid)
         self.ui.KiSpinBox.valueChanged.connect(self.update_pid)
@@ -45,7 +46,7 @@ class StartQT4(QtGui.QMainWindow):
 
         self.disabled_when_disconnected = (
             self.ui.setpointSpinBox,
-            self.ui.offsetSpinBox, self.ui.gainSpinBox,
+            self.ui.offsetSpinBox, self.ui.gainSpinBox, self.ui.maxTemperatureSpinBox,
             self.ui.KpSpinBox, self.ui.KiSpinBox, self.ui.KdSpinBox, self.ui.maxPowerSpinBox,
             self.ui.brightnessSpinBox, self.ui.contrastSpinBox,
             self.ui.sleepTemperatureSpinBox,self.ui.standTemperatureSpinBox,
@@ -250,8 +251,9 @@ class StartQT4(QtGui.QMainWindow):
         self.send("temp {}".format(self.ui.setpointSpinBox.value()))
 
     def update_tip(self, _):
-        self.send("tip {} {}".format(self.ui.offsetSpinBox.value(),
-                                  self.ui.gainSpinBox.value()))
+        self.send("tip {} {} {}".format(self.ui.offsetSpinBox.value(),
+                                        self.ui.gainSpinBox.value(),
+                                        self.ui.maxTemperatureSpinBox.value()))
 
     def update_pid(self, _):
         self.send("pid {} {} {} {}".format(self.ui.KpSpinBox.value(),

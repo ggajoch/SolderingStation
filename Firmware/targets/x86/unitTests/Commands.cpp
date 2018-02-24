@@ -23,17 +23,18 @@ void parse_tick(const char* cmd) {
 class Commands : public ::testing::Test {
     void SetUp() {
         core::setup();
+        core::settings.tip.max_safe_temperature = 1000;
     }
 };
 
 TEST_F(Commands, noCommandNoFail) {
     libs::CLI::set_commands({});
     core::persistent_state.target = 100;
-    core::settings.pidParams.Kp =  33.3;
-    core::settings.pidParams.Ki =  22.2;
-    core::settings.pidParams.Kd =  11.1;
-    core::settings.tipParams.offset = 1;
-    core::settings.tipParams.gain = 2;
+    core::settings.pid.Kp =  33.3;
+    core::settings.pid.Ki =  22.2;
+    core::settings.pid.Kd =  11.1;
+    core::settings.tip.offset = 1;
+    core::settings.tip.gain = 2;
 
     auto parse_fail = [](const char* cmd) {
         static char tmp[100];
@@ -48,11 +49,11 @@ TEST_F(Commands, noCommandNoFail) {
     parse_fail("ping");
 
     EXPECT_EQ(core::persistent_state.target, 100);
-    EXPECT_FLOAT_EQ(core::settings.pidParams.Kp, 33.3);
-    EXPECT_FLOAT_EQ(core::settings.pidParams.Ki, 22.2);
-    EXPECT_FLOAT_EQ(core::settings.pidParams.Kd, 11.1);
-    EXPECT_FLOAT_EQ(core::settings.tipParams.offset, 1);
-    EXPECT_FLOAT_EQ(core::settings.tipParams.gain, 2);
+    EXPECT_FLOAT_EQ(core::settings.pid.Kp, 33.3);
+    EXPECT_FLOAT_EQ(core::settings.pid.Ki, 22.2);
+    EXPECT_FLOAT_EQ(core::settings.pid.Kd, 11.1);
+    EXPECT_FLOAT_EQ(core::settings.tip.offset, 1);
+    EXPECT_FLOAT_EQ(core::settings.tip.gain, 2);
 }
 
 TEST_F(Commands, setTemperature) {
@@ -69,28 +70,30 @@ TEST_F(Commands, setTemperature) {
 TEST_F(Commands, setPIDCoefficients) {
     for(auto foo : {parse, parse_tick}) {
         foo("pid 1 2 3 47");
-        EXPECT_FLOAT_EQ(core::settings.pidParams.Kp, 1);
-        EXPECT_FLOAT_EQ(core::settings.pidParams.Ki, 2);
-        EXPECT_FLOAT_EQ(core::settings.pidParams.Kd, 3);
-        EXPECT_FLOAT_EQ(core::settings.pidParams.max_power, 47);
+        EXPECT_FLOAT_EQ(core::settings.pid.Kp, 1);
+        EXPECT_FLOAT_EQ(core::settings.pid.Ki, 2);
+        EXPECT_FLOAT_EQ(core::settings.pid.Kd, 3);
+        EXPECT_FLOAT_EQ(core::settings.pid.max_power, 47);
 
         foo("pid 33.3 22.2 11.1 123");
-        EXPECT_FLOAT_EQ(core::settings.pidParams.Kp, 33.3);
-        EXPECT_FLOAT_EQ(core::settings.pidParams.Ki, 22.2);
-        EXPECT_FLOAT_EQ(core::settings.pidParams.Kd, 11.1);
-        EXPECT_FLOAT_EQ(core::settings.pidParams.max_power, 123);
+        EXPECT_FLOAT_EQ(core::settings.pid.Kp, 33.3);
+        EXPECT_FLOAT_EQ(core::settings.pid.Ki, 22.2);
+        EXPECT_FLOAT_EQ(core::settings.pid.Kd, 11.1);
+        EXPECT_FLOAT_EQ(core::settings.pid.max_power, 123);
     }
 }
 
 TEST_F(Commands, setTipScaling) {
     for(auto foo : {parse, parse_tick}) {
-        foo("tip 1 2");
-        EXPECT_FLOAT_EQ(core::settings.tipParams.offset, 1);
-        EXPECT_FLOAT_EQ(core::settings.tipParams.gain, 2);
+        foo("tip 1 2 3");
+        EXPECT_FLOAT_EQ(core::settings.tip.offset, 1);
+        EXPECT_FLOAT_EQ(core::settings.tip.gain, 2);
+        EXPECT_FLOAT_EQ(core::settings.tip.max_safe_temperature, 3);
 
-        foo("tip 123.456 789.321");
-        EXPECT_FLOAT_EQ(core::settings.tipParams.offset, 123.456);
-        EXPECT_FLOAT_EQ(core::settings.tipParams.gain, 789.321);
+        foo("tip 123.456 789.321 700");
+        EXPECT_FLOAT_EQ(core::settings.tip.offset, 123.456);
+        EXPECT_FLOAT_EQ(core::settings.tip.gain, 789.321);
+        EXPECT_FLOAT_EQ(core::settings.tip.max_safe_temperature, 700);
     }
 }
 
@@ -100,9 +103,9 @@ TEST_F(Commands, display) {
         EXPECT_FLOAT_EQ(HAL::Display::backlight, 5);
         EXPECT_FLOAT_EQ(HAL::Display::contrast, 7);
 
-        foo("disp 752.146 749.421");
-        EXPECT_FLOAT_EQ(HAL::Display::backlight, 752.146);
-        EXPECT_FLOAT_EQ(HAL::Display::contrast, 749.421);
+        foo("disp 100 0");
+        EXPECT_FLOAT_EQ(HAL::Display::backlight, 100);
+        EXPECT_FLOAT_EQ(HAL::Display::contrast, 0);
     }
 }
 

@@ -5,7 +5,7 @@ namespace display {
 
 void tick();
 
-void setDisplaySettings(float backlightPercentage, float contrastPercentage);
+void setDisplaySettings(uint8_t backlightPercentage, uint8_t contrastPercentage);
 
 }  // namespace display
 }  // namespace core

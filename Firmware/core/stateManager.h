@@ -7,6 +7,7 @@ namespace stateManager {
 
 enum class State {
     InvalidConfig,
+    TipError,
     Off,
     Sleep,
     InStand,

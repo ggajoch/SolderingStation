@@ -1,10 +1,12 @@
 #include <chrono>
+#include <array>
 #include <experimental/optional>
 
 #include "HAL.h"
 #include "core.h"
 #include "stateManager.h"
 #include "timer.h"
+#include "tempSensor.h"
 
 using namespace std::chrono_literals;
 
@@ -22,32 +24,45 @@ enum class Event {
     TimeoutToSleep,
     TimeoutToOff,
 
-    // two actions below are invoked in every iteration
+    // actions below are invoked in every iteration
     // as transition is defined by state not by edge
     InStand,
     NotInStand,
 
+    TemperatureOK,
+    TemperatureFail,
+
     Count,
 };
 
-constexpr static auto _invalid_config = State::InvalidConfig;
-constexpr static auto _off = State::Off;
-constexpr static auto _sleep = State::Sleep;
-constexpr static auto _in_stand = State::InStand;
-constexpr static auto _on = State::On;
+namespace transitions {
+
+constexpr static auto InvalidConfig = State::InvalidConfig;
+constexpr static auto TipError = State::TipError;
+constexpr static auto Off = State::Off;
+constexpr static auto Sleep = State::Sleep;
+constexpr static auto InStand = State::InStand;
+constexpr static auto On = State::On;
 
 // clang-format off
-std::array<std::array<State, static_cast<int>(Event::Count)>, static_cast<int>(State::Count)> transitions = {{
-//                 ConfigurationReceived, ButtonPressed,         ButtonHeld,            AnyUserAction,         TimeoutToSleep,        TimeoutToOff           InStand,               NotInStand
-//                {---------------------, ---------------------, ---------------------, ---------------------, ---------------------, ---------------------, ---------------------, ---------------------}
-//                {                     ,                      ,                      ,                      ,                      ,                      ,                      ,                      }
-/*InvalidConfig*/ {_off                 , _invalid_config      , _invalid_config      , _invalid_config      , _invalid_config      , _invalid_config      , _invalid_config      , _invalid_config      },
-/*     Off     */ {_off                 , _off                 , _on                  , _off                 , _off                 , _off                 , _off                 , _off                 },
-/*    Sleep    */ {_sleep               , _on                  , _off                 , _on                  , _sleep               , _off                 , _sleep               , _sleep               },
-/*   InStand   */ {_in_stand            , _sleep               , _off                 , _in_stand            , _sleep               , _off                 , _in_stand            , _on                  },
-/*     On      */ {_on                  , _sleep               , _off                 , _on                  , _sleep               , _off                 , _in_stand            , _on                  }
+std::array<std::array<State, static_cast<int>(State::Count)>, static_cast<int>(Event::Count)> transitions = {{
+//                         InvalidConfig, TipError, Off,      Sleep,    InStand,   On
+//                        {-------------, --------, --------, --------, --------, --------}
+//                        {             ,         ,         ,         ,         ,         }
+/*ConfigurationReceived*/ {Off          , TipError, Off     , Sleep   , InStand , On      },
+/*    ButtonPressed    */ {InvalidConfig, TipError, Off     , On      , Sleep   , Sleep   },
+/*     ButtonHeld      */ {InvalidConfig, TipError, On      , Off     , Off     , Off     },
+/*    AnyUserAction    */ {InvalidConfig, TipError, Off     , On      , InStand , On      },
+/*    TimeoutToSleep   */ {InvalidConfig, TipError, Off     , Sleep   , Sleep   , Sleep   },
+/*     TimeoutToOff    */ {InvalidConfig, TipError, Off     , Off     , Off     , Off     },
+/*       InStand       */ {InvalidConfig, TipError, Off     , Sleep   , InStand , InStand },
+/*      NotInStand     */ {InvalidConfig, TipError, Off     , Sleep   , On      , On      },
+/*     TemperatureOK   */ {InvalidConfig, Off     , Off     , Sleep   , InStand , On      },
+/*    TemperatureFail  */ {InvalidConfig, TipError, TipError, TipError, TipError, TipError},
 }};
 // clang-format on
+
+}
 
 std::array<Event, 10> events;
 uint8_t events_to_process;
@@ -60,9 +75,7 @@ void add_event(Event event) {
 
 void process_events() {
     for (int i = 0; i < events_to_process; ++i) {
-        if (static_cast<unsigned>(state) < transitions.size() && static_cast<unsigned>(events[i]) < transitions[static_cast<int>(state)].size()) {
-            state = transitions[static_cast<unsigned>(state)][static_cast<unsigned>(events[i])];
-        }
+        state = transitions::transitions[static_cast<unsigned>(events[i])][static_cast<unsigned>(state)];
     }
     events_to_process = 0;
 }
@@ -140,6 +153,7 @@ static void process_user_events() {
     process_button();
 
     add_event(in_stand ? Event::InStand : Event::NotInStand);
+    add_event(core::tempSensor::temperatureInLimits() ? Event::TemperatureOK : Event::TemperatureFail);
 
     process_timeouts();
 }
@@ -150,7 +164,9 @@ static void set_temperature() {
 
     switch (state) {
         case State::InvalidConfig:
+        case State::TipError:
         case State::Off:
+        default:
             core::pid.target = 0.0f;
             break;
 
@@ -164,8 +180,6 @@ static void set_temperature() {
 
         case State::On:
             core::pid.target = core::persistent_state.target;
-            break;
-        default:
             break;
     }
 }

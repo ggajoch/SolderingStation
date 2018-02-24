@@ -13,8 +13,8 @@ void delay(uint32_t ms) {
 }
 
 namespace Display {
-float backlight, contrast;
-void set(float backlight_percent, float contrast_percent) {
+uint8_t backlight, contrast;
+void set(uint8_t backlight_percent, uint8_t contrast_percent) {
     backlight = backlight_percent;
     contrast = contrast_percent;
 }

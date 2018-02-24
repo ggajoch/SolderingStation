@@ -22,6 +22,8 @@ void tick() {
 
     if (stateManager::state == stateManager::State::InvalidConfig) {
         std::strncpy(line2, "   CONNECT PC   ", 17);
+    } else if (stateManager::state == stateManager::State::TipError) {
+        std::strncpy(line2, "   TIP ERROR    ", 17);
     } else if (stateManager::state == stateManager::State::Off) {
         std::strncpy(line2, "      OFF       ", 17);
     } else if (stateManager::state == stateManager::State::Sleep) {
@@ -33,8 +35,8 @@ void tick() {
     }
 
     int lastBarElement = 0;
-    if (core::settings.pidParams.max_power > 0.1) {
-        lastBarElement = static_cast<int>(16.0 * power / core::settings.pidParams.max_power);
+    if (core::settings.pid.max_power > 0.1) {
+        lastBarElement = static_cast<int>(16.0 * power / core::settings.pid.max_power);
     }
     for (int i = 0; i < lastBarElement; ++i) {
         if (isalpha(line2[i])) {
@@ -47,7 +49,7 @@ void tick() {
     HAL::Display::write(line1, line2);
 }
 
-void setDisplaySettings(float backlightPercentage, float contrastPercentage) {
+void setDisplaySettings(uint8_t backlightPercentage, uint8_t contrastPercentage) {
     core::settings.display.backlight = backlightPercentage;
     core::settings.display.contrast = contrastPercentage;
 

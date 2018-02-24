@@ -18,13 +18,13 @@ class StateManager : public ::testing::Test {
         core::tick();
 
         HAL::Tip::in_stand = false;
-        core::settings.pidParams.Kp = 100;
-        core::settings.pidParams.max_power = 100;
+        core::settings.pid.Kp = 100;
+        core::settings.pid.max_power = 100;
         core::persistent_state.target = 101;
 
         HAL::Tip::set_temperature(100);
-        core::settings.tipParams.offset = 10;
-        core::settings.tipParams.gain = 0.5;
+        core::settings.tip.offset = 10;
+        core::settings.tip.gain = 0.5;
 
         core::tick();
         core::tick();
@@ -48,7 +48,7 @@ TEST_F(StateManager, send_config) {
     core::tick();
     EXPECT_EQ(State::InvalidConfig, state);
 
-    send_cmd("tip 10 0.5");
+    send_cmd("tip 10 0.5 100");
     core::tick();
     EXPECT_EQ(State::InvalidConfig, state);
 
@@ -184,6 +184,8 @@ extern std::chrono::milliseconds last_action_time;
 using namespace std::chrono_literals;
 
 TEST_F(StateManager, reset_timeout) {
+    core::settings.tip.max_safe_temperature = 65000;
+
     auto check = [](bool resetting, auto foo) {
         last_action_time = 0ms;
 
@@ -242,4 +244,36 @@ TEST_F(StateManager, timeout) {
 
     core::tick();
     EXPECT_EQ(State::Off, state);
+}
+
+TEST_F(StateManager, temperature_over_limits) {
+    core::settings.tip.max_safe_temperature = 250;
+
+    for(auto start_state: {State::Off,
+                           State::Sleep,
+                           State::InStand,
+                           State::On}) {
+        state = start_state;
+        HAL::Tip::in_stand = (state == State::InStand);
+
+        HAL::Tip::set_temperature(0);
+        core::tick();
+        core::tick();
+        EXPECT_EQ(start_state, state);
+
+        HAL::Tip::set_temperature((249 - 10) * 2);
+        core::tick();
+        core::tick();
+        EXPECT_EQ(start_state, state);
+
+        HAL::Tip::set_temperature((250 - 10) * 2);
+        core::tick();
+        core::tick();
+        EXPECT_EQ(State::TipError, state);
+
+        HAL::Tip::set_temperature((249 - 10) * 2);
+        core::tick();
+        core::tick();
+        EXPECT_EQ(State::Off, state);
+    }
 }

@@ -11,10 +11,11 @@ class PID {
  public:
     float target;
     float lowerLimit, upperLimit;
-    PID() {
-        target = 0;
-        this->lowerLimit = 0;
-        this->upperLimit = 100;
+    float error;
+    float prevError;
+    float integral;
+
+    constexpr PID() noexcept : target{0}, lowerLimit{0}, upperLimit{0}, error{0}, prevError{0}, integral{0} {
         this->reset();
     }
 
@@ -32,23 +33,13 @@ class PID {
 
         prevError = error;
 
-        if (pwr < lowerLimit)
-            return lowerLimit;
-
-        if (pwr > actualUpperLimit)
-            return actualUpperLimit;
-
-        return pwr;
+        return std::clamp(pwr, lowerLimit, actualUpperLimit);
     }
 
     void reset() {
         this->integral = 0;
         this->prevError = 0;
     }
-
-    float error;
-    float prevError;
-    float integral;
 };
 
 }  // namespace core

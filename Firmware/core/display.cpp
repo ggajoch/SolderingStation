@@ -48,11 +48,8 @@ void tick() {
     HAL::Display::write(line1, line2);
 }
 
-void setDisplaySettings(uint8_t backlightPercentage, uint8_t contrastPercentage) {
-    core::settings.display.backlight = backlightPercentage;
-    core::settings.display.contrast = contrastPercentage;
-
-    HAL::Display::set(backlightPercentage, contrastPercentage);
+void setDisplaySettings() {
+    HAL::Display::set(core::settings.display.backlight, core::settings.display.contrast);
 }
 
 }  // namespace core::display

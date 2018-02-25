@@ -3,7 +3,6 @@
 #include "HAL.h"
 #include "config.h"
 #include "core.h"
-#include "settings.h"
 
 namespace core::tempSensor {
 

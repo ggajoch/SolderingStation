@@ -4,7 +4,6 @@
 #include "CLI.h"
 #include "HAL.h"
 #include "core.h"
-#include "storage/persistent_state.h"
 
 namespace core::com {
 

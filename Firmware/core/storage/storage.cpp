@@ -4,7 +4,6 @@
 #include "stateManager.h"
 #include "timer.h"
 
-#include "persistent_state.h"
 #include "settings.h"
 #include "state.h"
 
@@ -35,7 +34,7 @@ void read() {
         core::stateManager::state = core::stateManager::State::Off;
     }
 
-    core::display::setDisplaySettings(core::settings.display.backlight, core::settings.display.contrast);
+    core::display::setDisplaySettings();
 
     auto state = getState();
     if (state) {

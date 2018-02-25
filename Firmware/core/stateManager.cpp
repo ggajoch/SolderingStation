@@ -85,7 +85,7 @@ class ChangeObserver {
     void (*foo)();
 
  public:
-    constexpr ChangeObserver(void (*foo)()) noexcept : foo{foo} {
+    explicit constexpr ChangeObserver(void (*foo)()) noexcept : foo{foo} {
     }
 
     void check(T val) {

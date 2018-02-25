@@ -17,6 +17,7 @@ struct i2cMemorySettingsLayout : core::base::Pod<i2cMemorySettingsLayout> {
         return crc8(settings.as_span());
     }
 } __attribute__((packed));
+static_assert(sizeof(i2cMemorySettingsLayout) == sizeof(core::Settings) + 4);
 
 struct i2cMemoryStateLayout : core::base::Pod<i2cMemoryStateLayout> {
     uint8_t marker;
@@ -32,4 +33,4 @@ struct i2cMemoryStateLayout : core::base::Pod<i2cMemoryStateLayout> {
         return crc8(gsl::span<uint8_t, 3>(ptr, 3));
     }
 } __attribute__((packed));
-static_assert(sizeof(i2cMemoryStateLayout) == 4, "");
+static_assert(sizeof(i2cMemoryStateLayout) == 4);

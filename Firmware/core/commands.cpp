@@ -16,6 +16,8 @@ auto parse(const char* parameter) {
         return static_cast<T>(std::atof(parameter));
     } else if constexpr (std::is_integral<T>::value) {
         return static_cast<T>(std::atoi(parameter));
+    } else {
+        throw std::runtime_error("");
     }
 }
 
@@ -91,11 +93,10 @@ class Display : public Command {
     }
 
     void callback(const gsl::span<char*> parameters) override {
-        uint8_t backlight, contrast;
-        WRITE(0, backlight);
-        WRITE(1, contrast);
+        WRITE(0, core::settings.display.backlight);
+        WRITE(1, core::settings.display.contrast);
 
-        core::display::setDisplaySettings(backlight, contrast);
+        core::display::setDisplaySettings();
         core::stateManager::config_command_received(core::stateManager::Command::Display);
     }
 };

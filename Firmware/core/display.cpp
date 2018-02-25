@@ -13,7 +13,7 @@ void tick() {
 
     snprintf(line1,
         17,
-        "%3d/%3d %c   %3d%%",
+        "%3d/%3hu %c   %3d%%",
         static_cast<int>(temp),
         core::persistent_state.target,
         storage::stateIsSaved() ? ' ' : '*',

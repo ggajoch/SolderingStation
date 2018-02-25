@@ -13,7 +13,6 @@ void set_commands(gsl::span<Command*> cmds) {
 }
 
 bool parse_line(char* line) {
-    //    printf("parse: %s\n", line);
     size_t len = strlen(line);
     static std::array<char*, 20> params;
 
@@ -24,11 +23,9 @@ bool parse_line(char* line) {
     }
 
     for (auto cmd : commands) {
-        //        printf("now: %s\n", cmd->name);
         if (strcmp(cmd->name, line) == 0) {
             // found command
-            //            printf("cmd: %s\n", cmd->name);
-
+    
             char* iter = line;
             uint8_t param_nr = 0;
 
@@ -41,7 +38,6 @@ bool parse_line(char* line) {
 
                 if (iter < line + len) {
                     params[param_nr++] = iter;
-                    //                    printf("param: |%s|\n", iter);
                 }
             }
 
@@ -49,7 +45,6 @@ bool parse_line(char* line) {
             return cmd->callbackDispatcher(view);
         }
     }
-    // printf("No such command: |%s|!\r\n", line);
     return false;
 }
 

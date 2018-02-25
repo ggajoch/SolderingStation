@@ -5,41 +5,24 @@
 #include "HALmock.h"
 #include "core.h"
 
-namespace libs::CLI {
-extern gsl::span<Command*> commands;
-}
-
-using libs::CLI::commands;
 using libs::CLI::set_commands;
 using libs::CLI::Command;
 
 struct CLITest_;
 
-std::vector<CLITest_*> testCommands;
+std::array<int, 100> params_buf;
+gsl::span<int> params;
 
-std::array<char*, 50> params;
-gsl::span<char*> rx_params;
-
-// workaround for GSL size working incorrectly
-#define GSL_SPAN_SIZE(x) (size_t)(x.end()-x.begin())
 
 struct CLITest_ : Command {
-    explicit CLITest_(const char* name) : Command(name), callbacked(false) {
-        testCommands.push_back(this);
-    }
-
-    CLITest_(const char* name, int requiredArguments) : Command(name, requiredArguments), callbacked(false) {
-        testCommands.push_back(this);
+    CLITest_(const char* name, unsigned int requiredArguments) : Command(name, requiredArguments), callbacked(false) {
     }
 
     void callback(const gsl::span<char*> parameters) override {
-        // printf("callback: %s | ", this->name);
-        // for(auto x : parameters) {
-        // printf("%p, %s, ", x, x);
-        // }
-        // printf("\n");
-
-        rx_params = parameters;
+        for(int i = 0; i < parameters.size(); ++i) {
+            params_buf[i] = atoi(parameters[i]);
+        }
+        params = gsl::span<int>(params_buf.begin(), parameters.size());
         callbacked = true;
     }
 
@@ -53,208 +36,131 @@ struct CLITest_ : Command {
 };
 
 struct CLITest1_ : CLITest_ {
-    CLITest1_() : CLITest_("test1") {
+    CLITest1_() : CLITest_("test1", 1) {
     }
 };
 
 struct CLITest2_ : CLITest_ {
-    CLITest2_() : CLITest_("test2") {
+    CLITest2_() : CLITest_("test2", 2) {
     }
 };
 
 struct CLITest3_ : CLITest_ {
-    CLITest3_() : CLITest_("test") {
+    CLITest3_() : CLITest_("test", 0) {
     }
 };
 
 struct CLITest4_ : CLITest_ {
-    CLITest4_() : CLITest_("test21") {
+    CLITest4_() : CLITest_("test21", 3) {
     }
 };
 
 struct CLITest5_ : CLITest_ {
-    CLITest5_() : CLITest_("test5", 3) {
+    CLITest5_() : CLITest_("test5", 5) {
     }
 };
 
-CLITest1_* CLITest1;
-CLITest2_* CLITest2;
-CLITest3_* CLITest3;
-CLITest4_* CLITest4;
-CLITest5_* CLITest5;
+std::array<Command*, 5> commands;
+
+CLITest1_ CLITest1;
+CLITest2_ CLITest2;
+CLITest3_ CLITest3;
+CLITest4_ CLITest4;
+CLITest5_ CLITest5;
+
+void init() {
+    commands[0] = &CLITest1;
+    commands[1] = &CLITest2;
+    commands[2] = &CLITest3;
+    commands[3] = &CLITest4;
+    commands[4] = &CLITest5;
+}
 
 class CLITest : public ::testing::Test {
+ public:
+    std::vector<CLITest_*> testCommands;
+
     void SetUp() {
-        static CLITest1_ CLITest1_o;
-        static CLITest2_ CLITest2_o;
-        static CLITest3_ CLITest3_o;
-        static CLITest4_ CLITest4_o;
-        static CLITest5_ CLITest5_o;
+        init();
 
-        CLITest1 = &CLITest1_o;
-        CLITest2 = &CLITest2_o;
-        CLITest3 = &CLITest3_o;
-        CLITest4 = &CLITest4_o;
-        CLITest5 = &CLITest5_o;
+        testCommands.push_back(&CLITest1);
+        testCommands.push_back(&CLITest2);
+        testCommands.push_back(&CLITest3);
+        testCommands.push_back(&CLITest4);
+        testCommands.push_back(&CLITest5);
+        
+        set_commands(commands);
+    }
 
-        static Command* tab[] = {CLITest1, CLITest2, CLITest3, CLITest4, CLITest5};
-        auto x = gsl::span<Command*>(tab);
-        set_commands(x);
+    void checkIfCallbacked(Command* cmd = nullptr) {
+        for (auto x : testCommands) {
+            EXPECT_EQ(x == cmd, x->wasCallbacked());
+        }
+    }
+
+    void parse(const char* cmd) {
+        static char tmp[100];
+        strcpy(tmp, cmd);
+        HAL::Com::handler(tmp);
+        checkIfCallbacked(nullptr); // nothing is invoked until tick()
+        core::tick();
+    }
+
+    void check_params(std::initializer_list<int> p) {
+        EXPECT_EQ(p.size(), params.size());
+        EXPECT_TRUE(std::equal(p.begin(), p.end(), params.begin()));
     }
 };
 
-TEST_F(CLITest, init) {
-    EXPECT_EQ(commands.size(), 5);
-    EXPECT_EQ(testCommands.size(), 5);
+TEST_F(CLITest, simpleOK) {
+    parse("test1 5");
+    checkIfCallbacked(&CLITest1);
+    check_params({5});
 
-    for (auto x : testCommands) {
-        EXPECT_FALSE(x->callbacked);
-    }
+    parse("test2 1 2");
+    checkIfCallbacked(&CLITest2);
+    check_params({1, 2});
 }
 
-void checkIfCallbacked(Command* cmd) {
-    bool was = false;
-    for (auto x : testCommands) {
-        if (x != cmd) {
-            EXPECT_FALSE(x->wasCallbacked());
-        } else {
-            EXPECT_TRUE(x->wasCallbacked());
-            was = true;
-        }
-    }
-    if (cmd != nullptr) {
-        EXPECT_TRUE(was);
-    }
-}
+TEST_F(CLITest, noCommand) {
+    parse("teeeee 5");
+    checkIfCallbacked();
 
-static void parse(const char* cmd) {
-    static char tmp[100];
-    strcpy(tmp, cmd);
-    HAL::Com::handler(tmp);
-    checkIfCallbacked(nullptr); // nothing is invoked until tick()
-    core::tick();
-}
-
-int actualTesting;
-template <typename T>
-void testX(int len, T first) {
-    EXPECT_STREQ(rx_params[actualTesting++], first);
-}
-
-template <typename T, typename... Args>
-void testX(int len, T first, Args... args) {
-    EXPECT_STREQ(rx_params[actualTesting++], first);
-    testX(len, args...);
-}
-
-void test() {
-    EXPECT_EQ(rx_params.size(), 0);
-}
-
-template <typename T>
-void test(T v) {
-    EXPECT_EQ(rx_params.size(), 1);
-    EXPECT_STREQ(rx_params[0], v);
-}
-
-template <typename T, typename... Args>
-void test(T first, Args... args) {
-    int nArg = sizeof...(args) + 1;
-    actualTesting = 0;
-
-    EXPECT_EQ(GSL_SPAN_SIZE(rx_params), nArg);
-    testX(nArg, first, args...);
-    EXPECT_EQ(actualTesting, nArg);
-}
-
-void testVec(std::vector<char*> params) {
-    EXPECT_EQ(params.size(), GSL_SPAN_SIZE(rx_params));
-    for (int i = 0; i < params.size(); ++i) {
-        EXPECT_STREQ(rx_params[i], params[i]);
-    }
-}
-
-void gen_random_string(char* s, const int len) {
-    static const char alphanum[] = "0123456789"
-                                   "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                                   "abcdefghijklmnopqrstuvwxyz";
-
-    for (int i = 0; i < len; ++i) {
-        s[i] = alphanum[rand() % (sizeof(alphanum) - 1)];
-    }
-
-    s[len] = 0;
-}
-
-TEST_F(CLITest, simple1) {
-    parse("test1 1 2 3");
-    checkIfCallbacked(CLITest1);
-    test("1", "2", "3");
-
-    parse("test2");
-    checkIfCallbacked(CLITest2);
-    test();
+    parse("tester 1 2");
+    checkIfCallbacked();
 }
 
 TEST_F(CLITest, incorrectNrOfArugments) {
-    parse("test1 1 2 3");
-    checkIfCallbacked(CLITest1);
-    test("1", "2", "3");
+    parse("test1");
+    checkIfCallbacked();
 
-    parse("test5");
-    checkIfCallbacked(nullptr);
+    parse("test2 1 3 2");
+    checkIfCallbacked();
 
-    parse("test5 1");
-    checkIfCallbacked(nullptr);
 
-    parse("test5 1 2");
-    checkIfCallbacked(nullptr);
+    parse("test21 1  ");
+    checkIfCallbacked();
 
-    parse("test5 1 2 3 ");
-    checkIfCallbacked(CLITest5);
+    parse("test 1");
+    checkIfCallbacked();
 
-    parse("test5 1 2 3 4 ");
-    checkIfCallbacked(nullptr);
+    parse("test5 1 2 2 4");
+    checkIfCallbacked();
 }
 
-TEST_F(CLITest, allCasesRandom) {
-    std::srand(std::time(0));
+TEST_F(CLITest, whitespace) {
+    parse("test");
+    checkIfCallbacked(&CLITest3);
+    check_params({});
 
-    for (int cases = 0; cases < 100; ++cases) {
-        for (auto test : testCommands) {
-            for (int params = 0; params < 20; ++params) {
-                int nowParams = params;
-                if (test->requiredArguments != 1001) {
-                    nowParams = test->requiredArguments;
-                }
-                static char buf[100];
-                char* bufPtr = buf;
-                bufPtr += sprintf(bufPtr, "%s ", test->name);
+    parse("test  ");
+    checkIfCallbacked(&CLITest3);
+    check_params({});
+    parse("test   ");
+    checkIfCallbacked(&CLITest3);
+    check_params({});
 
-                std::vector<char*> actualParameters;
-
-                for (int i = 0; i < nowParams; ++i) {
-                    int len = 1 + std::rand() % 5;
-                    gen_random_string(bufPtr, len);
-                    // printf("[%d] = %s\n", i, bufPtr);
-                    actualParameters.push_back(bufPtr);
-                    bufPtr += len;
-                    *bufPtr = ' ';
-                    ++bufPtr;
-                }
-                *bufPtr = '\0';
-
-                // printf("Test: |%s|\n", buf);
-
-                parse(buf);
-                checkIfCallbacked(test);
-                for (char* bufTmp = buf; bufTmp < bufPtr; ++bufTmp) {
-                    if (*bufTmp == ' ') {
-                        *bufTmp = '\0';
-                    }
-                }
-                testVec(actualParameters);
-            }
-        }
-    }
+    parse("test2   1   3 ");
+    checkIfCallbacked(&CLITest2);
+    check_params({1, 3});
 }

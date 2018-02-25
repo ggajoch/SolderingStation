@@ -15,7 +15,7 @@ class PID {
     float prevError;
     float integral;
 
-    constexpr PID() noexcept : target{0}, lowerLimit{0}, upperLimit{0}, error{0}, prevError{0}, integral{0} {
+    constexpr PID() noexcept : target{0}, lowerLimit{0}, upperLimit{100}, error{0}, prevError{0}, integral{0} {
         this->reset();
     }
 

@@ -12,7 +12,7 @@ int printf(const char* format, ...) {
     va_start(args, format);
 
     static char buf[100];
-    int n = std::vsprintf(buf, format, args);
+    int n = std::vsnprintf(buf, 100, format, args);
     HAL::Com::puts(buf);
 
     va_end(args);

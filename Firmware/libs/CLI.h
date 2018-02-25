@@ -4,19 +4,13 @@
 
 namespace libs::CLI {
 
-constexpr int maximumRequiredArguments = 1001;
-
 class Command {
  public:
-    explicit Command(const char* name) : name(name) {
-        requiredArguments = maximumRequiredArguments;
-    }
-
     Command(const char* name, unsigned int requiredArguments) : name(name), requiredArguments(requiredArguments) {
     }
 
     bool callbackDispatcher(const gsl::span<char*> parameters) {
-        if (requiredArguments < maximumRequiredArguments && (unsigned int)parameters.size() != requiredArguments) {
+        if ((unsigned int)parameters.size() != requiredArguments) {
             return false;
         }
         callback(parameters);

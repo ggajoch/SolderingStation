@@ -1,6 +1,6 @@
 #include <array>
 #include <chrono>
-#include <experimental/optional>
+#include <optional>
 
 #include "HAL.h"
 #include "core.h"
@@ -111,7 +111,7 @@ void process_timeouts() {
 
 bool button_pressed, button_released;
 static void process_button() {
-    static std::experimental::optional<std::chrono::milliseconds> button_hold_timeout;
+    static std::optional<std::chrono::milliseconds> button_hold_timeout;
 
     if (button_pressed) {
         button_pressed = false;

@@ -1,5 +1,5 @@
 #include "state.h"
-#include <experimental/optional>
+#include <optional>
 #include "HAL.h"
 #include "config.h"
 #include "layout.h"
@@ -65,7 +65,7 @@ bool find_state(uint16_t& slot, uint16_t& temperature) {
     return found;
 }
 
-std::experimental::optional<core::PersistentState> getState() {
+std::optional<core::PersistentState> getState() {
     uint16_t slot = 0, temperature = 0;
     if (find_state(slot, temperature)) {
         return core::PersistentState{.target = temperature};

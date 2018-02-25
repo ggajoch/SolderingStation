@@ -10,14 +10,13 @@ namespace core::commands {
 
 using libs::CLI::Command;
 
-template <typename T, std::enable_if_t<std::is_floating_point<T>::value>* = nullptr>
+template <typename T>
 auto parse(const char* parameter) {
-    return static_cast<T>(std::atof(parameter));
-}
-
-template <typename T, std::enable_if_t<std::is_integral<T>::value>* = nullptr>
-auto parse(const char* parameter) {
-    return static_cast<T>(std::atoi(parameter));
+    if constexpr (std::is_floating_point<T>::value) {
+        return static_cast<T>(std::atof(parameter));
+    } else if constexpr (std::is_integral<T>::value) {
+        return static_cast<T>(std::atoi(parameter));
+    }
 }
 
 #define WRITE(nr, param) (param) = parse<decltype(param)>(parameters[(nr)])

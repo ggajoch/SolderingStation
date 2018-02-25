@@ -85,6 +85,7 @@ TEST(State, saveAfter100Ticks) {
     for(int i = 0; i < 200; ++i) {
         core::tick();
     }
+    core::settings.tip.max_safe_temperature = 100;
 
     clear_memory();
     EXPECT_TRUE(core::storage::stateIsSaved());
@@ -265,6 +266,7 @@ TEST(State, checkAllSlotsMarker) {
         // check readout of correct cell
         core::persistent_state.target = i;
         core::setup();
+        core::settings.tip.max_safe_temperature = 65000;
         EXPECT_EQ(core::persistent_state.target, second_pass(i));
     }
 }

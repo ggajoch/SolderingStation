@@ -4,7 +4,7 @@
 
 #include "layout.h"
 
-std::experimental::optional<core::Settings> getSettings() {
+std::optional<core::Settings> getSettings() {
     i2cMemorySettingsLayout settings;
 
     HAL::Memory::get(0x0000, settings.as_span());

@@ -1,10 +1,11 @@
 #pragma once
 
 #include <array>
+#include <cstddef>
 
 namespace libs {
 
-template <typename Type, size_t elements>
+template <typename Type, std::size_t elements>
 class Average {
  private:
     std::array<Type, elements> history;

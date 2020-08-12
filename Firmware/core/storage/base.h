@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cstring>
-#include <gsl/span>
+#include <gsl/gsl>
 
 namespace core::base {
 

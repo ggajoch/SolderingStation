@@ -2,6 +2,7 @@ include(ExternalProject)
 
 ExternalProject_Add(gsl_source
   GIT_REPOSITORY https://github.com/Microsoft/GSL.git
+  GIT_TAG main
   PREFIX ${CMAKE_CURRENT_BINARY_DIR}/gsl
   UPDATE_DISCONNECTED 1
   CONFIGURE_COMMAND ""

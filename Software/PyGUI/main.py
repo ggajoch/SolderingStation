@@ -1,5 +1,5 @@
 import sys
-from PyQt4 import QtCore, QtGui
+from PyQt5 import QtCore, QtGui
 from main_window import Ui_MainWindow
 import pyqtgraph as pg
 import time

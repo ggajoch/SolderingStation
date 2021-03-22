@@ -152,7 +152,7 @@ static void process_user_events() {
     process_button();
 
     add_event(in_stand ? Event::InStand : Event::NotInStand);
-    add_event(core::tempSensor::temperatureInLimits() ? Event::TemperatureOK : Event::TemperatureFail);
+    //add_event(core::tempSensor::temperatureInLimits() ? Event::TemperatureOK : Event::TemperatureFail);
 
     process_timeouts();
 }

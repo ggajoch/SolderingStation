@@ -3,6 +3,7 @@
 #include <cmath>
 #include <algorithm>
 #include "settings.h"
+#include "tempSensor.h"
 
 namespace core {
 
@@ -31,8 +32,14 @@ class PID {
         if (lowerLimit < pwr && pwr < actualUpperLimit) {
             integral += error;
         }
-
-        prevError = error;
+		
+		prevError = error;
+		
+		if (!core::tempSensor::temperatureInLimits()) {
+			integral = 0;
+			pwr = 0;
+			prevError = 0;
+		}
 
         return std::clamp(pwr, lowerLimit, actualUpperLimit);
     }

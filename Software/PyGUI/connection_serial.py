@@ -34,7 +34,7 @@ class SerialConnection(QtCore.QThread):
                 self.line_received_signal.emit(s)
             except Exception as e:
                 self.log.info("Serial error {}".format(e))
-                break
+                #break
 
     def send(self, text):
         self.log.debug("Sending {}".format(text))

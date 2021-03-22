@@ -222,6 +222,7 @@ class StartQT4(QtGui.QMainWindow):
             tip = float(table[1])
             setpoint = float(table[2]) - 0.5
             pwr = float(table[3])
+            print(table[4])
             self.add_point([tip, setpoint, pwr])
         if string.startswith("DISP"):
             if string.find("SLEEP") > -1:
